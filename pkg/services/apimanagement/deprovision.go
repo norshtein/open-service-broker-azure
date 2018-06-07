@@ -46,7 +46,7 @@ func (s *serviceManager) deleteAPIManagementService(
 	if err := service.GetStructFromMap(instance.Details, &dt); err != nil {
 		return nil, nil, err
 	}
-	if _,err := s.serviceClient.Delete(
+	if _,err := s.servicesClient.Delete(
 		ctx,
 		instance.ResourceGroup,
 		dt.apiName,

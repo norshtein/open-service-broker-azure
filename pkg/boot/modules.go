@@ -5,7 +5,7 @@ import (
 	"time"
 
 	aciSDK "github.com/Azure/azure-sdk-for-go/services/containerinstance/mgmt/2017-08-01-preview/containerinstance" // nolint: lll
-	apiManagementSDK "github.com/Azure/azure-sdk-for-go/services/apimanagement/mgmt/2017-03-01/apimanagement"       // nolint: 111
+	apiManagementSDK "github.com/Azure/azure-sdk-for-go/services/apimanagement/mgmt/2016-10-10/apimanagement"       // nolint: 111
 	cosmosSDK "github.com/Azure/azure-sdk-for-go/services/cosmos-db/mgmt/2015-04-08/documentdb"                     // nolint: lll
 	eventHubSDK "github.com/Azure/azure-sdk-for-go/services/eventhub/mgmt/2017-04-01/eventhub"                      // nolint: lll
 	keyVaultSDK "github.com/Azure/azure-sdk-for-go/services/keyvault/mgmt/2016-10-01/keyvault"                      // nolint: lll
@@ -79,12 +79,12 @@ func getModules(
 	aciClient.Authorizer = authorizer
 	aciClient.UserAgent = getUserAgent(aciClient.Client)
 
-	serviceClient := apiManagementSDK.NewServiceClientWithBaseURI(
+	servicesClient := apiManagementSDK.NewServicesClientWithBaseURI(
 		azureConfig.Environment.ResourceManagerEndpoint,
 		azureSubscriptionID,
 	)
-	serviceClient.Authorizer = authorizer
-	serviceClient.UserAgent = getUserAgent(serviceClient.Client)
+	servicesClient.Authorizer = authorizer
+	servicesClient.UserAgent = getUserAgent(servicesClient.Client)
 	tenantAccessClient := apiManagementSDK.NewTenantAccessClientWithBaseURI(
 		azureConfig.Environment.ResourceManagerEndpoint,
 		azureSubscriptionID,
@@ -226,7 +226,7 @@ func getModules(
 		storage.New(armDeployer, storageAccountsClient),
 		search.New(armDeployer, searchServicesClient),
 		aci.New(armDeployer, aciClient),
-		apimanagement.New(armDeployer, serviceClient, tenantAccessClient),
+		apimanagement.New(armDeployer, servicesClient, tenantAccessClient),
 	}
 
 	// Filter modules based on stability

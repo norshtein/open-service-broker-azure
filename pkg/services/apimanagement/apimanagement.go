@@ -1,7 +1,7 @@
 package apimanagement
 
 import(
-	apiManagementSDK "github.com/Azure/azure-sdk-for-go/services/apimanagement/mgmt/2017-03-01/apimanagement"       // nolint: 111
+	apiManagementSDK "github.com/Azure/azure-sdk-for-go/services/apimanagement/mgmt/2016-10-10/apimanagement"       // nolint: 111
 	"github.com/Azure/open-service-broker-azure/pkg/azure/arm"
 	"github.com/Azure/open-service-broker-azure/pkg/service"
 )
@@ -12,19 +12,19 @@ type module struct {
 
 type serviceManager struct {
 	armDeployer arm.Deployer
-	serviceClient apiManagementSDK.ServiceClient
+	servicesClient apiManagementSDK.ServicesClient
 	tenantAccessClient apiManagementSDK.TenantAccessClient
 }
 
 func New(
 	armDeployer arm.Deployer,
-	serviceClient apiManagementSDK.ServiceClient,
+	servicesClient apiManagementSDK.ServicesClient,
 	tenantAccessClient apiManagementSDK.TenantAccessClient,
 ) service.Module{
 	return &module{
 		serviceManager: &serviceManager{
 			armDeployer: armDeployer,
-			serviceClient: serviceClient,
+			servicesClient: servicesClient,
 			tenantAccessClient: tenantAccessClient,
 		},
 	}
