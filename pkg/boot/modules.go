@@ -5,6 +5,7 @@ import (
 	"time"
 
 	aciSDK "github.com/Azure/azure-sdk-for-go/services/containerinstance/mgmt/2017-08-01-preview/containerinstance" // nolint: lll
+	apiManagementSDK "github.com/Azure/azure-sdk-for-go/services/apimanagement/mgmt/2017-03-01/apimanagement"       // nolint: 111
 	cosmosSDK "github.com/Azure/azure-sdk-for-go/services/cosmos-db/mgmt/2015-04-08/documentdb"                     // nolint: lll
 	eventHubSDK "github.com/Azure/azure-sdk-for-go/services/eventhub/mgmt/2017-04-01/eventhub"                      // nolint: lll
 	keyVaultSDK "github.com/Azure/azure-sdk-for-go/services/keyvault/mgmt/2016-10-01/keyvault"                      // nolint: lll
@@ -21,6 +22,7 @@ import (
 	"github.com/Azure/open-service-broker-azure/pkg/azure/arm"
 	"github.com/Azure/open-service-broker-azure/pkg/service"
 	"github.com/Azure/open-service-broker-azure/pkg/services/aci"
+	"github.com/Azure/open-service-broker-azure/pkg/services/apimanagement"
 	"github.com/Azure/open-service-broker-azure/pkg/services/cosmosdb"
 	"github.com/Azure/open-service-broker-azure/pkg/services/eventhubs"
 	"github.com/Azure/open-service-broker-azure/pkg/services/keyvault"
@@ -34,6 +36,7 @@ import (
 	"github.com/Azure/open-service-broker-azure/pkg/version"
 )
 
+//noinspection ALL
 func getModules(
 	catalogConfig service.CatalogConfig,
 	azureConfig azure.Config,
@@ -75,6 +78,19 @@ func getModules(
 	)
 	aciClient.Authorizer = authorizer
 	aciClient.UserAgent = getUserAgent(aciClient.Client)
+
+	serviceClient := apiManagementSDK.NewServiceClientWithBaseURI(
+		azureConfig.Environment.ResourceManagerEndpoint,
+		azureSubscriptionID,
+	)
+	serviceClient.Authorizer = authorizer
+	serviceClient.UserAgent = getUserAgent(serviceClient.Client)
+	tenantAccessClient := apiManagementSDK.NewTenantAccessClientWithBaseURI(
+		azureConfig.Environment.ResourceManagerEndpoint,
+		azureSubscriptionID,
+	)
+	tenantAccessClient.Authorizer = authorizer
+	tenantAccessClient.UserAgent = getUserAgent(tenantAccessClient.Client)
 
 	cosmosdbAccountsClient := cosmosSDK.NewDatabaseAccountsClientWithBaseURI(
 		azureConfig.Environment.ResourceManagerEndpoint,
@@ -210,6 +226,7 @@ func getModules(
 		storage.New(armDeployer, storageAccountsClient),
 		search.New(armDeployer, searchServicesClient),
 		aci.New(armDeployer, aciClient),
+		apimanagement.New(armDeployer, serviceClient, tenantAccessClient),
 	}
 
 	// Filter modules based on stability
