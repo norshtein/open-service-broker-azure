@@ -7,6 +7,7 @@ import (
 	"github.com/Azure/open-service-broker-azure/pkg/service"
 	uuid "github.com/satori/go.uuid"
 	"github.com/Azure/azure-sdk-for-go/services/apimanagement/mgmt/2016-10-10/apimanagement"
+	"strings"
 )
 
 func (s *serviceManager) GetProvisioner(
@@ -90,7 +91,7 @@ func (s *serviceManager) enableRESTAPI(
 			Enabled: &enabled,
 	},
 		"*")
-	if err != nil {
+	if err != nil && !strings.Contains(err.Error(), "204"){
 		return nil, nil, err
 	}
 	return instance.Details, instance.SecureDetails, nil
