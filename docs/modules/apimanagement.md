@@ -57,7 +57,7 @@ Use these values to create an `Authorization` header in every request to the API
 
 `Authorizaton: SharedAccessSignature uid=53dd860e1b72ff0467030003&ex=2014-08-04T22:03:00.0000000Z&sn=ItH6scUyCazNKHULKA0Yv6T+Skk4bdVmLqcPPPdWoxl2n1+rVbhKlplFrqjkoUFRr0og4wjeDz4yfThC82OjfQ== `
 
-
+For available operations you can do with the token, please refer to the [azure doc](https://docs.microsoft.com/en-us/rest/api/apimanagement/apimanagementrest/api-management-rest) for details
 
 ##### Unbind
 
