@@ -19,7 +19,7 @@ type credentials struct {
 	BaseURL     string `json:"baseUrl"`
 	Identifier string `json:"identifier"`
 	ExpiryDate string `json:"expiryDate"`
-	Token     string `json:"token"`
+	Key     string `json:"key"`
 }
 
 func (

@@ -36,10 +36,10 @@ func (s *serviceManager) GetCredentials(
 	}
 
 	identifier := *(accessInformation.ID)
-	key := *(accessInformation.PrimaryKey)
+	pk := *(accessInformation.PrimaryKey)
 	expiry := time.Now().Add(time.Hour * 24 * 30).UTC()
 	expiryDate := fmt.Sprintf("%d-%02d-%02dT%02d:%02d:%02d.0000000Z",expiry.Year(),expiry.Month(),expiry.Day(),expiry.Hour(),expiry.Minute(),expiry.Second())
-	token,err := generateToken(identifier, key, expiryDate)
+	key,err := generateKey(identifier, pk, expiryDate)
 	if err != nil {
 		return nil, err
 	}
@@ -49,14 +49,14 @@ func (s *serviceManager) GetCredentials(
 		BaseURL: baseURL,
 		Identifier: identifier,
 		ExpiryDate: expiryDate,
-		Token : token,
+		Key : key,
 	}, nil
 }
 
 //This method is used to generate api management token, see
 // https://docs.microsoft.com/en-us/rest/api/apimanagement/apimanagementrest/azure-api-management-rest-api-authentication
 // for details
-func generateToken(identifier string, key string, expiryDate string) (string, error) {
+func generateKey(identifier string, key string, expiryDate string) (string, error) {
 	toEncode := identifier + "\n" + expiryDate
 
 	hashFunc := hmac.New(sha512.New, []byte(key))
