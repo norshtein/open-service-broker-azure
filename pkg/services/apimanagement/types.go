@@ -3,20 +3,22 @@ package apimanagement
 import "github.com/Azure/open-service-broker-azure/pkg/service"
 
 type provisioningParameters struct {
-	apiName string `json:"apiName"`
-	adminEmail string `json:"adminEmail"`
-	orgName string `json:"orgName"`
+	ApiName string `json:"apiName"`
+	AdminEmail string `json:"adminEmail"`
+	OrgName string `json:"orgName"`
 }
 
 type instanceDetails struct {
 	ARMDeploymentName string `json:"armDeployment"`
-	apiName string `json:"apiName"`
-	adminEmail string `json:"adminEmail"`
-	orgName string `json:"orgName"`
+	ApiName string `json:"apiName"`
+	AdminEmail string `json:"adminEmail"`
+	OrgName string `json:"orgName"`
 }
 
 type credentials struct {
 	BaseURL     string `json:"baseUrl"`
+	Identifier string `json:"identifier"`
+	ExpiryDate string `json:"expiryDate"`
 	Token     string `json:"token"`
 }
 

@@ -51,9 +51,9 @@ func (s *serviceManager) deployARMTemplate(
 		armTemplateBytes,
 		nil,
 		map[string]interface{}{
-			"name": pp.apiName,
-			"adminEmail" : pp.adminEmail,
-			"orgName": pp.orgName,
+			"name": pp.ApiName,
+			"adminEmail" : pp.AdminEmail,
+			"orgName": pp.OrgName,
 			"tier": instance.Plan.GetProperties().Extended["tier"],
 		},
 		instance.Tags,
@@ -62,9 +62,9 @@ func (s *serviceManager) deployARMTemplate(
 		return nil, nil, fmt.Errorf("error deploying ARM template: %s", err)
 	}
 
-	dt.apiName = pp.apiName
-	dt.orgName = pp.orgName
-	dt.adminEmail = pp.adminEmail
+	dt.ApiName = pp.ApiName
+	dt.OrgName = pp.OrgName
+	dt.AdminEmail = pp.AdminEmail
 
 	dtMap,err := service.GetMapFromStruct(dt)
 	return dtMap, instance.SecureDetails, nil
@@ -85,7 +85,7 @@ func (s *serviceManager) enableRESTAPI(
 	enabled := true
 	_, err := s.tenantAccessClient.Update(ctx,
 		instance.ResourceGroup,
-		pp.apiName,
+		pp.ApiName,
 		apimanagement.AccessInformationUpdateParameters{
 			Enabled: &enabled,
 	},

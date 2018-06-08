@@ -20,6 +20,9 @@ var armTemplateBytes = []byte(`
 			},
 			"tier": {
 				"type": "String"
+			},
+			"tags": {
+				"type": "object"
 			}
 		},
 		"resources": [
@@ -37,7 +40,13 @@ var armTemplateBytes = []byte(`
 					"publisherName": "[parameters('orgName')]"
 				}
 			}
-		]
+		],
+		"outputs": {
+			"apiName": {
+				"type": "string",
+				"value": "[parameters('name')]"
+			}
+		}
 	}
 `)
 

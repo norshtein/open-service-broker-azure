@@ -477,7 +477,7 @@ func (d *deployer) pollUntilComplete(
 ) (*resourcesSDK.DeploymentExtended, error) {
 	ticker := time.NewTicker(time.Second * 10)
 	defer ticker.Stop()
-	timer := time.NewTimer(time.Minute * 30)
+	timer := time.NewTimer(time.Minute * 60)
 	defer timer.Stop()
 	var deployment *resourcesSDK.DeploymentExtended
 	var ds deploymentStatus

@@ -49,7 +49,7 @@ func (s *serviceManager) deleteAPIManagementService(
 	if _,err := s.servicesClient.Delete(
 		ctx,
 		instance.ResourceGroup,
-		dt.apiName,
+		dt.ApiName,
 		); err != nil {
 			return nil, nil, fmt.Errorf("error deleting api management service: %s", err)
 	}
