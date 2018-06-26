@@ -2,17 +2,8 @@ package apimanagement
 
 import "github.com/Azure/open-service-broker-azure/pkg/service"
 
-type provisioningParameters struct {
-	ApiName string `json:"apiName"`
-	AdminEmail string `json:"adminEmail"`
-	OrgName string `json:"orgName"`
-}
-
 type instanceDetails struct {
 	ARMDeploymentName string `json:"armDeployment"`
-	ApiName string `json:"apiName"`
-	AdminEmail string `json:"adminEmail"`
-	OrgName string `json:"orgName"`
 }
 
 type credentials struct {
@@ -49,30 +40,10 @@ s *serviceManager,
 	}
 }
 
-func (s *serviceManager) SplitProvisioningParameters(
-	cpp map[string]interface{},
-) (
-	service.ProvisioningParameters,
-	service.SecureProvisioningParameters,
-	error,
-){
-	pp := provisioningParameters{}
-	if err := service.GetStructFromMap(cpp, &pp); err != nil{
-		return nil, nil, err
-	}
-	ppMap,err := service.GetMapFromStruct(pp)
-	if err != nil {
-		return nil, nil, err
-	}
-	return ppMap, nil, nil
+func (d *serviceManager) GetEmptyInstanceDetails() service.InstanceDetails {
+	return &instanceDetails{}
 }
 
-func (s *serviceManager) SplitBindingParameters(
-	params map[string]interface{},
-) (
-	service.BindingParameters,
-	service.SecureBindingParameters,
-	error,
-) {
-	return nil, nil, nil
+func (d *serviceManager) GetEmptyBindingDetails() service.BindingDetails {
+	return nil
 }

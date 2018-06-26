@@ -23,76 +23,68 @@ func (s *serviceManager) GetProvisioner(
 func (s *serviceManager) preProvision(
 	context.Context,
 	service.Instance,
-) (service.InstanceDetails, service.SecureInstanceDetails, error){
-	dt := instanceDetails{
+) (service.InstanceDetails, error){
+	dt := &instanceDetails{
 		ARMDeploymentName: uuid.NewV4().String(),
 	}
-	dtMap,err := service.GetMapFromStruct(dt)
-	return dtMap, nil, err
+	return dt, nil
 }
 
 func (s *serviceManager) deployARMTemplate(
 	_ context.Context,
 	instance service.Instance,
-) (service.InstanceDetails, service.SecureInstanceDetails, error) {
-	dt := instanceDetails{}
-	if err := service.GetStructFromMap(instance.Details, &dt); err != nil{
-		return nil, nil, err
+) (service.InstanceDetails, error) {
+	dt := instance.Details.(*instanceDetails)
+	pp := instance.ProvisioningParameters
+	armTemplateParamters := map[string]interface{} {
+		"name": pp.GetString("apiName"),
+		"adminEmail": pp.GetString("adminEmail"),
+		"orgName": pp.GetString("orgName"),
+		"tier": instance.Plan.GetProperties().Extended["tier"],
 	}
-
-	pp := provisioningParameters{}
-	if err := service.GetStructFromMap(instance.ProvisioningParameters, &pp); err != nil{
-		return nil, nil, err
+	tagsObj := instance.ProvisioningParameters.GetObject("tags")
+	tags := make(map[string]string, len(tagsObj.Data))
+	for k := range tagsObj.Data {
+		tags[k] = tagsObj.GetString(k)
 	}
 
 	_, err := s.armDeployer.Deploy(
 		dt.ARMDeploymentName,
-		instance.ResourceGroup,
-		instance.Location,
+		pp.GetString("resourceGroup"),
+		pp.GetString("location"),
 		armTemplateBytes,
 		nil,
-		map[string]interface{}{
-			"name": pp.ApiName,
-			"adminEmail" : pp.AdminEmail,
-			"orgName": pp.OrgName,
-			"tier": instance.Plan.GetProperties().Extended["tier"],
-		},
-		instance.Tags,
+		armTemplateParamters,
+		tags,
 	)
 	if err != nil {
-		return nil, nil, fmt.Errorf("error deploying ARM template: %s", err)
+		return nil, fmt.Errorf("error deploying ARM template: %s", err)
 	}
-
-	dt.ApiName = pp.ApiName
-	dt.OrgName = pp.OrgName
-	dt.AdminEmail = pp.AdminEmail
-
-	dtMap,err := service.GetMapFromStruct(dt)
-	return dtMap, instance.SecureDetails, nil
+	return instance.Details, nil
 }
 
 func (s *serviceManager) enableRESTAPI(
 	ctx context.Context,
 	instance service.Instance,
-) (service.InstanceDetails, service.SecureInstanceDetails, error){
+) (service.InstanceDetails, error){
 	ctx, cancel := context.WithCancel(ctx)
 	defer cancel()
 
-	pp := provisioningParameters{}
-	if err := service.GetStructFromMap(instance.ProvisioningParameters, &pp); err != nil{
-		return nil, nil, err
-	}
-
+	pp := instance.ProvisioningParameters
 	enabled := true
 	_, err := s.tenantAccessClient.Update(ctx,
-		instance.ResourceGroup,
-		pp.ApiName,
+		pp.GetString("resourceGroup"),
+		pp.GetString("apiName"),
 		apimanagement.AccessInformationUpdateParameters{
 			Enabled: &enabled,
 	},
 		"*")
+
+	// OSBA only provides an old version api-management go sdk, which treats http
+	// response code 204 as an error, but in fact 204 indicates creating success.
+	// So we add a special judgement here.
 	if err != nil && !strings.Contains(err.Error(), "204"){
-		return nil, nil, err
+		return nil, err
 	}
-	return instance.Details, instance.SecureDetails, nil
+	return instance.Details, nil
 }
