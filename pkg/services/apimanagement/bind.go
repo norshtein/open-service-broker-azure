@@ -6,8 +6,9 @@ import (
 	"crypto/sha512"
 	"encoding/base64"
 	"fmt"
-	"github.com/Azure/open-service-broker-azure/pkg/service"
 	"time"
+
+	"github.com/Azure/open-service-broker-azure/pkg/service"
 )
 
 func (s *serviceManager) Bind(
