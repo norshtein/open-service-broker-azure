@@ -13,22 +13,18 @@ import (
 func (s *serviceManager) Bind(
 	service.Instance,
 	service.BindingParameters,
-	service.SecureBindingParameters,
-) (service.BindingDetails, service.SecureBindingDetails, error) {
-	return nil, nil, nil
+) (service.BindingDetails, error) {
+	return nil, nil
 }
 
 func (s *serviceManager) GetCredentials(
 	instance service.Instance,
 	_ service.Binding,
 ) (service.Credentials, error) {
-	dt := instanceDetails{}
-	if err := service.GetStructFromMap(instance.Details, &dt); err != nil {
-		return nil, err
-	}
+	pp := instance.ProvisioningParameters
 
-	resourceGroup := instance.ResourceGroup
-	apiName := dt.ApiName
+	resourceGroup := pp.GetString("resourceGroup")
+	apiName := pp.GetString("apiName")
 	tenantClient := s.tenantAccessClient
 	accessInformation, err := tenantClient.Get(context.TODO(), resourceGroup, apiName)
 	if err != nil {
@@ -53,7 +49,7 @@ func (s *serviceManager) GetCredentials(
 	}, nil
 }
 
-//This method is used to generate api management token, see
+// This method is used to generate api management token, see
 // https://docs.microsoft.com/en-us/rest/api/apimanagement/apimanagementrest/azure-api-management-rest-api-authentication
 // for details
 func generateKey(identifier string, key string, expiryDate string) (string, error) {
