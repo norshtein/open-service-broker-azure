@@ -10,7 +10,7 @@ func createDeveloperPlan(
 		Name:        "developer",
 		Description: "Developer Tier(No SLA)",
 		Free:        false,
-		Stability: service.StabilityStable,
+		Stability:   service.StabilityStable,
 		Extended: map[string]interface{}{
 			"tier": "Developer",
 		},
@@ -33,7 +33,7 @@ func createBasicPlan(
 		Name:        "basic",
 		Description: "Basic Tier(99.9 SLA, %)",
 		Free:        false,
-		Stability: service.StabilityStable,
+		Stability:   service.StabilityStable,
 		Extended: map[string]interface{}{
 			"tier": "Basic",
 		},
@@ -56,7 +56,7 @@ func createStandardPlan(
 		Name:        "standard",
 		Description: "Standard Tier(99.9 SLA, %)",
 		Free:        false,
-		Stability: service.StabilityStable,
+		Stability:   service.StabilityStable,
 		Extended: map[string]interface{}{
 			"tier": "Standard",
 		},
@@ -79,7 +79,7 @@ func createPremiumPlan(
 		Name:        "premium",
 		Description: "Premium Tier(99.95* SLA, %)",
 		Free:        false,
-		Stability: service.StabilityStable,
+		Stability:   service.StabilityStable,
 		Extended: map[string]interface{}{
 			"tier": "Premium",
 		},

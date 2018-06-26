@@ -34,6 +34,16 @@ func generateProvisionParametersSchema() service.InputParametersSchema {
 				Description: "Client ID (username) for an existing service principal," +
 					"which will be granted access to the new vault.",
 			},
+			"location": &service.StringPropertySchema{
+				Description: "The location where the api management service will be deployed",
+			},
+			"resourceGroup": &service.StringPropertySchema{
+				Description: "The name of the resource group where the api management service will be placed.",
+			},
+			"tags": &service.StringPropertySchema{
+				Description: "Tags to be applied to new resources," +
+					" specified as key/value pairs.",
+			},
 		},
 	}
 }
