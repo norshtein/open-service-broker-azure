@@ -4,9 +4,9 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/Azure/azure-sdk-for-go/services/apimanagement/mgmt/2016-10-10/apimanagement"
 	"github.com/Azure/open-service-broker-azure/pkg/service"
 	uuid "github.com/satori/go.uuid"
-	"github.com/Azure/azure-sdk-for-go/services/apimanagement/mgmt/2016-10-10/apimanagement"
 	"strings"
 )
 
@@ -23,7 +23,7 @@ func (s *serviceManager) GetProvisioner(
 func (s *serviceManager) preProvision(
 	context.Context,
 	service.Instance,
-) (service.InstanceDetails, error){
+) (service.InstanceDetails, error) {
 	dt := &instanceDetails{
 		ARMDeploymentName: uuid.NewV4().String(),
 	}
@@ -36,11 +36,11 @@ func (s *serviceManager) deployARMTemplate(
 ) (service.InstanceDetails, error) {
 	dt := instance.Details.(*instanceDetails)
 	pp := instance.ProvisioningParameters
-	armTemplateParamters := map[string]interface{} {
-		"name": pp.GetString("apiName"),
+	armTemplateParamters := map[string]interface{}{
+		"name":       pp.GetString("apiName"),
 		"adminEmail": pp.GetString("adminEmail"),
-		"orgName": pp.GetString("orgName"),
-		"tier": instance.Plan.GetProperties().Extended["tier"],
+		"orgName":    pp.GetString("orgName"),
+		"tier":       instance.Plan.GetProperties().Extended["tier"],
 	}
 	tagsObj := instance.ProvisioningParameters.GetObject("tags")
 	tags := make(map[string]string, len(tagsObj.Data))
@@ -66,7 +66,7 @@ func (s *serviceManager) deployARMTemplate(
 func (s *serviceManager) enableRESTAPI(
 	ctx context.Context,
 	instance service.Instance,
-) (service.InstanceDetails, error){
+) (service.InstanceDetails, error) {
 	ctx, cancel := context.WithCancel(ctx)
 	defer cancel()
 
@@ -77,13 +77,13 @@ func (s *serviceManager) enableRESTAPI(
 		pp.GetString("apiName"),
 		apimanagement.AccessInformationUpdateParameters{
 			Enabled: &enabled,
-	},
+		},
 		"*")
 
 	// OSBA only provides an old version api-management go sdk, which treats http
 	// response code 204 as an error, but in fact 204 indicates creating success.
 	// So we add a special judgement here.
-	if err != nil && !strings.Contains(err.Error(), "204"){
+	if err != nil && !strings.Contains(err.Error(), "204") {
 		return nil, err
 	}
 	return instance.Details, nil

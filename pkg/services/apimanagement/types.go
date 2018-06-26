@@ -7,14 +7,14 @@ type instanceDetails struct {
 }
 
 type credentials struct {
-	BaseURL     string `json:"baseUrl"`
+	BaseURL    string `json:"baseUrl"`
 	Identifier string `json:"identifier"`
 	ExpiryDate string `json:"expiryDate"`
-	Key     string `json:"key"`
+	Key        string `json:"key"`
 }
 
 func (
-s *serviceManager,
+	s *serviceManager,
 ) getProvisionParametersSchema() service.InputParametersSchema {
 	return service.InputParametersSchema{
 		RequiredProperties: []string{
@@ -25,7 +25,7 @@ s *serviceManager,
 		//TODO: Add regular expression to the schema
 		PropertySchemas: map[string]service.PropertySchema{
 			"apiName": &service.StringPropertySchema{
-				Description: "The name of the service, the api endpoint will be "+
+				Description: "The name of the service, the api endpoint will be " +
 					"<apiName>.azure-api.net",
 			},
 			"adminEmail": &service.StringPropertySchema{

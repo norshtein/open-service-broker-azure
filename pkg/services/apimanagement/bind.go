@@ -1,13 +1,13 @@
 package apimanagement
 
 import (
-	"github.com/Azure/open-service-broker-azure/pkg/service"
 	"context"
-	"fmt"
-	"time"
 	"crypto/hmac"
 	"crypto/sha512"
 	"encoding/base64"
+	"fmt"
+	"github.com/Azure/open-service-broker-azure/pkg/service"
+	"time"
 )
 
 func (s *serviceManager) Bind(
@@ -34,18 +34,18 @@ func (s *serviceManager) GetCredentials(
 	identifier := *(accessInformation.ID)
 	pk := *(accessInformation.PrimaryKey)
 	expiry := time.Now().Add(time.Hour * 24 * 30).UTC()
-	expiryDate := fmt.Sprintf("%d-%02d-%02dT%02d:%02d:%02d.0000000Z",expiry.Year(),expiry.Month(),expiry.Day(),expiry.Hour(),expiry.Minute(),expiry.Second())
-	key,err := generateKey(identifier, pk, expiryDate)
+	expiryDate := fmt.Sprintf("%d-%02d-%02dT%02d:%02d:%02d.0000000Z", expiry.Year(), expiry.Month(), expiry.Day(), expiry.Hour(), expiry.Minute(), expiry.Second())
+	key, err := generateKey(identifier, pk, expiryDate)
 	if err != nil {
 		return nil, err
 	}
 
 	baseURL := fmt.Sprintf("https://%s.management.azure-api.net/", apiName)
-	return credentials {
-		BaseURL: baseURL,
+	return credentials{
+		BaseURL:    baseURL,
 		Identifier: identifier,
 		ExpiryDate: expiryDate,
-		Key : key,
+		Key:        key,
 	}, nil
 }
 

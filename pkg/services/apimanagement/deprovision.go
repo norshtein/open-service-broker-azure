@@ -1,9 +1,9 @@
 package apimanagement
 
 import (
-	"github.com/Azure/open-service-broker-azure/pkg/service"
 	"context"
 	"fmt"
+	"github.com/Azure/open-service-broker-azure/pkg/service"
 )
 
 func (s *serviceManager) GetDeprovisioner(
@@ -42,12 +42,12 @@ func (s *serviceManager) deleteAPIManagementService(
 	defer cancel()
 
 	pp := instance.ProvisioningParameters
-	if _,err := s.servicesClient.Delete(
+	if _, err := s.servicesClient.Delete(
 		ctx,
 		pp.GetString("resourceGroup"),
 		pp.GetString("apiName"),
-		); err != nil {
+	); err != nil {
 		return nil, fmt.Errorf("error deleting api management service: %s", err)
-	 }
+	}
 	return instance.Details, nil
 }
