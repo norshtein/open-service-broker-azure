@@ -13,9 +13,7 @@ type credentials struct {
 	Key        string `json:"key"`
 }
 
-func (
-	s *serviceManager,
-) getProvisionParametersSchema() service.InputParametersSchema {
+func generateProvisionParametersSchema() service.InputParametersSchema {
 	return service.InputParametersSchema{
 		RequiredProperties: []string{
 			"apiName",

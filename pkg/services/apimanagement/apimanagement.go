@@ -33,7 +33,3 @@ func New(
 func (m *module) GetName() string {
 	return "apimanagement"
 }
-
-func (m *module) GetStability() service.Stability {
-	return service.StabilityStable
-}
