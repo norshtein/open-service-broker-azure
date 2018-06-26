@@ -40,6 +40,7 @@ func (s *serviceManager) deployARMTemplate(
 		"name":       pp.GetString("apiName"),
 		"adminEmail": pp.GetString("adminEmail"),
 		"orgName":    pp.GetString("orgName"),
+		"location":   pp.GetString("location"),
 		"tier":       instance.Plan.GetProperties().Extended["tier"],
 	}
 	tagsObj := instance.ProvisioningParameters.GetObject("tags")
