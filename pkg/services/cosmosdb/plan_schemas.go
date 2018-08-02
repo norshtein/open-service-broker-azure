@@ -26,6 +26,10 @@ func generateProvisioningParamsSchema() service.InputParametersSchema {
 				Description: "The (new or existing) resource group with which" +
 					" to associate new resources.",
 			},
+			"readLocations": &service.ArrayPropertySchema{
+				Description:  "Read Locations",
+				DefaultValue: []interface{}{},
+			},
 			"ipFilters": &service.ObjectPropertySchema{
 				Description: "IP Range Filter to be applied to new CosmosDB account",
 				PropertySchemas: map[string]service.PropertySchema{
