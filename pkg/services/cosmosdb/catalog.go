@@ -77,6 +77,7 @@ func (m *module) GetCatalog() (service.Catalog, error) {
 					Schemas: service.PlanSchemas{
 						ServiceInstances: service.InstanceSchemas{
 							ProvisioningParametersSchema: generateProvisioningParamsSchema(), // nolint: lll
+							UpdatingParametersSchema:     generateUpdatingParamsSchema(),
 						},
 					},
 				}),

@@ -112,6 +112,17 @@ func generateProvisioningParamsSchema() service.InputParametersSchema {
 	}
 }
 
+func generateUpdatingParamsSchema() service.InputParametersSchema {
+	return service.InputParametersSchema{
+		PropertySchemas: map[string]service.PropertySchema{
+			"readLocations": &service.ArrayPropertySchema{
+				Description:  "Read Locations",
+				DefaultValue: []interface{}{},
+			},
+		},
+	}
+}
+
 func ipRangeValidator(context, value string) error {
 	ip := net.ParseIP(value)
 	if ip == nil {
