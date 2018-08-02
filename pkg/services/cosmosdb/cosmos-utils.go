@@ -2,6 +2,7 @@ package cosmosdb
 
 import (
 	"bytes"
+	"context"
 	"crypto/hmac"
 	"crypto/sha256"
 	"encoding/base64"
@@ -12,6 +13,9 @@ import (
 	"net/url"
 	"strings"
 	"time"
+
+	cosmosSDK "github.com/Azure/azure-sdk-for-go/services/cosmos-db/mgmt/2015-04-08/documentdb"
+	"github.com/tidwall/gjson"
 )
 
 // This method implements the CosmosDB API authentication token generation
@@ -177,4 +181,56 @@ func deleteDatabase(
 		)
 	}
 	return nil
+}
+
+// Although there is a `waitForCompletion` method, but that method is implemented by checking HTTP status code,
+// but unfortunately, the REST API we are using will always return "200 OK", so `waitForCompletion` method cannot
+// detect whether the update has finished, we must implement detection logic by ourselves.
+// For now, this method will return on either context is cancelled or the update is completed
+func waitForRegionCreationCompletion(ctx context.Context, dac cosmosSDK.DatabaseAccountsClient, resourceGroupName string, accountName string) error {
+	childCtx, cancel := context.WithCancel(ctx)
+	defer cancel()
+
+	ticker := time.NewTicker(time.Second * 5)
+	for {
+		select {
+		case <-ctx.Done():
+			return ctx.Err()
+		case <-ticker.C:
+			result, err := dac.Get(childCtx, resourceGroupName, accountName)
+			if err != nil {
+				return err
+			}
+			resultJSONBytes, err := json.Marshal(result)
+			if err != nil {
+				return err
+			}
+			resultJSONString := string(resultJSONBytes)
+
+			//Check whether every read location's state is "Succeeded"
+			allSucceed := true
+			readLocations := gjson.Get(resultJSONString, "properties.readLocations")
+			readLocations.ForEach(func(key, value gjson.Result) bool {
+				state := value.Get("provisioningState").String()
+				if state != "Succeeded" {
+					fmt.Printf("State is %s\n", state)
+					allSucceed = false
+					return false
+				}
+				return true
+			})
+			if allSucceed {
+				return nil
+			}
+		}
+	}
+}
+
+func contructLocation(accountName, locationName string, failoverPriority int32) cosmosSDK.Location {
+	id := fmt.Sprintf("%s-%s", accountName, strings.ToLower(strings.Replace(locationName, " ", "", -1)))
+	return cosmosSDK.Location{
+		ID:               &id,
+		FailoverPriority: &failoverPriority,
+		LocationName:     &locationName,
+	}
 }
