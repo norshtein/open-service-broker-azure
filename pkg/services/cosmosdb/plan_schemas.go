@@ -117,8 +117,9 @@ func generateUpdatingParamsSchema() service.InputParametersSchema {
 	return service.InputParametersSchema{
 		PropertySchemas: map[string]service.PropertySchema{
 			"readLocations": &service.ArrayPropertySchema{
-				Description:  "Read Locations",
-				DefaultValue: []interface{}{},
+				Description:             "Read Locations",
+				DefaultValue:            []interface{}{},
+				CustomPropertyValidator: readRegionsValidator,
 			},
 		},
 	}
