@@ -272,6 +272,7 @@ var allowedReadRegions = map[string]bool{
 	"eastus2euap":        true,
 	"eastus2":            true,
 	"canadaeast":         true,
+	"brazilsouth":        true,
 	"northeurope":        true,
 	"ukwest":             true,
 	"uksouth":            true,
