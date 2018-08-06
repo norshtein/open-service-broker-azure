@@ -7,9 +7,9 @@ import (
 func (
 	t *tableAccountManager,
 ) ValidateUpdatingParameters(instance service.Instance) error {
-	return readRegionsValidator(
+	return validateReadRegions(
 		"table account update",
-		[]interface{}{instance.UpdatingParameters.GetStringArray("readLocations")},
+		instance.UpdatingParameters.GetStringArray("readLocations"),
 	)
 }
 

@@ -7,9 +7,9 @@ import (
 func (
 	g *graphAccountManager,
 ) ValidateUpdatingParameters(instance service.Instance) error {
-	return readRegionsValidator(
+	return validateReadRegions(
 		"graph account update",
-		[]interface{}{instance.UpdatingParameters.GetStringArray("readLocations")},
+		instance.UpdatingParameters.GetStringArray("readLocations"),
 	)
 }
 

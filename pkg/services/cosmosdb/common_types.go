@@ -32,34 +32,3 @@ func (
 func (c *cosmosAccountManager) GetEmptyBindingDetails() service.BindingDetails {
 	return nil
 }
-
-// Allowed Cosmos DB read regions
-var allowedReadRegions = map[string]bool{
-	"westus2":            true,
-	"westus":             true,
-	"southcentralus":     true,
-	"centraluseuap":      true,
-	"centralus":          true,
-	"northcentralus":     true,
-	"canadacentral":      true,
-	"eastus":             true,
-	"eastus2euap":        true,
-	"eastus2":            true,
-	"canadaeast":         true,
-	"northeurope":        true,
-	"ukwest":             true,
-	"uksouth":            true,
-	"francecentral":      true,
-	"westeurope":         true,
-	"westindia":          true,
-	"centralindia":       true,
-	"southindia":         true,
-	"southeastasia":      true,
-	"eastasia":           true,
-	"koreacentral":       true,
-	"koreasouth":         true,
-	"japaneast":          true,
-	"japanwest":          true,
-	"australiasoutheast": true,
-	"australiaeast":      true,
-}

@@ -7,9 +7,9 @@ import (
 func (
 	s *sqlAllInOneManager,
 ) ValidateUpdatingParameters(instance service.Instance) error {
-	return readRegionsValidator(
+	return validateReadRegions(
 		"sql all in one update",
-		[]interface{}{instance.UpdatingParameters.GetStringArray("readLocations")},
+		instance.UpdatingParameters.GetStringArray("readLocations"),
 	)
 }
 

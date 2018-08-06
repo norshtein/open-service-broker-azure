@@ -160,3 +160,14 @@ func consistencyPolicyValidator(
 	}
 	return nil
 }
+
+func readRegionsValidator(
+	context string,
+	value []interface{},
+) error {
+	regions := make([]string, len(value))
+	for i := range value {
+		regions[i] = value[i].(string)
+	}
+	return validateReadRegions(context, regions)
+}

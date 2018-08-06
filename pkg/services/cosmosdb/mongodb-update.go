@@ -7,9 +7,9 @@ import (
 func (
 	m *mongoAccountManager,
 ) ValidateUpdatingParameters(instance service.Instance) error {
-	return readRegionsValidator(
+	return validateReadRegions(
 		"mongo account update",
-		[]interface{}{instance.UpdatingParameters.GetStringArray("readLocations")},
+		instance.UpdatingParameters.GetStringArray("readLocations"),
 	)
 }
 

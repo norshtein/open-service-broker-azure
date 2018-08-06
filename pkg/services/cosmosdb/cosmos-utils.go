@@ -234,18 +234,49 @@ func contructLocation(accountName, locationName string, failoverPriority int32) 
 	}
 }
 
-func readRegionsValidator(
+func validateReadRegions(
 	context string,
-	value []interface{},
+	regions []string,
 ) error {
-	for i := range value {
-		givenRegion := value[i].(string)
-		if !allowedReadRegions[givenRegion] {
+	for i := range regions {
+		region := regions[i]
+		if !allowedReadRegions[region] {
 			return service.NewValidationError(
 				fmt.Sprintf("%s.allowedReadRegion", context),
-				fmt.Sprintf("given region %s is not allowed", givenRegion),
+				fmt.Sprintf("given region %s is not allowed", region),
 			)
 		}
 	}
 	return nil
+}
+
+// Allowed CosmosDB read regions
+var allowedReadRegions = map[string]bool{
+	"westus2":            true,
+	"westus":             true,
+	"southcentralus":     true,
+	"centraluseuap":      true,
+	"centralus":          true,
+	"northcentralus":     true,
+	"canadacentral":      true,
+	"eastus":             true,
+	"eastus2euap":        true,
+	"eastus2":            true,
+	"canadaeast":         true,
+	"northeurope":        true,
+	"ukwest":             true,
+	"uksouth":            true,
+	"francecentral":      true,
+	"westeurope":         true,
+	"westindia":          true,
+	"centralindia":       true,
+	"southindia":         true,
+	"southeastasia":      true,
+	"eastasia":           true,
+	"koreacentral":       true,
+	"koreasouth":         true,
+	"japaneast":          true,
+	"japanwest":          true,
+	"australiasoutheast": true,
+	"australiaeast":      true,
 }
