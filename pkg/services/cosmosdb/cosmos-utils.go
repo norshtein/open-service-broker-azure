@@ -194,7 +194,7 @@ func waitForRegionCreationCompletion(ctx context.Context, dac cosmosSDK.Database
 	childCtx, cancel := context.WithCancel(ctx)
 	defer cancel()
 
-	ticker := time.NewTicker(time.Second * 5)
+	ticker := time.NewTicker(time.Second * 20)
 	previousSucceeded := false
 	for {
 		select {
