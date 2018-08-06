@@ -85,5 +85,8 @@ func (c *cosmosAccountManager) updateReadRegions(
 		return nil, err
 	}
 	err = waitForRegionCreationCompletion(ctx, databaseAccountClient, resourceGroupName, accountName)
+	if err != nil {
+		return nil, err
+	}
 	return dt, nil
 }
