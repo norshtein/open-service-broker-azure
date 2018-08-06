@@ -6,8 +6,11 @@ import (
 
 func (
 	s *sqlAllInOneManager,
-) ValidateUpdatingParameters(service.Instance) error {
-	return nil
+) ValidateUpdatingParameters(instance service.Instance) error {
+	return readRegionsValidator(
+		"sql all in one update",
+		[]interface{}{instance.UpdatingParameters.GetStringArray("readLocations")},
+	)
 }
 
 func (

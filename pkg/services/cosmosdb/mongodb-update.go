@@ -6,8 +6,11 @@ import (
 
 func (
 	m *mongoAccountManager,
-) ValidateUpdatingParameters(service.Instance) error {
-	return nil
+) ValidateUpdatingParameters(instance service.Instance) error {
+	return readRegionsValidator(
+		"mongo account update",
+		[]interface{}{instance.UpdatingParameters.GetStringArray("readLocations")},
+	)
 }
 
 func (

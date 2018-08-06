@@ -6,8 +6,11 @@ import (
 
 func (
 	g *graphAccountManager,
-) ValidateUpdatingParameters(service.Instance) error {
-	return nil
+) ValidateUpdatingParameters(instance service.Instance) error {
+	return readRegionsValidator(
+		"graph account update",
+		[]interface{}{instance.UpdatingParameters.GetStringArray("readLocations")},
+	)
 }
 
 func (

@@ -15,6 +15,7 @@ import (
 	"time"
 
 	cosmosSDK "github.com/Azure/azure-sdk-for-go/services/cosmos-db/mgmt/2015-04-08/documentdb"
+	"github.com/Azure/open-service-broker-azure/pkg/service"
 	"github.com/tidwall/gjson"
 )
 
@@ -231,4 +232,20 @@ func contructLocation(accountName, locationName string, failoverPriority int32) 
 		FailoverPriority: &failoverPriority,
 		LocationName:     &locationName,
 	}
+}
+
+func readRegionsValidator(
+	context string,
+	value []interface{},
+) error {
+	for i := range value {
+		givenRegion := value[i].(string)
+		if !allowedReadRegions[givenRegion] {
+			return service.NewValidationError(
+				fmt.Sprintf("%s.allowedReadRegion", context),
+				fmt.Sprintf("given region %s is not allowed", givenRegion),
+			)
+		}
+	}
+	return nil
 }
