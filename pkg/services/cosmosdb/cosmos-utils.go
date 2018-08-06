@@ -184,9 +184,9 @@ func deleteDatabase(
 }
 
 // Although there is a `waitForCompletion` method, but that method is implemented by checking HTTP status code,
-// but unfortunately, the REST API we are using will always return "200 OK", so `waitForCompletion` method cannot
-// detect whether the update has finished, we must implement detection logic by ourselves.
-// For now, this method will return on either context is cancelled or the update is completed
+// but unfortunately, in cosmosSDK, the REST API behind `createOrUpdate` will always return "200 OK",
+// so `waitForCompletion` method cannot detect whether the update has finished, we must implement detection logic by ourselves.
+// For now, this method will return on either context is cancelled or every region's state is "succeeded"
 func waitForRegionCreationCompletion(ctx context.Context, dac cosmosSDK.DatabaseAccountsClient, resourceGroupName string, accountName string) error {
 	childCtx, cancel := context.WithCancel(ctx)
 	defer cancel()
@@ -227,9 +227,7 @@ func waitForRegionCreationCompletion(ctx context.Context, dac cosmosSDK.Database
 }
 
 func contructLocation(accountName, locationName string, failoverPriority int32) cosmosSDK.Location {
-	id := fmt.Sprintf("%s-%s", accountName, strings.ToLower(strings.Replace(locationName, " ", "", -1)))
 	return cosmosSDK.Location{
-		ID:               &id,
 		FailoverPriority: &failoverPriority,
 		LocationName:     &locationName,
 	}

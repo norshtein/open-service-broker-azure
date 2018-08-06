@@ -5,15 +5,15 @@ import (
 )
 
 func (
-	s *sqlAccountManager,
+	t *tableAccountManager,
 ) ValidateUpdatingParameters(service.Instance) error {
 	return nil
 }
 
 func (
-	s *sqlAccountManager,
+	t *tableAccountManager,
 ) GetUpdater(service.Plan) (service.Updater, error) {
 	return service.NewUpdater(
-		service.NewUpdatingStep("updateReadRegions", s.updateReadRegions),
+		service.NewUpdatingStep("updateReadRegions", t.updateReadRegions),
 	)
 }

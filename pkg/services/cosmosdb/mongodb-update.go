@@ -5,15 +5,15 @@ import (
 )
 
 func (
-	s *sqlAccountManager,
+	m *mongoAccountManager,
 ) ValidateUpdatingParameters(service.Instance) error {
 	return nil
 }
 
 func (
-	s *sqlAccountManager,
+	m *mongoAccountManager,
 ) GetUpdater(service.Plan) (service.Updater, error) {
 	return service.NewUpdater(
-		service.NewUpdatingStep("updateReadRegions", s.updateReadRegions),
+		service.NewUpdatingStep("updateReadRegions", m.updateReadRegions),
 	)
 }
