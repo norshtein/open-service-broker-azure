@@ -187,12 +187,15 @@ func deleteDatabase(
 // Although there is a `waitForCompletion` method, but that method is implemented by checking HTTP status code,
 // but unfortunately, in cosmosSDK, the REST API behind `createOrUpdate` will always return "200 OK",
 // so `waitForCompletion` method cannot detect whether the update has finished, we must implement detection logic by ourselves.
-// For now, this method will return on either context is cancelled or every region's state is "succeeded"
+// For now, this method will return on either context is cancelled or every region's state is "succeeded" in two consecutive check.
+// The reason why we need two consecutive check is that the read region is created one by one, there is a small gap between
+// the finishment of previous creation and the start of the next creation
 func waitForRegionCreationCompletion(ctx context.Context, dac cosmosSDK.DatabaseAccountsClient, resourceGroupName string, accountName string) error {
 	childCtx, cancel := context.WithCancel(ctx)
 	defer cancel()
 
 	ticker := time.NewTicker(time.Second * 5)
+	previousSucceeded := false
 	for {
 		select {
 		case <-ctx.Done():
@@ -216,12 +219,18 @@ func waitForRegionCreationCompletion(ctx context.Context, dac cosmosSDK.Database
 				if state != "Succeeded" {
 					fmt.Printf("State is %s\n", state)
 					allSucceed = false
+					previousSucceeded = false
 					return false
 				}
 				return true
 			})
-			if allSucceed {
+			if allSucceed && previousSucceeded {
+				//DEBUG
+				fmt.Println("Second succeeded")
 				return nil
+			} else if allSucceed {
+				fmt.Println("First succeeded")
+				previousSucceeded = true
 			}
 		}
 	}
