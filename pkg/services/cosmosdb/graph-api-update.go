@@ -34,7 +34,8 @@ func (g *graphAccountManager) updateReadRegions(
 ) (service.InstanceDetails, error) {
 	dt := instance.Details.(*cosmosdbInstanceDetails)
 	up := instance.UpdatingParameters
-	goTemplateParameters, err := g.buildGoTemplateParamsOnlyRegionChanged(up, dt, "GlobalDocumentDB")
+	pp := instance.ProvisioningParameters
+	goTemplateParameters, err := g.buildGoTemplateParamsOnlyRegionChanged(pp, up, dt, "GlobalDocumentDB")
 	if err != nil {
 		return nil, fmt.Errorf("unable to build go template parameters: %s", err)
 	}

@@ -20,18 +20,24 @@ func (
 
 // This function will build a map in which only read regions changed.
 func (c *cosmosAccountManager) buildGoTemplateParamsOnlyRegionChanged(
-	pp *service.ProvisioningParameters,
+	provisioningParameters *service.ProvisioningParameters,
+	updatingParameters *service.ProvisioningParameters,
 	dt *cosmosdbInstanceDetails,
 	kind string,
 ) (map[string]interface{}, error) {
 	p := map[string]interface{}{}
 	p["name"] = dt.DatabaseAccountName
 	p["kind"] = kind
-	p["location"] = pp.GetString("location")
-	p["readRegions"] = pp.GetStringArray("readLocations")
+	p["location"] = provisioningParameters.GetString("location")
+	p["readRegions"] = updatingParameters.GetStringArray("readLocations")
+	if provisioningParameters.GetString("autoFailoverEnabled") == "enabled" {
+		p["enableAutomaticFailover"] = true
+	} else {
+		p["enableAutomaticFailover"] = false
+	}
 
 	filters := []string{}
-	ipFilters := pp.GetObject("ipFilters")
+	ipFilters := provisioningParameters.GetObject("ipFilters")
 	if ipFilters.GetString("allowAzure") != disabled {
 		filters = append(filters, "0.0.0.0")
 	} else if ipFilters.GetString("allowPortal") != disabled {
@@ -71,6 +77,6 @@ func (c *cosmosAccountManager) buildGoTemplateParamsOnlyRegionChanged(
 	if len(filters) > 0 {
 		p["ipFilters"] = strings.Join(filters, ",")
 	}
-	p["consistencyPolicy"] = pp.GetObject("consistencyPolicy").Data
+	p["consistencyPolicy"] = provisioningParameters.GetObject("consistencyPolicy").Data
 	return p, nil
 }
