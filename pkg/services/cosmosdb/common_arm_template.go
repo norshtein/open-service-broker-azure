@@ -41,11 +41,6 @@ var armTemplateBytes = []byte(`
 				],
 				{{ end }}
 				"locations": [
-					{
-						"id": "[concat('{{ .name}}', '-', '{{ .location}}')]",
-						"failoverPriority": 0,
-						"locationName": "{{ .location }}"
-					}
 					{{range $i,$a := .readRegions}}
 					{{if $i}}
 					,
