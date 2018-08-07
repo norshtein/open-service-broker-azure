@@ -395,7 +395,7 @@ func (d *deployer) doDeployment(
 		}
 	}
 	//DEBUG
-	fmt.Println("Final Template: ", finalArmTemplate)
+	fmt.Println("Final Template: ", string(finalArmTemplate))
 
 	// Unmarshal the template into a map
 	var armTemplateMap map[string]interface{}
