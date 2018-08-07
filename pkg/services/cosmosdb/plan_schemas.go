@@ -27,9 +27,14 @@ func generateProvisioningParamsSchema() service.InputParametersSchema {
 					" to associate new resources.",
 			},
 			"readLocations": &service.ArrayPropertySchema{
-				Description:             "Read Locations",
+				Description:             "Read regions to be created, your data will be synchronized across these regions.",
 				DefaultValue:            []interface{}{},
 				CustomPropertyValidator: readRegionsValidator,
+			},
+			"autoFailoverEnabled": &service.StringPropertySchema{
+				Description:   "Specifies if you want Cosmos DB to perform automatic failover of the write region to one of the read regions in the rare event of a data center outage.",
+				DefaultValue:  "disabled",
+				AllowedValues: []string{"enabled", "disabled"},
 			},
 			"ipFilters": &service.ObjectPropertySchema{
 				Description: "IP Range Filter to be applied to new CosmosDB account",
@@ -120,6 +125,11 @@ func generateUpdatingParamsSchema() service.InputParametersSchema {
 				Description:             "Read Locations",
 				DefaultValue:            []interface{}{},
 				CustomPropertyValidator: readRegionsValidator,
+			},
+			"autoFailoverEnabled": &service.StringPropertySchema{
+				Description:   "Specifies if you want Cosmos DB to perform automatic failover of the write region to one of the read regions in the rare event of a data center outage.",
+				DefaultValue:  "disabled",
+				AllowedValues: []string{"enabled", "disabled"},
 			},
 		},
 	}

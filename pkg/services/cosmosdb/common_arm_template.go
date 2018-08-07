@@ -46,7 +46,17 @@ var armTemplateBytes = []byte(`
 						"failoverPriority": 0,
 						"locationName": "{{ .location }}"
 					}
-				]
+					{{range $i,$a := .readRegions}}
+					{{if $i}}
+					,
+					{{end}}
+					{
+						"failoverPriority": {{$i}},
+						"locationName": "{{$a}}"
+					}
+					{{end}}
+				],
+				"enableAutomaticFailover": {{ .enableAutomaticFailover}}
 			},
 			"tags": "[parameters('tags')]"
 		}

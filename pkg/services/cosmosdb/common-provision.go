@@ -2,14 +2,16 @@ package cosmosdb
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"strings"
+	"time"
 
-	cosmosSDK "github.com/Azure/azure-sdk-for-go/services/cosmos-db/mgmt/2015-04-08/documentdb"
 	"github.com/Azure/open-service-broker-azure/pkg/generate"
 	"github.com/Azure/open-service-broker-azure/pkg/service"
 	log "github.com/Sirupsen/logrus"
 	uuid "github.com/satori/go.uuid"
+	"github.com/tidwall/gjson"
 )
 
 const disabled = "disabled"
@@ -54,6 +56,13 @@ func (c *cosmosAccountManager) buildGoTemplateParams(
 	p["name"] = dt.DatabaseAccountName
 	p["kind"] = kind
 	p["location"] = pp.GetString("location")
+	p["readRegions"] = pp.GetStringArray("readRegions")
+	if pp.GetString("autoFailoverEnabled") == "enabled" {
+		p["enableAutomaticFailover"] = true
+	} else {
+		p["enableAutomaticFailover"] = false
+	}
+
 	filters := []string{}
 	ipFilters := pp.GetObject("ipFilters")
 	if ipFilters.GetString("allowAzure") != disabled {
@@ -152,73 +161,62 @@ func (c *cosmosAccountManager) handleOutput(
 	return fqdn, primaryKey, nil
 }
 
-func (c *cosmosAccountManager) createReadRegions(
+// The deployment will return success once the write region is created, ignoring the status of read regions, so we must implement detection logic by ourselves.
+// For now, this method will return on either context is cancelled or every region's state is "succeeded" in seven consecutive check.
+// The reason why we need seven consecutive check is that the read region is created one by one, there is a small gap between
+// the finishment of previous creation and the start of the next creation. By this check, we can detect gaps shorter than 1 mintue,
+// and report success within 70 seconds after completion.
+func (c *cosmosAccountManager) waitForReadRegionsReady(
 	ctx context.Context,
 	instance service.Instance,
 ) (service.InstanceDetails, error) {
-	ctx, cancel := context.WithCancel(ctx)
+	childCtx, cancel := context.WithCancel(ctx)
 	defer cancel()
 
 	dt := instance.Details.(*cosmosdbInstanceDetails)
-	var readLocations []string
-	// If parameter `readLocations` is not specified, directlly return
-	if readLocations = instance.ProvisioningParameters.GetStringArray("readLocations"); len(readLocations) == 0 {
-		return dt, nil
-	}
-
 	resourceGroupName := instance.ProvisioningParameters.GetString("resourceGroup")
 	accountName := dt.DatabaseAccountName
 	databaseAccountClient := c.databaseAccountsClient
-	nowDatabaseAccount, err := databaseAccountClient.Get(
-		ctx,
-		resourceGroupName,
-		dt.DatabaseAccountName,
-	)
-	if err != nil {
-		return nil, fmt.Errorf("error fetching created account's information: %s", err)
-	}
 
-	// Build new property
-	nowProperties := nowDatabaseAccount.DatabaseAccountProperties
-	newProperties := cosmosSDK.DatabaseAccountCreateUpdateProperties{}
-	newProperties.ConsistencyPolicy = nowProperties.ConsistencyPolicy
-	daot := string(nowProperties.DatabaseAccountOfferType)
-	newProperties.DatabaseAccountOfferType = &daot
-	newProperties.IPRangeFilter = nowProperties.IPRangeFilter
-	newProperties.EnableAutomaticFailover = nowProperties.EnableAutomaticFailover
-	newProperties.Capabilities = nowProperties.Capabilities
+	ticker := time.NewTicker(time.Second * 10)
+	previousSucceededTimes := 0
+	for {
+		select {
+		case <-ctx.Done():
+			return nil, ctx.Err()
+		case <-ticker.C:
+			result, err := databaseAccountClient.Get(childCtx, resourceGroupName, accountName)
+			if err != nil {
+				return nil, err
+			}
+			resultJSONBytes, err := json.Marshal(result)
+			if err != nil {
+				return nil, err
+			}
+			resultJSONString := string(resultJSONBytes)
 
-	// Wrap user provided read region
-	locations := []cosmosSDK.Location{}
-	locations = append(locations, contructLocation(accountName, instance.ProvisioningParameters.GetString("location"), 0))
-	for i := range readLocations {
-		locations = append(locations, contructLocation(accountName, readLocations[i], int32(i+1)))
+			//Check whether every read location's state is "Succeeded"
+			allSucceed := true
+			readLocations := gjson.Get(resultJSONString, "properties.readLocations")
+			readLocations.ForEach(func(key, value gjson.Result) bool {
+				state := value.Get("provisioningState").String()
+				if state != "Succeeded" {
+					fmt.Printf("State is %s\n", state)
+					allSucceed = false
+					previousSucceededTimes = 0
+					return false
+				}
+				return true
+			})
+			if allSucceed && previousSucceededTimes >= 7 {
+				//DEBUG
+				fmt.Println("Final succeeded")
+				return dt, nil
+			} else if allSucceed {
+				previousSucceededTimes++
+				//DEBUG
+				fmt.Printf("%d succeeded", previousSucceededTimes)
+			}
+		}
 	}
-	newProperties.Locations = &locations
-
-	// Build new parameter
-	newParameter := cosmosSDK.DatabaseAccountCreateUpdateParameters{}
-	newParameter.Kind = nowDatabaseAccount.Kind
-	newParameter.ID = nowDatabaseAccount.ID
-	newParameter.Name = nowDatabaseAccount.Name
-	newParameter.Type = nowDatabaseAccount.Type
-	newParameter.Location = nowDatabaseAccount.Location
-	newParameter.Tags = nowDatabaseAccount.Tags
-	newParameter.DatabaseAccountCreateUpdateProperties = &newProperties
-
-	fmt.Println("Begin creating read regions")
-	_, err = databaseAccountClient.CreateOrUpdate(
-		ctx,
-		resourceGroupName,
-		dt.DatabaseAccountName,
-		newParameter,
-	)
-	if err != nil {
-		return nil, err
-	}
-	err = waitForRegionCreationCompletion(ctx, databaseAccountClient, resourceGroupName, accountName)
-	if err != nil {
-		return nil, err
-	}
-	return dt, nil
 }
