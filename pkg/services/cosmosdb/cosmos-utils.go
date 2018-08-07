@@ -2,6 +2,7 @@ package cosmosdb
 
 import (
 	"bytes"
+	"context"
 	"crypto/hmac"
 	"crypto/sha256"
 	"encoding/base64"
@@ -14,6 +15,7 @@ import (
 	"time"
 
 	"github.com/Azure/open-service-broker-azure/pkg/service"
+	"github.com/tidwall/gjson"
 )
 
 // This method implements the CosmosDB API authentication token generation
@@ -179,6 +181,67 @@ func deleteDatabase(
 		)
 	}
 	return nil
+}
+
+// The deployment will return success once the write region is created, ignoring the status of read regions, so we must implement detection logic by ourselves.
+// For now, this method will return on either context is cancelled or every region's state is "succeeded" in seven consecutive check.
+// The reason why we need seven consecutive check is that the read region is created one by one, there is a small gap between
+// the finishment of previous creation and the start of the next creation. By this check, we can detect gaps shorter than 1 mintue,
+// and report success within 70 seconds after completion.
+func (c *cosmosAccountManager) waitForReadRegionsReady(
+	ctx context.Context,
+	instance service.Instance,
+) (service.InstanceDetails, error) {
+	childCtx, cancel := context.WithCancel(ctx)
+	defer cancel()
+
+	dt := instance.Details.(*cosmosdbInstanceDetails)
+	resourceGroupName := instance.ProvisioningParameters.GetString("resourceGroup")
+	accountName := dt.DatabaseAccountName
+	databaseAccountClient := c.databaseAccountsClient
+
+	ticker := time.NewTicker(time.Second * 10)
+	previousSucceededTimes := 0
+	for {
+		select {
+		case <-ctx.Done():
+			return nil, ctx.Err()
+		case <-ticker.C:
+			result, err := databaseAccountClient.Get(childCtx, resourceGroupName, accountName)
+			if err != nil {
+				return nil, err
+			}
+			resultJSONBytes, err := json.Marshal(result)
+			if err != nil {
+				return nil, err
+			}
+			resultJSONString := string(resultJSONBytes)
+
+			//Check whether every read location's state is "Succeeded"
+			allSucceed := true
+			readLocations := gjson.Get(resultJSONString, "properties.readLocations")
+			readLocations.ForEach(func(key, value gjson.Result) bool {
+				state := value.Get("provisioningState").String()
+				if state != "Succeeded" {
+					//DEBUG
+					fmt.Printf("State is %s\n", state)
+					allSucceed = false
+					previousSucceededTimes = 0
+					return false
+				}
+				return true
+			})
+			if allSucceed && previousSucceededTimes >= 7 {
+				//DEBUG
+				fmt.Println(time.Now().String(), " Final")
+				return dt, nil
+			} else if allSucceed {
+				//DEBUG
+				fmt.Println(time.Now().String(), " success ", previousSucceededTimes)
+				previousSucceededTimes++
+			}
+		}
+	}
 }
 
 func validateReadRegions(
