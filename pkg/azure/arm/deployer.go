@@ -385,7 +385,7 @@ func (d *deployer) doDeployment(
 	}
 
 	finalArmTemplate := armTemplate
-
+	fmt.Println(string(finalArmTemplate))
 	// The template could be a Go text template that renders down to an ARM
 	// template, so deal with that possibility first.
 	if goParams != nil {
