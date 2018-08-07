@@ -194,11 +194,66 @@ func (c *cosmosAccountManager) waitForReadRegionsReady(
 ) (service.InstanceDetails, error) {
 	childCtx, cancel := context.WithCancel(ctx)
 	defer cancel()
-
+	// Bug here for sql-all-in-one
 	dt := instance.Details.(*cosmosdbInstanceDetails)
 	resourceGroupName := instance.ProvisioningParameters.GetString("resourceGroup")
 	accountName := dt.DatabaseAccountName
 	databaseAccountClient := c.databaseAccountsClient
+
+	ticker := time.NewTicker(time.Second * 10)
+	previousSucceededTimes := 0
+	for {
+		select {
+		case <-ctx.Done():
+			return nil, ctx.Err()
+		case <-ticker.C:
+			result, err := databaseAccountClient.Get(childCtx, resourceGroupName, accountName)
+			if err != nil {
+				return nil, err
+			}
+			resultJSONBytes, err := json.Marshal(result)
+			if err != nil {
+				return nil, err
+			}
+			resultJSONString := string(resultJSONBytes)
+
+			//Check whether every read location's state is "Succeeded"
+			allSucceed := true
+			readLocations := gjson.Get(resultJSONString, "properties.readLocations")
+			readLocations.ForEach(func(key, value gjson.Result) bool {
+				state := value.Get("provisioningState").String()
+				if state != "Succeeded" {
+					//DEBUG
+					fmt.Printf("State is %s\n", state)
+					allSucceed = false
+					previousSucceededTimes = 0
+					return false
+				}
+				return true
+			})
+			if allSucceed && previousSucceededTimes >= 7 {
+				//DEBUG
+				fmt.Println(time.Now().String(), " Final")
+				return dt, nil
+			} else if allSucceed {
+				//DEBUG
+				fmt.Println(time.Now().String(), " success ", previousSucceededTimes)
+				previousSucceededTimes++
+			}
+		}
+	}
+}
+
+func (s *sqlAllInOneManager) waitForReadRegionsReady(
+	ctx context.Context,
+	instance service.Instance,
+) (service.InstanceDetails, error) {
+	childCtx, cancel := context.WithCancel(ctx)
+	defer cancel()
+	dt := instance.Details.(*sqlAllInOneInstanceDetails)
+	resourceGroupName := instance.ProvisioningParameters.GetString("resourceGroup")
+	accountName := dt.DatabaseAccountName
+	databaseAccountClient := s.databaseAccountsClient
 
 	ticker := time.NewTicker(time.Second * 10)
 	previousSucceededTimes := 0
