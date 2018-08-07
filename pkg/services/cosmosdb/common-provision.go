@@ -123,6 +123,9 @@ func (c *cosmosAccountManager) deployARMTemplate(
 	goParams map[string]interface{},
 	tags map[string]string,
 ) (string, string, error) {
+	//DEBUG
+	fmt.Println("Template: ", string(armTemplateBytes))
+	fmt.Println("Go param: ", goParams)
 	outputs, err := c.armDeployer.Deploy(
 		dt.ARMDeploymentName,
 		pp.GetString("resourceGroup"),
