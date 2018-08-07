@@ -30,11 +30,11 @@ func (s *sqlAllInOneManager) updateReadRegions(
 	_ context.Context,
 	instance service.Instance,
 ) (service.InstanceDetails, error) {
-	dt := instance.Details.(*cosmosdbInstanceDetails)
+	dt := instance.Details.(*sqlAllInOneInstanceDetails)
 	up := instance.UpdatingParameters
 	pp := instance.ProvisioningParameters
 
-	goTemplateParameters, err := s.buildGoTemplateParamsOnlyRegionChanged(pp, up, dt, "GlobalDocumentDB")
+	goTemplateParameters, err := s.buildGoTemplateParamsOnlyRegionChanged(pp, up, &(dt.cosmosdbInstanceDetails), "GlobalDocumentDB")
 	if err != nil {
 		return nil, fmt.Errorf("unable to build go template parameters: %s", err)
 	}
@@ -60,9 +60,9 @@ func (s *sqlAllInOneManager) updateARMTemplate(
 	_ context.Context,
 	instance service.Instance,
 ) (service.InstanceDetails, error) {
-	dt := instance.Details.(*cosmosdbInstanceDetails)
+	dt := instance.Details.(*sqlAllInOneInstanceDetails)
 	up := instance.UpdatingParameters
-	goTemplateParameters, err := s.buildGoTemplateParams(up, dt, "GlobalDocumentDB")
+	goTemplateParameters, err := s.buildGoTemplateParams(up, &(dt.cosmosdbInstanceDetails), "GlobalDocumentDB")
 	if err != nil {
 		return nil, fmt.Errorf("unable to build go template parameters: %s", err)
 	}
