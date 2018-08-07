@@ -2,7 +2,6 @@ package cosmosdb
 
 import (
 	"bytes"
-	"context"
 	"crypto/hmac"
 	"crypto/sha256"
 	"encoding/base64"
@@ -14,9 +13,7 @@ import (
 	"strings"
 	"time"
 
-	cosmosSDK "github.com/Azure/azure-sdk-for-go/services/cosmos-db/mgmt/2015-04-08/documentdb"
 	"github.com/Azure/open-service-broker-azure/pkg/service"
-	"github.com/tidwall/gjson"
 )
 
 // This method implements the CosmosDB API authentication token generation
@@ -182,67 +179,6 @@ func deleteDatabase(
 		)
 	}
 	return nil
-}
-
-// Although there is a `waitForCompletion` method, but that method is implemented by checking HTTP status code,
-// but unfortunately, in cosmosSDK, the REST API behind `createOrUpdate` will always return "200 OK",
-// so `waitForCompletion` method cannot detect whether the update has finished, we must implement detection logic by ourselves.
-// For now, this method will return on either context is cancelled or every region's state is "succeeded" in seven consecutive check.
-// The reason why we need seven consecutive check is that the read region is created one by one, there is a small gap between
-// the finishment of previous creation and the start of the next creation. By this check, we can detect gaps shorter than 1 mintue,
-// and report success within 70 seconds after completion.
-func waitForReadRegionsReady(ctx context.Context, dac cosmosSDK.DatabaseAccountsClient, resourceGroupName string, accountName string) error {
-	childCtx, cancel := context.WithCancel(ctx)
-	defer cancel()
-
-	ticker := time.NewTicker(time.Second * 10)
-	previousSucceededTimes := 0
-	for {
-		select {
-		case <-ctx.Done():
-			return ctx.Err()
-		case <-ticker.C:
-			result, err := dac.Get(childCtx, resourceGroupName, accountName)
-			if err != nil {
-				return err
-			}
-			resultJSONBytes, err := json.Marshal(result)
-			if err != nil {
-				return err
-			}
-			resultJSONString := string(resultJSONBytes)
-
-			//Check whether every read location's state is "Succeeded"
-			allSucceed := true
-			readLocations := gjson.Get(resultJSONString, "properties.readLocations")
-			readLocations.ForEach(func(key, value gjson.Result) bool {
-				state := value.Get("provisioningState").String()
-				if state != "Succeeded" {
-					fmt.Printf("State is %s\n", state)
-					allSucceed = false
-					previousSucceededTimes = 0
-					return false
-				}
-				return true
-			})
-			if allSucceed && previousSucceededTimes >= 7 {
-				//DEBUG
-				fmt.Println("Final succeeded")
-				return nil
-			} else if allSucceed {
-				previousSucceededTimes++
-				//DEBUG
-				fmt.Printf("%d succeeded", previousSucceededTimes)
-			}
-		}
-	}
-}
-
-func contructLocation(accountName, locationName string, failoverPriority int32) cosmosSDK.Location {
-	return cosmosSDK.Location{
-		FailoverPriority: &failoverPriority,
-		LocationName:     &locationName,
-	}
 }
 
 func validateReadRegions(
