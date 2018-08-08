@@ -223,8 +223,6 @@ func (c *cosmosAccountManager) waitForReadRegionsReady(
 			readLocations.ForEach(func(key, value gjson.Result) bool {
 				state := value.Get("provisioningState").String()
 				if state != "Succeeded" {
-					//DEBUG
-					fmt.Printf("State is %s\n", state)
 					allSucceed = false
 					previousSucceededTimes = 0
 					return false
@@ -232,18 +230,17 @@ func (c *cosmosAccountManager) waitForReadRegionsReady(
 				return true
 			})
 			if allSucceed && previousSucceededTimes >= 7 {
-				//DEBUG
-				fmt.Println(time.Now().String(), " Final")
 				return dt, nil
 			} else if allSucceed {
-				//DEBUG
-				fmt.Println(time.Now().String(), " success ", previousSucceededTimes)
 				previousSucceededTimes++
 			}
 		}
 	}
 }
 
+// For sqlAllInOneManager, the real type of `instance.Details` is `*sqlAllInOneInstanceDetails`,
+// so type assertion must be changed. Expect line 249, this function is totally the same as previous one.
+// Do you have any good idea make the code cleaner?
 func (s *sqlAllInOneManager) waitForReadRegionsReady(
 	ctx context.Context,
 	instance service.Instance,
@@ -278,8 +275,6 @@ func (s *sqlAllInOneManager) waitForReadRegionsReady(
 			readLocations.ForEach(func(key, value gjson.Result) bool {
 				state := value.Get("provisioningState").String()
 				if state != "Succeeded" {
-					//DEBUG
-					fmt.Printf("State is %s\n", state)
 					allSucceed = false
 					previousSucceededTimes = 0
 					return false
@@ -287,12 +282,8 @@ func (s *sqlAllInOneManager) waitForReadRegionsReady(
 				return true
 			})
 			if allSucceed && previousSucceededTimes >= 7 {
-				//DEBUG
-				fmt.Println(time.Now().String(), " Final")
 				return dt, nil
 			} else if allSucceed {
-				//DEBUG
-				fmt.Println(time.Now().String(), " success ", previousSucceededTimes)
 				previousSucceededTimes++
 			}
 		}
