@@ -239,7 +239,7 @@ func (c *cosmosAccountManager) waitForReadRegionsReady(
 }
 
 // For sqlAllInOneManager, the real type of `instance.Details` is `*sqlAllInOneInstanceDetails`,
-// so type assertion must be changed. Expect line 249, this function is totally the same as previous one.
+// so type assertion must be changed. Expect type assertion, this function is totally the same as previous one.
 // Do you have any good idea make the code cleaner?
 func (s *sqlAllInOneManager) waitForReadRegionsReady(
 	ctx context.Context,
