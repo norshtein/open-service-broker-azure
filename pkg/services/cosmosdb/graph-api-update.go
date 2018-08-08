@@ -20,8 +20,9 @@ func (
 	g *graphAccountManager,
 ) GetUpdater(service.Plan) (service.Updater, error) {
 	return service.NewUpdater(
-		// The cosmosDB has a contraint: it cannot update properties and add/remove regions at the same time,
-		// so we must deal with the update twice, one time updating region, one time updating properties.
+		// The cosmosDB has a contraint: it cannot update properties and
+		// add/remove regions at the same time, so we must deal with the update twice,
+		// one time updating region, one time updating properties.
 		service.NewUpdatingStep("updateReadRegions", g.updateReadRegions),
 		service.NewUpdatingStep("waitForReadRegionsReady", g.waitForReadRegionsReady),
 		service.NewUpdatingStep("updateARMTemplate", g.updateARMTemplate),

@@ -23,9 +23,9 @@ func generateUpdatingParamsSchema() service.InputParametersSchema {
 				CustomPropertyValidator: readRegionsValidator,
 			},
 			"autoFailoverEnabled": &service.StringPropertySchema{
-				Description: "Specifies if you want Cosmos DB to perform automatic failover" +
-					" of the write region to one of the read regions in the rare event of" +
-					" a data center outage.",
+				Description: "Specifies if you want Cosmos DB to perform" +
+					" automatic failover of the write region to one of" +
+					" the read regions in the rare event of a data center outage.",
 				DefaultValue:  "disabled",
 				AllowedValues: []string{"enabled", "disabled"},
 			},
