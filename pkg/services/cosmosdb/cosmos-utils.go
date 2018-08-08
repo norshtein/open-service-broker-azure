@@ -2,6 +2,7 @@ package cosmosdb
 
 import (
 	"bytes"
+	"context"
 	"crypto/hmac"
 	"crypto/sha256"
 	"encoding/base64"
@@ -12,6 +13,10 @@ import (
 	"net/url"
 	"strings"
 	"time"
+
+	cosmosSDK "github.com/Azure/azure-sdk-for-go/services/cosmos-db/mgmt/2015-04-08/documentdb"
+	"github.com/Azure/open-service-broker-azure/pkg/service"
+	"github.com/tidwall/gjson"
 )
 
 // This method implements the CosmosDB API authentication token generation
@@ -177,4 +182,140 @@ func deleteDatabase(
 		)
 	}
 	return nil
+}
+
+// The deployment will return success once the write region is created, ignoring the status of read regions, so we must implement detection logic by ourselves.
+func (c *cosmosAccountManager) waitForReadRegionsReady(
+	ctx context.Context,
+	instance service.Instance,
+) (service.InstanceDetails, error) {
+	dt := instance.Details.(*cosmosdbInstanceDetails)
+	resourceGroupName := instance.ProvisioningParameters.GetString("resourceGroup")
+	accountName := dt.DatabaseAccountName
+	databaseAccountClient := c.databaseAccountsClient
+
+	err := pollingUntilReadRegionsReady(ctx, resourceGroupName, accountName, databaseAccountClient)
+	if err != nil {
+		return nil, err
+	}
+	return dt, nil
+}
+
+// For sqlAllInOneManager, the real type of `instance.Details` is `*sqlAllInOneInstanceDetails`,
+// so type assertion must be changed. Expect type assertion, this function is totally the same as previous one.
+// Do you have any good idea make the code cleaner?
+func (s *sqlAllInOneManager) waitForReadRegionsReady(
+	ctx context.Context,
+	instance service.Instance,
+) (service.InstanceDetails, error) {
+	dt := instance.Details.(*sqlAllInOneInstanceDetails)
+	resourceGroupName := instance.ProvisioningParameters.GetString("resourceGroup")
+	accountName := dt.DatabaseAccountName
+	databaseAccountClient := s.databaseAccountsClient
+
+	err := pollingUntilReadRegionsReady(ctx, resourceGroupName, accountName, databaseAccountClient)
+	if err != nil {
+		return nil, err
+	}
+	return dt, nil
+}
+
+// For now, this method will return on either context is cancelled or every region's state is "succeeded" in seven consecutive check.
+// The reason why we need seven consecutive check is that the read region is created one by one, there is a small gap between
+// the finishment of previous creation and the start of the next creation. By this check, we can detect gaps shorter than 1 mintue,
+// and report success within 70 seconds after completion.
+func pollingUntilReadRegionsReady(
+	ctx context.Context,
+	resourceGroupName string,
+	accountName string,
+	databaseAccountClient cosmosSDK.DatabaseAccountsClient,
+) error {
+	childCtx, cancel := context.WithCancel(ctx)
+	defer cancel()
+
+	const ConfirmNumberOfTimes = 7
+	ticker := time.NewTicker(time.Second * 10)
+	previousSucceededTimes := 0
+	for {
+		select {
+		case <-ctx.Done():
+			return ctx.Err()
+		case <-ticker.C:
+			result, err := databaseAccountClient.Get(childCtx, resourceGroupName, accountName)
+			if err != nil {
+				return err
+			}
+			resultJSONBytes, err := json.Marshal(result)
+			if err != nil {
+				return err
+			}
+			resultJSONString := string(resultJSONBytes)
+
+			//Check whether every read location's state is "Succeeded"
+			allSucceed := true
+			readLocations := gjson.Get(resultJSONString, "properties.readLocations")
+			readLocations.ForEach(func(key, value gjson.Result) bool {
+				state := value.Get("provisioningState").String()
+				if state != "Succeeded" {
+					allSucceed = false
+					previousSucceededTimes = 0
+					return false
+				}
+				return true
+			})
+			if allSucceed && previousSucceededTimes >= ConfirmNumberOfTimes {
+				return nil
+			} else if allSucceed {
+				previousSucceededTimes++
+			}
+		}
+	}
+}
+
+func validateReadRegions(
+	context string,
+	regions []string,
+) error {
+	for i := range regions {
+		region := regions[i]
+		if !allowedReadRegions[region] {
+			return service.NewValidationError(
+				fmt.Sprintf("%s.allowedReadRegion", context),
+				fmt.Sprintf("given region %s is not allowed", region),
+			)
+		}
+	}
+	return nil
+}
+
+// Allowed CosmosDB read regions
+var allowedReadRegions = map[string]bool{
+	"westus2":            true,
+	"westus":             true,
+	"southcentralus":     true,
+	"centraluseuap":      true,
+	"centralus":          true,
+	"northcentralus":     true,
+	"canadacentral":      true,
+	"eastus":             true,
+	"eastus2euap":        true,
+	"eastus2":            true,
+	"canadaeast":         true,
+	"brazilsouth":        true,
+	"northeurope":        true,
+	"ukwest":             true,
+	"uksouth":            true,
+	"francecentral":      true,
+	"westeurope":         true,
+	"westindia":          true,
+	"centralindia":       true,
+	"southindia":         true,
+	"southeastasia":      true,
+	"eastasia":           true,
+	"koreacentral":       true,
+	"koreasouth":         true,
+	"japaneast":          true,
+	"japanwest":          true,
+	"australiasoutheast": true,
+	"australiaeast":      true,
 }

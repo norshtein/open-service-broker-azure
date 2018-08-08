@@ -53,6 +53,13 @@ func (c *cosmosAccountManager) buildGoTemplateParams(
 	p["name"] = dt.DatabaseAccountName
 	p["kind"] = kind
 	p["location"] = pp.GetString("location")
+	p["readRegions"] = pp.GetStringArray("readLocations")
+	if pp.GetString("autoFailoverEnabled") == "enabled" {
+		p["enableAutomaticFailover"] = true
+	} else {
+		p["enableAutomaticFailover"] = false
+	}
+
 	filters := []string{}
 	ipFilters := pp.GetObject("ipFilters")
 	if ipFilters.GetString("allowAzure") != disabled {
