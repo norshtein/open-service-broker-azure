@@ -93,25 +93,26 @@ func (c *cosmosAccountManager) deployUpdatedARMTemplate(
 // This function will build a map in which only read regions changed.
 // This function is used in update.
 func (c *cosmosAccountManager) buildGoTemplateParamsOnlyRegionChanged(
-	provisioningParameters *service.ProvisioningParameters,
-	updatingParameters *service.ProvisioningParameters,
+	pp *service.ProvisioningParameters,
+	up *service.ProvisioningParameters,
 	dt *cosmosdbInstanceDetails,
 	kind string,
 ) (map[string]interface{}, error) {
 	p := map[string]interface{}{}
 	p["name"] = dt.DatabaseAccountName
 	p["kind"] = kind
-	p["location"] = provisioningParameters.GetString("location")
-	p["readRegions"] = updatingParameters.GetStringArray("readLocations")
-	if provisioningParameters.GetString("autoFailoverEnabled") == enabled {
+	p["location"] = pp.GetString("location")
+	p["readRegions"] = up.GetStringArray("readLocations")
+	if pp.GetString("autoFailoverEnabled") == enabled {
 		p["enableAutomaticFailover"] = true
 	} else {
 		p["enableAutomaticFailover"] = false
 	}
 
 	filters := []string{}
-	ipFilters := provisioningParameters.GetObject("ipFilters")
-	if ipFilters.GetString("allowAzure") == disabled && ipFilters.GetString("allowPortal") != disabled {
+	ipFilters := pp.GetObject("ipFilters")
+	if ipFilters.GetString("allowAzure") == disabled &&
+		ipFilters.GetString("allowPortal") != disabled {
 		filters = append(filters, "0.0.0.0")
 	} else if ipFilters.GetString("allowPortal") != disabled {
 		// Azure Portal IP Addresses per:
@@ -150,6 +151,6 @@ func (c *cosmosAccountManager) buildGoTemplateParamsOnlyRegionChanged(
 	if len(filters) > 0 {
 		p["ipFilters"] = strings.Join(filters, ",")
 	}
-	p["consistencyPolicy"] = provisioningParameters.GetObject("consistencyPolicy").Data
+	p["consistencyPolicy"] = pp.GetObject("consistencyPolicy").Data
 	return p, nil
 }

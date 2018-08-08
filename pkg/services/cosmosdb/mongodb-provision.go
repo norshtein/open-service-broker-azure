@@ -15,7 +15,7 @@ func (m *mongoAccountManager) GetProvisioner(
 	return service.NewProvisioner(
 		service.NewProvisioningStep("preProvision", m.preProvision),
 		service.NewProvisioningStep("deployARMTemplate", m.deployARMTemplate),
-		service.NewProvisioningStep("waitForReadRegionsReady", m.waitForReadRegionsReady),
+		service.NewProvisioningStep("waitForReadRegionsReady", m.waitForReadRegionsReady), // nolint: 111
 	)
 }
 

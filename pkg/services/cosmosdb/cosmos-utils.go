@@ -14,7 +14,7 @@ import (
 	"strings"
 	"time"
 
-	cosmosSDK "github.com/Azure/azure-sdk-for-go/services/cosmos-db/mgmt/2015-04-08/documentdb"
+	cosmosSDK "github.com/Azure/azure-sdk-for-go/services/cosmos-db/mgmt/2015-04-08/documentdb" //nolint: lll
 	"github.com/Azure/open-service-broker-azure/pkg/service"
 	"github.com/tidwall/gjson"
 )
@@ -184,7 +184,9 @@ func deleteDatabase(
 	return nil
 }
 
-// The deployment will return success once the write region is created, ignoring the status of read regions, so we must implement detection logic by ourselves.
+// The deployment will return success once the write region is created,
+// ignoring the status of read regions , so we must implement detection logic
+// by ourselves.
 func (c *cosmosAccountManager) waitForReadRegionsReady(
 	ctx context.Context,
 	instance service.Instance,
@@ -194,16 +196,21 @@ func (c *cosmosAccountManager) waitForReadRegionsReady(
 	accountName := dt.DatabaseAccountName
 	databaseAccountClient := c.databaseAccountsClient
 
-	err := pollingUntilReadRegionsReady(ctx, resourceGroupName, accountName, databaseAccountClient)
+	err := pollingUntilReadRegionsReady(
+		ctx,
+		resourceGroupName,
+		accountName,
+		databaseAccountClient,
+	)
 	if err != nil {
 		return nil, err
 	}
 	return dt, nil
 }
 
-// For sqlAllInOneManager, the real type of `instance.Details` is `*sqlAllInOneInstanceDetails`,
-// so type assertion must be changed. Expect type assertion, this function is totally the same as previous one.
-// Do you have any good idea make the code cleaner?
+// For sqlAllInOneManager, the real type of `instance.Details` is
+// `*sqlAllInOneInstanceDetails`, so type assertion must be changed.
+// Expect type assertion, this function is totally the same as previous one.
 func (s *sqlAllInOneManager) waitForReadRegionsReady(
 	ctx context.Context,
 	instance service.Instance,
@@ -213,16 +220,24 @@ func (s *sqlAllInOneManager) waitForReadRegionsReady(
 	accountName := dt.DatabaseAccountName
 	databaseAccountClient := s.databaseAccountsClient
 
-	err := pollingUntilReadRegionsReady(ctx, resourceGroupName, accountName, databaseAccountClient)
+	err := pollingUntilReadRegionsReady(
+		ctx,
+		resourceGroupName,
+		accountName,
+		databaseAccountClient,
+	)
 	if err != nil {
 		return nil, err
 	}
 	return dt, nil
 }
 
-// For now, this method will return on either context is cancelled or every region's state is "succeeded" in seven consecutive check.
-// The reason why we need seven consecutive check is that the read region is created one by one, there is a small gap between
-// the finishment of previous creation and the start of the next creation. By this check, we can detect gaps shorter than 1 mintue,
+// For now, this method will return on either context is cancelled or
+// every region's state is "succeeded" in seven consecutive check.
+// The reason why we need seven consecutive check is that
+// the read region is created one by one, there is a small gap between
+// the finishment of previous creation and the start of the next creation.
+// By this check, we can detect gaps shorter than 1 mintue,
 // and report success within 70 seconds after completion.
 func pollingUntilReadRegionsReady(
 	ctx context.Context,
@@ -243,7 +258,11 @@ func pollingUntilReadRegionsReady(
 		case <-ctx.Done():
 			return ctx.Err()
 		case <-ticker.C:
-			result, err := databaseAccountClient.Get(childCtx, resourceGroupName, accountName)
+			result, err := databaseAccountClient.Get(
+				childCtx,
+				resourceGroupName,
+				accountName,
+			)
 			if err != nil {
 				return err
 			}

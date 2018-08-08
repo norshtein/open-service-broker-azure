@@ -14,7 +14,7 @@ func (s *sqlAllInOneManager) GetProvisioner(
 	return service.NewProvisioner(
 		service.NewProvisioningStep("preProvision", s.preProvision),
 		service.NewProvisioningStep("deployARMTemplate", s.deployARMTemplate),
-		service.NewProvisioningStep("waitForReadRegionsReady", s.waitForReadRegionsReady),
+		service.NewProvisioningStep("waitForReadRegionsReady", s.waitForReadRegionsReady), // nolint: 111
 		service.NewProvisioningStep("createDatabase", s.createDatabase),
 	)
 }
