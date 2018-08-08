@@ -11,6 +11,7 @@ import (
 	uuid "github.com/satori/go.uuid"
 )
 
+const enabled = "enabled"
 const disabled = "disabled"
 
 func generateAccountName(location string) string {
@@ -62,9 +63,7 @@ func (c *cosmosAccountManager) buildGoTemplateParams(
 
 	filters := []string{}
 	ipFilters := pp.GetObject("ipFilters")
-	if ipFilters.GetString("allowAzure") != disabled {
-		filters = append(filters, "0.0.0.0")
-	} else if ipFilters.GetString("allowPortal") != disabled {
+	if ipFilters.GetString("allowAzure") == disabled && ipFilters.GetString("allowPortal") != disabled {
 		// Azure Portal IP Addresses per:
 		// https://aka.ms/Vwxndo
 		//|| Region            || IP address(es) ||

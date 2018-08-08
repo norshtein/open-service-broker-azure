@@ -44,7 +44,6 @@ func (s *sqlAccountManager) updateReadRegions(
 		return nil, fmt.Errorf("error deploying ARM template: %s", err)
 	}
 	return instance.Details, nil
-
 }
 
 func (s *sqlAccountManager) updateARMTemplate(
@@ -65,5 +64,4 @@ func (s *sqlAccountManager) updateARMTemplate(
 		return nil, fmt.Errorf("error deploying ARM template: %s", err)
 	}
 	return instance.Details, nil
-
 }

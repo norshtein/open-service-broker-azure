@@ -46,7 +46,6 @@ func (g *graphAccountManager) updateReadRegions(
 		return nil, fmt.Errorf("error deploying ARM template: %s", err)
 	}
 	return instance.Details, nil
-
 }
 
 func (g *graphAccountManager) updateARMTemplate(
@@ -67,5 +66,4 @@ func (g *graphAccountManager) updateARMTemplate(
 		return nil, fmt.Errorf("error deploying ARM template: %s", err)
 	}
 	return instance.Details, nil
-
 }

@@ -103,7 +103,7 @@ func (c *cosmosAccountManager) buildGoTemplateParamsOnlyRegionChanged(
 	p["kind"] = kind
 	p["location"] = provisioningParameters.GetString("location")
 	p["readRegions"] = updatingParameters.GetStringArray("readLocations")
-	if provisioningParameters.GetString("autoFailoverEnabled") == "enabled" {
+	if provisioningParameters.GetString("autoFailoverEnabled") == enabled {
 		p["enableAutomaticFailover"] = true
 	} else {
 		p["enableAutomaticFailover"] = false
@@ -111,7 +111,7 @@ func (c *cosmosAccountManager) buildGoTemplateParamsOnlyRegionChanged(
 
 	filters := []string{}
 	ipFilters := provisioningParameters.GetObject("ipFilters")
-	if ipFilters.GetString("allowAzure") != disabled {
+	if ipFilters.GetString("allowAzure") == disabled && ipFilters.GetString("allowPortal") != disabled {
 		filters = append(filters, "0.0.0.0")
 	} else if ipFilters.GetString("allowPortal") != disabled {
 		// Azure Portal IP Addresses per:

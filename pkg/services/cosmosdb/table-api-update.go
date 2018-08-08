@@ -44,7 +44,6 @@ func (t *tableAccountManager) updateReadRegions(
 		return nil, fmt.Errorf("error deploying ARM template: %s", err)
 	}
 	return instance.Details, nil
-
 }
 
 func (t *tableAccountManager) updateARMTemplate(
@@ -65,5 +64,4 @@ func (t *tableAccountManager) updateARMTemplate(
 		return nil, fmt.Errorf("error deploying ARM template: %s", err)
 	}
 	return instance.Details, nil
-
 }

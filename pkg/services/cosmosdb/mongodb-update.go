@@ -42,7 +42,6 @@ func (m *mongoAccountManager) updateReadRegions(
 		return nil, fmt.Errorf("error deploying ARM template: %s", err)
 	}
 	return instance.Details, nil
-
 }
 
 func (m *mongoAccountManager) updateARMTemplate(
@@ -61,5 +60,4 @@ func (m *mongoAccountManager) updateARMTemplate(
 		return nil, fmt.Errorf("error deploying ARM template: %s", err)
 	}
 	return instance.Details, nil
-
 }

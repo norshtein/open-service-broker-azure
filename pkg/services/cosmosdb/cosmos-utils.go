@@ -233,7 +233,9 @@ func pollingUntilReadRegionsReady(
 	childCtx, cancel := context.WithCancel(ctx)
 	defer cancel()
 
-	const ConfirmNumberOfTimes = 7
+	// Seven comsecutive check is needed to report success.
+	const confirmNumberOfTimes = 7
+
 	ticker := time.NewTicker(time.Second * 10)
 	previousSucceededTimes := 0
 	for {
@@ -263,7 +265,7 @@ func pollingUntilReadRegionsReady(
 				}
 				return true
 			})
-			if allSucceed && previousSucceededTimes >= ConfirmNumberOfTimes {
+			if allSucceed && previousSucceededTimes >= confirmNumberOfTimes {
 				return nil
 			} else if allSucceed {
 				previousSucceededTimes++
@@ -288,7 +290,7 @@ func validateReadRegions(
 	return nil
 }
 
-// Allowed CosmosDB read regions
+// Allowed CosmosDB read regions, is different from Azure regions.
 var allowedReadRegions = map[string]bool{
 	"westus2":            true,
 	"westus":             true,

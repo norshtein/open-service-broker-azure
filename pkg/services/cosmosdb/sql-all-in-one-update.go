@@ -45,7 +45,6 @@ func (s *sqlAllInOneManager) updateReadRegions(
 		return nil, fmt.Errorf("error deploying ARM template: %s", err)
 	}
 	return instance.Details, nil
-
 }
 
 func (s *sqlAllInOneManager) updateARMTemplate(
