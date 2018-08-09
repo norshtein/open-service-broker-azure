@@ -30,7 +30,7 @@ func (t *tableAccountManager) updateReadLocations(
 	_ context.Context,
 	instance service.Instance,
 ) (service.InstanceDetails, error) {
-	err := t.cosmosAccountManager.updateReadLocations(
+	if err := t.cosmosAccountManager.updateReadLocations(
 		instance.ProvisioningParameters,
 		instance.UpdatingParameters,
 		instance.Details.(*cosmosdbInstanceDetails),
@@ -39,8 +39,7 @@ func (t *tableAccountManager) updateReadLocations(
 		map[string]string{
 			"defaultExperience": "Table",
 		},
-	)
-	if err != nil {
+	); err != nil {
 		return nil, fmt.Errorf("error deploying ARM template: %s", err)
 	}
 	return instance.Details, nil
@@ -50,7 +49,7 @@ func (t *tableAccountManager) updateARMTemplate(
 	_ context.Context,
 	instance service.Instance,
 ) (service.InstanceDetails, error) {
-	err := t.cosmosAccountManager.updateDeployment(
+	if err := t.cosmosAccountManager.updateDeployment(
 		instance.ProvisioningParameters,
 		instance.UpdatingParameters,
 		instance.Details.(*cosmosdbInstanceDetails),
@@ -59,8 +58,7 @@ func (t *tableAccountManager) updateARMTemplate(
 		map[string]string{
 			"defaultExperience": "Table",
 		},
-	)
-	if err != nil {
+	); err != nil {
 		return nil, fmt.Errorf("error deploying ARM template: %s", err)
 	}
 	return instance.Details, nil

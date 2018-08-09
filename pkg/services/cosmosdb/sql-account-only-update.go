@@ -30,7 +30,7 @@ func (s *sqlAccountManager) updateReadLocations(
 	_ context.Context,
 	instance service.Instance,
 ) (service.InstanceDetails, error) {
-	err := s.cosmosAccountManager.updateReadLocations(
+	if err := s.cosmosAccountManager.updateReadLocations(
 		instance.ProvisioningParameters,
 		instance.UpdatingParameters,
 		instance.Details.(*cosmosdbInstanceDetails),
@@ -39,8 +39,7 @@ func (s *sqlAccountManager) updateReadLocations(
 		map[string]string{
 			"defaultExperience": "DocumentDB",
 		},
-	)
-	if err != nil {
+	); err != nil {
 		return nil, fmt.Errorf("error deploying ARM template: %s", err)
 	}
 	return instance.Details, nil
@@ -50,7 +49,7 @@ func (s *sqlAccountManager) updateARMTemplate(
 	_ context.Context,
 	instance service.Instance,
 ) (service.InstanceDetails, error) {
-	err := s.cosmosAccountManager.updateDeployment(
+	if err := s.cosmosAccountManager.updateDeployment(
 		instance.ProvisioningParameters,
 		instance.UpdatingParameters,
 		instance.Details.(*cosmosdbInstanceDetails),
@@ -59,8 +58,7 @@ func (s *sqlAccountManager) updateARMTemplate(
 		map[string]string{
 			"defaultExperience": "DocumentDB",
 		},
-	)
-	if err != nil {
+	); err != nil {
 		return nil, fmt.Errorf("error deploying ARM template: %s", err)
 	}
 	return instance.Details, nil

@@ -31,7 +31,7 @@ func (s *sqlAllInOneManager) updateReadLocations(
 	instance service.Instance,
 ) (service.InstanceDetails, error) {
 	dt := instance.Details.(*sqlAllInOneInstanceDetails)
-	err := s.cosmosAccountManager.updateReadLocations(
+	if err := s.cosmosAccountManager.updateReadLocations(
 		instance.ProvisioningParameters,
 		instance.UpdatingParameters,
 		&dt.cosmosdbInstanceDetails,
@@ -40,8 +40,7 @@ func (s *sqlAllInOneManager) updateReadLocations(
 		map[string]string{
 			"defaultExperience": "DocumentDB",
 		},
-	)
-	if err != nil {
+	); err != nil {
 		return nil, fmt.Errorf("error deploying ARM template: %s", err)
 	}
 	return instance.Details, nil
@@ -52,7 +51,7 @@ func (s *sqlAllInOneManager) updateARMTemplate(
 	instance service.Instance,
 ) (service.InstanceDetails, error) {
 	dt := instance.Details.(*sqlAllInOneInstanceDetails)
-	err := s.cosmosAccountManager.updateDeployment(
+	if err := s.cosmosAccountManager.updateDeployment(
 		instance.ProvisioningParameters,
 		instance.UpdatingParameters,
 		&dt.cosmosdbInstanceDetails,
@@ -61,8 +60,7 @@ func (s *sqlAllInOneManager) updateARMTemplate(
 		map[string]string{
 			"defaultExperience": "DocumentDB",
 		},
-	)
-	if err != nil {
+	); err != nil {
 		return nil, fmt.Errorf("error deploying ARM template: %s", err)
 	}
 	return instance.Details, nil

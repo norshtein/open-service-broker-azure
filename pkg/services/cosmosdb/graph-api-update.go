@@ -33,7 +33,7 @@ func (g *graphAccountManager) updateReadLocations(
 	_ context.Context,
 	instance service.Instance,
 ) (service.InstanceDetails, error) {
-	err := g.cosmosAccountManager.updateReadLocations(
+	if err := g.cosmosAccountManager.updateReadLocations(
 		instance.ProvisioningParameters,
 		instance.UpdatingParameters,
 		instance.Details.(*cosmosdbInstanceDetails),
@@ -42,8 +42,7 @@ func (g *graphAccountManager) updateReadLocations(
 		map[string]string{
 			"defaultExperience": "Graph",
 		},
-	)
-	if err != nil {
+	); err != nil {
 		return nil, fmt.Errorf("error deploying ARM template: %s", err)
 	}
 	return instance.Details, nil
@@ -53,7 +52,7 @@ func (g *graphAccountManager) updateARMTemplate(
 	_ context.Context,
 	instance service.Instance,
 ) (service.InstanceDetails, error) {
-	err := g.cosmosAccountManager.updateDeployment(
+	if err := g.cosmosAccountManager.updateDeployment(
 		instance.ProvisioningParameters,
 		instance.UpdatingParameters,
 		instance.Details.(*cosmosdbInstanceDetails),
@@ -62,8 +61,7 @@ func (g *graphAccountManager) updateARMTemplate(
 		map[string]string{
 			"defaultExperience": "Graph",
 		},
-	)
-	if err != nil {
+	); err != nil {
 		return nil, fmt.Errorf("error deploying ARM template: %s", err)
 	}
 	return instance.Details, nil

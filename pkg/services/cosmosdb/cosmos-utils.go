@@ -309,7 +309,8 @@ func validateReadLocations(
 	return nil
 }
 
-// Allowed CosmosDB read locations, is different from Azure regions.
+// Allowed CosmosDB read locations, it is different from Azure regions.
+// We use a map here to record all allowed regions.
 var allowedReadLocations = map[string]bool{
 	"westus2":            true,
 	"westus":             true,
@@ -352,7 +353,7 @@ func (c *cosmosAccountManager) buildGoTemplateParamsCore(
 	p["kind"] = kind
 	p["location"] = pp.GetString("location")
 	p["readLocations"] = readLocations
-	if pp.GetString("autoFailoverEnabled") == "enabled" {
+	if pp.GetString("autoFailoverEnabled") == enabled {
 		p["enableAutomaticFailover"] = true
 	} else {
 		p["enableAutomaticFailover"] = false

@@ -30,15 +30,14 @@ func (m *mongoAccountManager) updateReadLocations(
 	_ context.Context,
 	instance service.Instance,
 ) (service.InstanceDetails, error) {
-	err := m.cosmosAccountManager.updateReadLocations(
+	if err := m.cosmosAccountManager.updateReadLocations(
 		instance.ProvisioningParameters,
 		instance.UpdatingParameters,
 		instance.Details.(*cosmosdbInstanceDetails),
 		"MongoDB",
 		"",
 		map[string]string{},
-	)
-	if err != nil {
+	); err != nil {
 		return nil, fmt.Errorf("error deploying ARM template: %s", err)
 	}
 	return instance.Details, nil
@@ -48,15 +47,14 @@ func (m *mongoAccountManager) updateARMTemplate(
 	_ context.Context,
 	instance service.Instance,
 ) (service.InstanceDetails, error) {
-	err := m.cosmosAccountManager.updateDeployment(
+	if err := m.cosmosAccountManager.updateDeployment(
 		instance.ProvisioningParameters,
 		instance.UpdatingParameters,
 		instance.Details.(*cosmosdbInstanceDetails),
 		"MongoDB",
 		"",
 		map[string]string{},
-	)
-	if err != nil {
+	); err != nil {
 		return nil, fmt.Errorf("error deploying ARM template: %s", err)
 	}
 	return instance.Details, nil
