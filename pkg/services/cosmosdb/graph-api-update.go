@@ -12,7 +12,7 @@ func (
 ) ValidateUpdatingParameters(instance service.Instance) error {
 	return validateReadLocations(
 		"graph account update",
-		instance.UpdatingParameters.GetStringArray("readLocations"),
+		instance.UpdatingParameters.GetStringArray("readRegions"),
 	)
 }
 

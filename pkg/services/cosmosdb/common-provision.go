@@ -49,7 +49,7 @@ func (c *cosmosAccountManager) buildGoTemplateParams(
 	dt *cosmosdbInstanceDetails,
 	kind string,
 ) (map[string]interface{}, error) {
-	readLocations := pp.GetStringArray("readLocations")
+	readLocations := pp.GetStringArray("readRegions")
 	readLocations = append([]string{pp.GetString("location")}, readLocations...)
 	return c.buildGoTemplateParamsCore(
 		pp,
