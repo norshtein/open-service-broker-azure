@@ -13,7 +13,7 @@ func (g *graphAccountManager) GetProvisioner(
 	return service.NewProvisioner(
 		service.NewProvisioningStep("preProvision", g.preProvision),
 		service.NewProvisioningStep("deployARMTemplate", g.deployARMTemplate),
-		service.NewProvisioningStep("waitForReadRegionsReady", g.waitForReadRegionsReady), // nolint: lll
+		service.NewProvisioningStep("waitForReadLocationsReady", g.waitForReadLocationsReady), // nolint: lll
 	)
 }
 

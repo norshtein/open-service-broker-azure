@@ -187,7 +187,7 @@ func deleteDatabase(
 // The deployment will return success once the write region is created,
 // ignoring the status of read regions , so we must implement detection logic
 // by ourselves.
-func (c *cosmosAccountManager) waitForReadRegionsReady(
+func (c *cosmosAccountManager) waitForReadLocationsReady(
 	ctx context.Context,
 	instance service.Instance,
 ) (service.InstanceDetails, error) {
@@ -196,7 +196,7 @@ func (c *cosmosAccountManager) waitForReadRegionsReady(
 	accountName := dt.DatabaseAccountName
 	databaseAccountClient := c.databaseAccountsClient
 
-	err := pollingUntilReadRegionsReady(
+	err := pollingUntilReadLocationsReady(
 		ctx,
 		resourceGroupName,
 		accountName,
@@ -211,7 +211,7 @@ func (c *cosmosAccountManager) waitForReadRegionsReady(
 // For sqlAllInOneManager, the real type of `instance.Details` is
 // `*sqlAllInOneInstanceDetails`, so type assertion must be changed.
 // Expect type assertion, this function is totally the same as previous one.
-func (s *sqlAllInOneManager) waitForReadRegionsReady(
+func (s *sqlAllInOneManager) waitForReadLocationsReady(
 	ctx context.Context,
 	instance service.Instance,
 ) (service.InstanceDetails, error) {
@@ -220,7 +220,7 @@ func (s *sqlAllInOneManager) waitForReadRegionsReady(
 	accountName := dt.DatabaseAccountName
 	databaseAccountClient := s.databaseAccountsClient
 
-	err := pollingUntilReadRegionsReady(
+	err := pollingUntilReadLocationsReady(
 		ctx,
 		resourceGroupName,
 		accountName,
@@ -239,7 +239,7 @@ func (s *sqlAllInOneManager) waitForReadRegionsReady(
 // the finishment of previous creation and the start of the next creation.
 // By this check, we can detect gaps shorter than 1 mintue,
 // and report success within 70 seconds after completion.
-func pollingUntilReadRegionsReady(
+func pollingUntilReadLocationsReady(
 	ctx context.Context,
 	resourceGroupName string,
 	accountName string,
@@ -293,15 +293,15 @@ func pollingUntilReadRegionsReady(
 	}
 }
 
-func validateReadRegions(
+func validateReadLocations(
 	context string,
 	regions []string,
 ) error {
 	for i := range regions {
 		region := regions[i]
-		if !allowedReadRegions[region] {
+		if !allowedReadLocations[region] {
 			return service.NewValidationError(
-				fmt.Sprintf("%s.allowedReadRegion", context),
+				fmt.Sprintf("%s.allowedReadLocations", context),
 				fmt.Sprintf("given region %s is not allowed", region),
 			)
 		}
@@ -309,8 +309,8 @@ func validateReadRegions(
 	return nil
 }
 
-// Allowed CosmosDB read regions, is different from Azure regions.
-var allowedReadRegions = map[string]bool{
+// Allowed CosmosDB read locations, is different from Azure regions.
+var allowedReadLocations = map[string]bool{
 	"westus2":            true,
 	"westus":             true,
 	"southcentralus":     true,
@@ -351,7 +351,7 @@ func (c *cosmosAccountManager) buildGoTemplateParamsCore(
 	p["name"] = dt.DatabaseAccountName
 	p["kind"] = kind
 	p["location"] = pp.GetString("location")
-	p["readRegions"] = readLocations
+	p["readLocations"] = readLocations
 	if pp.GetString("autoFailoverEnabled") == "enabled" {
 		p["enableAutomaticFailover"] = true
 	} else {

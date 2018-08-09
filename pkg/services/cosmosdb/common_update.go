@@ -37,7 +37,7 @@ func (c *cosmosAccountManager) updateDeployment(
 	return nil
 }
 
-func (c *cosmosAccountManager) updateReadRegions(
+func (c *cosmosAccountManager) updateReadLocations(
 	pp *service.ProvisioningParameters,
 	up *service.ProvisioningParameters,
 	dt *cosmosdbInstanceDetails,

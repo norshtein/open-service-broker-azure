@@ -16,11 +16,11 @@ func generateUpdatingParamsSchema() service.InputParametersSchema {
 	const maxIntervalInSecondsMax = 86400
 	return service.InputParametersSchema{
 		PropertySchemas: map[string]service.PropertySchema{
-			"readLocations": &service.ArrayPropertySchema{
+			"readRegions": &service.ArrayPropertySchema{
 				Description: "Read regions to be created, your data" +
 					" will be synchronized across these regions.",
 				DefaultValue:            []interface{}{},
-				CustomPropertyValidator: readRegionsValidator,
+				CustomPropertyValidator: readLocationsValidator,
 			},
 			"autoFailoverEnabled": &service.StringPropertySchema{
 				Description: "Specifies if you want Cosmos DB to perform" +
@@ -180,13 +180,13 @@ func consistencyPolicyValidator(
 	return nil
 }
 
-func readRegionsValidator(
+func readLocationsValidator(
 	context string,
 	value []interface{},
 ) error {
-	regions := make([]string, len(value))
+	locations := make([]string, len(value))
 	for i := range value {
-		regions[i] = value[i].(string)
+		locations[i] = value[i].(string)
 	}
-	return validateReadRegions(context, regions)
+	return validateReadLocations(context, locations)
 }

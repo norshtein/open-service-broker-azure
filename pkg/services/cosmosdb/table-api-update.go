@@ -10,7 +10,7 @@ import (
 func (
 	t *tableAccountManager,
 ) ValidateUpdatingParameters(instance service.Instance) error {
-	return validateReadRegions(
+	return validateReadLocations(
 		"table account update",
 		instance.UpdatingParameters.GetStringArray("readLocations"),
 	)
@@ -20,17 +20,17 @@ func (
 	t *tableAccountManager,
 ) GetUpdater(service.Plan) (service.Updater, error) {
 	return service.NewUpdater(
-		service.NewUpdatingStep("updateReadRegions", t.updateReadRegions),
-		service.NewUpdatingStep("waitForReadRegionsReady", t.waitForReadRegionsReady),
+		service.NewUpdatingStep("updateReadLocations", t.updateReadLocations),
+		service.NewUpdatingStep("waitForReadLocationsReady", t.waitForReadLocationsReady),
 		service.NewUpdatingStep("updateARMTemplate", t.updateARMTemplate),
 	)
 }
 
-func (t *tableAccountManager) updateReadRegions(
+func (t *tableAccountManager) updateReadLocations(
 	_ context.Context,
 	instance service.Instance,
 ) (service.InstanceDetails, error) {
-	err := t.cosmosAccountManager.updateReadRegions(
+	err := t.cosmosAccountManager.updateReadLocations(
 		instance.ProvisioningParameters,
 		instance.UpdatingParameters,
 		instance.Details.(*cosmosdbInstanceDetails),

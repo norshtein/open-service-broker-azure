@@ -10,7 +10,7 @@ import (
 func (
 	g *graphAccountManager,
 ) ValidateUpdatingParameters(instance service.Instance) error {
-	return validateReadRegions(
+	return validateReadLocations(
 		"graph account update",
 		instance.UpdatingParameters.GetStringArray("readLocations"),
 	)
@@ -23,17 +23,17 @@ func (
 		// The cosmosDB has a contraint: it cannot update properties and
 		// add/remove regions at the same time, so we must deal with the update twice,
 		// one time updating region, one time updating properties.
-		service.NewUpdatingStep("updateReadRegions", g.updateReadRegions),
-		service.NewUpdatingStep("waitForReadRegionsReady", g.waitForReadRegionsReady),
+		service.NewUpdatingStep("updateReadLocations", g.updateReadLocations),
+		service.NewUpdatingStep("waitForReadLocationsReady", g.waitForReadLocationsReady),
 		service.NewUpdatingStep("updateARMTemplate", g.updateARMTemplate),
 	)
 }
 
-func (g *graphAccountManager) updateReadRegions(
+func (g *graphAccountManager) updateReadLocations(
 	_ context.Context,
 	instance service.Instance,
 ) (service.InstanceDetails, error) {
-	err := g.cosmosAccountManager.updateReadRegions(
+	err := g.cosmosAccountManager.updateReadLocations(
 		instance.ProvisioningParameters,
 		instance.UpdatingParameters,
 		instance.Details.(*cosmosdbInstanceDetails),

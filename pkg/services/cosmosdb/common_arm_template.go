@@ -41,13 +41,13 @@ var armTemplateBytes = []byte(`
 				],
 				{{ end }}
 				"locations": [
-					{{range $i,$a := .readRegions}}
-					{{if $i}}
+					{{range $index,$location := .readLocations}}
+					{{if $index}}
 					,
 					{{end}}
 					{
-						"failoverPriority": {{$i}},
-						"locationName": "{{$a}}"
+						"failoverPriority": {{$index}},
+						"locationName": "{{$location}}"
 					}
 					{{end}}
 				],
