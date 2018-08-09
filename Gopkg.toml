@@ -71,3 +71,6 @@
 
 [[constraint]]
   name = "github.com/mitchellh/mapstructure"
+
+[[constraint]]
+  name = "github.com/tidwall/gjson"
