@@ -61,6 +61,21 @@ Does nothing.
 
 Deletes the CosmosDB database account and database.
 
+##### Update
+
+Idempotently update the service instance to specified state.
+
+| Parameter Name | Type                | Description                                                  | Required | Default Value                                                |
+| -------------- | ------------------- | ------------------------------------------------------------ | -------- | ------------------------------------------------------------ |
+| `tags` | `map[string]string` | Tags to be applied to new resources, specified as key/value pairs. | N | Tags (even if none are specified) are automatically supplemented with `heritage: open-service-broker-azure`. |
+| `ipFilters` | `object` | IP Range Filter to be applied to new CosmosDB account | N | A default filter is created that allows only Azure service access |
+| `ipFilters.allowAccessFromAzure` | `string` | Specifies if Azure Services should be able to access the CosmosDB account. Valid valued are `""` (unspecified), `enabled`, or `disabled`. | N | If left unspecified, defaults to enabled. |
+| `ipFilters.allowAccessFromPortal` | `string` | Specifies if the Azure Portal should be able to access the CosmosDB account. If `allowAccessFromAzure` is set to enabled, this value is ignored. Valid valued are `""` (unspecified), `enabled`, or `disabled`. | N | If left unspecified, defaults to enabled. |
+| `ipFilters.allowedIPRanges` | `array` | Values to include in IP Filter. Can be IP Address or CIDR range. | N | If not specified, no additional values will be included in filters. |
+| `readRegions` | `array ` | Read regions to be created, your data will be synchronized across these regions, providing high availability and disaster recovery ability. Region's order in the array will be treated as failover priority.  Allowed elements in the array:  `"westus2", "westus", "southcentralus", "centraluseuap", "centralus", "northcentralus", "canadacentral", "eastus2euap", "eastus2", "canadaeast", "northeurope", "ukwest", "uksouth", "francecentral", "westeurope", "westindia", "centralindia", "southindia", "southeastasia", "eastasia", "koreacentral", "koreasouth", "japaneast", "japanwest", "australiasoutheast", "australiaeast"` | N | If not specified, no replication region will be created. |
+| `autoFailoverEnabled` | `string ` | Specifies if you want Cosmos DB to perform automatic failover of the write region to one of the read regions in the rare event of a data center outage. Valid values are ""(unspecified), enabled, or disabled. | N | If not specified, default "disabled". |
+
+
 ### Service: azure-cosmosdb-sql-account
 
 | Plan Name | Description |
@@ -119,6 +134,20 @@ Does nothing.
 
 Deletes the CosmosDB database account.
 
+##### Update
+
+Idempotently update the service instance to specified state.
+
+| Parameter Name | Type                | Description                                                  | Required | Default Value                                                |
+| -------------- | ------------------- | ------------------------------------------------------------ | -------- | ------------------------------------------------------------ |
+| `tags` | `map[string]string` | Tags to be applied to new resources, specified as key/value pairs. | N | Tags (even if none are specified) are automatically supplemented with `heritage: open-service-broker-azure`. |
+| `ipFilters` | `object` | IP Range Filter to be applied to new CosmosDB account | N | A default filter is created that allows only Azure service access |
+| `ipFilters.allowAccessFromAzure` | `string` | Specifies if Azure Services should be able to access the CosmosDB account. Valid valued are `""` (unspecified), `enabled`, or `disabled`. | N | If left unspecified, defaults to enabled. |
+| `ipFilters.allowAccessFromPortal` | `string` | Specifies if the Azure Portal should be able to access the CosmosDB account. If `allowAccessFromAzure` is set to enabled, this value is ignored. Valid valued are `""` (unspecified), `enabled`, or `disabled`. | N | If left unspecified, defaults to enabled. |
+| `ipFilters.allowedIPRanges` | `array` | Values to include in IP Filter. Can be IP Address or CIDR range. | N | If not specified, no additional values will be included in filters. |
+| `readRegions` | `array ` | Read regions to be created, your data will be synchronized across these regions, providing high availability and disaster recovery ability. Region's order in the array will be treated as failover priority.  Allowed elements in the array:  `"westus2", "westus", "southcentralus", "centraluseuap", "centralus", "northcentralus", "canadacentral", "eastus2euap", "eastus2", "canadaeast", "northeurope", "ukwest", "uksouth", "francecentral", "westeurope", "westindia", "centralindia", "southindia", "southeastasia", "eastasia", "koreacentral", "koreasouth", "japaneast", "japanwest", "australiasoutheast", "australiaeast"` | N | If not specified, no replication region will be created. |
+| `autoFailoverEnabled` | `string ` | Specifies if you want Cosmos DB to perform automatic failover of the write region to one of the read regions in the rare event of a data center outage. Valid values are ""(unspecified), enabled, or disabled. | N | If not specified, default "disabled". |
+
 ### Service: azure-cosmosdb-sql-database
 
 | Plan Name | Description |
@@ -166,6 +195,7 @@ Does nothing.
 ##### Deprovision
 
 Deletes the CosmosDB database. The existing database account is not deleted.
+
 
 ### Service: azure-cosmosdb-mongo-account
 
@@ -226,6 +256,20 @@ Does nothing.
 
 Deletes the CosmosDB database account.
 
+##### Update
+
+Idempotently update the service instance to specified state.
+
+| Parameter Name | Type                | Description                                                  | Required | Default Value                                                |
+| -------------- | ------------------- | ------------------------------------------------------------ | -------- | ------------------------------------------------------------ |
+| `tags` | `map[string]string` | Tags to be applied to new resources, specified as key/value pairs. | N | Tags (even if none are specified) are automatically supplemented with `heritage: open-service-broker-azure`. |
+| `ipFilters` | `object` | IP Range Filter to be applied to new CosmosDB account | N | A default filter is created that allows only Azure service access |
+| `ipFilters.allowAccessFromAzure` | `string` | Specifies if Azure Services should be able to access the CosmosDB account. Valid valued are `""` (unspecified), `enabled`, or `disabled`. | N | If left unspecified, defaults to enabled. |
+| `ipFilters.allowAccessFromPortal` | `string` | Specifies if the Azure Portal should be able to access the CosmosDB account. If `allowAccessFromAzure` is set to enabled, this value is ignored. Valid valued are `""` (unspecified), `enabled`, or `disabled`. | N | If left unspecified, defaults to enabled. |
+| `ipFilters.allowedIPRanges` | `array` | Values to include in IP Filter. Can be IP Address or CIDR range. | N | If not specified, no additional values will be included in filters. |
+| `readRegions` | `array ` | Read regions to be created, your data will be synchronized across these regions, providing high availability and disaster recovery ability. Region's order in the array will be treated as failover priority.  Allowed elements in the array:  `"westus2", "westus", "southcentralus", "centraluseuap", "centralus", "northcentralus", "canadacentral", "eastus2euap", "eastus2", "canadaeast", "northeurope", "ukwest", "uksouth", "francecentral", "westeurope", "westindia", "centralindia", "southindia", "southeastasia", "eastasia", "koreacentral", "koreasouth", "japaneast", "japanwest", "australiasoutheast", "australiaeast"` | N | If not specified, no replication region will be created. |
+| `autoFailoverEnabled` | `string ` | Specifies if you want Cosmos DB to perform automatic failover of the write region to one of the read regions in the rare event of a data center outage. Valid values are ""(unspecified), enabled, or disabled. | N | If not specified, default "disabled". |
+
 ### Service: azure-cosmosdb-graph-account
 
 | Plan Name | Description |
@@ -283,6 +327,20 @@ Does nothing.
 
 Deletes the CosmosDB database account.
 
+##### Update
+
+Idempotently update the service instance to specified state.
+
+| Parameter Name | Type                | Description                                                  | Required | Default Value                                                |
+| -------------- | ------------------- | ------------------------------------------------------------ | -------- | ------------------------------------------------------------ |
+| `tags` | `map[string]string` | Tags to be applied to new resources, specified as key/value pairs. | N | Tags (even if none are specified) are automatically supplemented with `heritage: open-service-broker-azure`. |
+| `ipFilters` | `object` | IP Range Filter to be applied to new CosmosDB account | N | A default filter is created that allows only Azure service access |
+| `ipFilters.allowAccessFromAzure` | `string` | Specifies if Azure Services should be able to access the CosmosDB account. Valid valued are `""` (unspecified), `enabled`, or `disabled`. | N | If left unspecified, defaults to enabled. |
+| `ipFilters.allowAccessFromPortal` | `string` | Specifies if the Azure Portal should be able to access the CosmosDB account. If `allowAccessFromAzure` is set to enabled, this value is ignored. Valid valued are `""` (unspecified), `enabled`, or `disabled`. | N | If left unspecified, defaults to enabled. |
+| `ipFilters.allowedIPRanges` | `array` | Values to include in IP Filter. Can be IP Address or CIDR range. | N | If not specified, no additional values will be included in filters. |
+| `readRegions` | `array ` | Read regions to be created, your data will be synchronized across these regions, providing high availability and disaster recovery ability. Region's order in the array will be treated as failover priority.  Allowed elements in the array:  `"westus2", "westus", "southcentralus", "centraluseuap", "centralus", "northcentralus", "canadacentral", "eastus2euap", "eastus2", "canadaeast", "northeurope", "ukwest", "uksouth", "francecentral", "westeurope", "westindia", "centralindia", "southindia", "southeastasia", "eastasia", "koreacentral", "koreasouth", "japaneast", "japanwest", "australiasoutheast", "australiaeast"` | N | If not specified, no replication region will be created. |
+| `autoFailoverEnabled` | `string ` | Specifies if you want Cosmos DB to perform automatic failover of the write region to one of the read regions in the rare event of a data center outage. Valid values are ""(unspecified), enabled, or disabled. | N | If not specified, default "disabled". |
+
 ### Service: azure-cosmosdb-table-account
 
 | Plan Name | Description |
@@ -338,3 +396,17 @@ Does nothing.
 ##### Deprovision
 
 Deletes the CosmosDB database account.
+
+##### Update
+
+Idempotently update the service instance to specified state.
+
+| Parameter Name | Type                | Description                                                  | Required | Default Value                                                |
+| -------------- | ------------------- | ------------------------------------------------------------ | -------- | ------------------------------------------------------------ |
+| `tags` | `map[string]string` | Tags to be applied to new resources, specified as key/value pairs. | N | Tags (even if none are specified) are automatically supplemented with `heritage: open-service-broker-azure`. |
+| `ipFilters` | `object` | IP Range Filter to be applied to new CosmosDB account | N | A default filter is created that allows only Azure service access |
+| `ipFilters.allowAccessFromAzure` | `string` | Specifies if Azure Services should be able to access the CosmosDB account. Valid valued are `""` (unspecified), `enabled`, or `disabled`. | N | If left unspecified, defaults to enabled. |
+| `ipFilters.allowAccessFromPortal` | `string` | Specifies if the Azure Portal should be able to access the CosmosDB account. If `allowAccessFromAzure` is set to enabled, this value is ignored. Valid valued are `""` (unspecified), `enabled`, or `disabled`. | N | If left unspecified, defaults to enabled. |
+| `ipFilters.allowedIPRanges` | `array` | Values to include in IP Filter. Can be IP Address or CIDR range. | N | If not specified, no additional values will be included in filters. |
+| `readRegions` | `array ` | Read regions to be created, your data will be synchronized across these regions, providing high availability and disaster recovery ability. Region's order in the array will be treated as failover priority.  Allowed elements in the array:  `"westus2", "westus", "southcentralus", "centraluseuap", "centralus", "northcentralus", "canadacentral", "eastus2euap", "eastus2", "canadaeast", "northeurope", "ukwest", "uksouth", "francecentral", "westeurope", "westindia", "centralindia", "southindia", "southeastasia", "eastasia", "koreacentral", "koreasouth", "japaneast", "japanwest", "australiasoutheast", "australiaeast"` | N | If not specified, no replication region will be created. |
+| `autoFailoverEnabled` | `string ` | Specifies if you want Cosmos DB to perform automatic failover of the write region to one of the read regions in the rare event of a data center outage. Valid values are ""(unspecified), enabled, or disabled. | N | If not specified, default "disabled". |
