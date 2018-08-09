@@ -89,8 +89,8 @@ func (c *cosmosAccountManager) deployUpdatedARMTemplate(
 	return nil
 }
 
-// This function is used in update. It will build a map in which
-// only read regions changed. The rest will keep the same with provision parameter.
+// This function is used in update. It will build a map in which only
+// read regions changed. The rest will keep the same with provision parameter.
 func (c *cosmosAccountManager) buildGoTemplateParamsOnlyRegionChanged(
 	pp *service.ProvisioningParameters,
 	up *service.ProvisioningParameters,
