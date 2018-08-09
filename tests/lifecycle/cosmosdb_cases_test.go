@@ -24,6 +24,7 @@ var cosmosdbTestCases = []serviceLifecycleTestCase{
 			"ipFilters": map[string]interface{}{
 				"allowedIPRanges": []interface{}{"0.0.0.0/0"},
 			},
+			"readRegions": []string{"eastus2"},
 		},
 		updatingParameters: map[string]interface{}{
 			"ipFilters": map[string]interface{}{
@@ -36,6 +37,8 @@ var cosmosdbTestCases = []serviceLifecycleTestCase{
 					"maxIntervalInSeconds": float64(500),
 				},
 			},
+			"readRegions":         []string{"centralus"},
+			"autoFailoverEnabled": "enabled",
 		},
 		childTestCases: []*serviceLifecycleTestCase{
 			{ // database only scenario
@@ -66,6 +69,8 @@ var cosmosdbTestCases = []serviceLifecycleTestCase{
 					"maxIntervalInSeconds": float64(500),
 				},
 			},
+			"readRegions":         []string{"centralus"},
+			"autoFailoverEnabled": "enabled",
 		},
 	},
 	{ // Table API
