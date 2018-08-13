@@ -235,6 +235,241 @@ func (m *module) GetCatalog() (service.Catalog, error) {
 					},
 				}),
 			),
+			service.NewService(
+				service.ServiceProperties{
+					ID:          "b8b56d60-4525-41d8-b3d8-8caa4dce0188",
+					Name:        "azure-cosmosdb-sql-registered",
+					Description: "Azure Cosmos DB From Registered (SQL API Database Account and Database)",
+					Metadata: service.ServiceMetadata{
+						DisplayName: "Azure Cosmos DB From Registered (SQL API Database Account and Database)",
+						ImageURL: "https://azure.microsoft.com/svghandler/cosmos-db/" +
+							"?width=200",
+						LongDescription: "Globally distributed, multi-model database service" +
+							" (Experimental)",
+						DocumentationURL: "https://docs.microsoft.com/en-us/azure/cosmos-db/",
+						SupportURL:       "https://azure.microsoft.com/en-us/support/",
+					},
+					Bindable: true,
+					Tags: []string{"Azure",
+						"CosmosDB",
+						"Database",
+						"SQL",
+						"Disaster Recovery",
+					},
+				},
+				m.sqlAllInOneRegisteredManager,
+				service.NewPlan(service.PlanProperties{
+					ID:          "555ff2f7-336b-40f5-94aa-84d71d81d0af",
+					Name:        "sql-api",
+					Description: "Azure CosmosDB With SQL API (Database Account and Database)",
+					Free:        false,
+					Stability:   service.StabilityExperimental,
+					Metadata: service.ServicePlanMetadata{
+						DisplayName: "Azure CosmosDB (SQL API Database Account and Database)",
+					},
+					Schemas: service.PlanSchemas{
+						ServiceInstances: service.InstanceSchemas{
+							ProvisioningParametersSchema: generateAllInOneRegisteredProvisioningParamsSchema(), // nolint: lll
+						},
+					},
+				}),
+			),
+			service.NewService(
+				service.ServiceProperties{
+					ID:          "1b6e65c8-bab3-416b-8593-4dcad22e12d6",
+					Name:        "azure-cosmosdb-sql-account-registered",
+					Description: "Azure Cosmos DB Database Account From Registered (SQL API)",
+					Metadata: service.ServiceMetadata{
+						DisplayName: "Azure Cosmos DB From registered (SQL API - Database Account Only)",
+						ImageURL: "https://azure.microsoft.com/svghandler/cosmos-db/" +
+							"?width=200",
+						LongDescription: "Globally distributed, multi-model database service" +
+							" (Experimental).",
+						DocumentationURL: "https://docs.microsoft.com/en-us/azure/cosmos-db/",
+						SupportURL:       "https://azure.microsoft.com/en-us/support/",
+					},
+					Bindable: true,
+					Tags: []string{"Azure",
+						"CosmosDB",
+						"Database",
+						"SQL",
+						"Disaster Recovery",
+					},
+				},
+				m.commonRegisteredManager,
+				service.NewPlan(service.PlanProperties{
+					ID:          "49510891-89c5-4ba6-9207-e491c3f0ed90",
+					Name:        "account",
+					Description: "Database Account with the SQL API",
+					Free:        false,
+					Stability:   service.StabilityExperimental,
+					Metadata: service.ServicePlanMetadata{
+						DisplayName: "Azure CosmosDB (SQL API - Database Account Only)",
+					},
+					Schemas: service.PlanSchemas{
+						ServiceInstances: service.InstanceSchemas{
+							ProvisioningParametersSchema: generateCommonRegisteredProvisioningParamsSchema(), // nolint: lll
+						},
+					},
+				}),
+			),
+			service.NewService(
+				service.ServiceProperties{
+					ID:          "beadd877-0c5a-476f-90ae-8922d17303e4",
+					Name:        "azure-cosmosdb-sql-database-registered",
+					Description: "Azure Cosmos DB Database From Registered (SQL API - Database Only)",
+					Metadata: service.ServiceMetadata{
+						DisplayName: "Azure Cosmos DB From Registered (SQL API - Database Only)",
+						ImageURL: "https://azure.microsoft.com/svghandler/cosmos-db/" +
+							"?width=200",
+						LongDescription: "Globally distributed, multi-model database service" +
+							" (Experimental).",
+						DocumentationURL: "https://docs.microsoft.com/en-us/azure/cosmos-db/",
+						SupportURL:       "https://azure.microsoft.com/en-us/support/",
+					},
+					Bindable: true,
+					Tags: []string{"Azure",
+						"CosmosDB",
+						"Database",
+						"SQL",
+						"Disaster Recovery",
+					},
+				},
+				m.sqlAllInOneRegisteredManager,
+				service.NewPlan(service.PlanProperties{
+					ID:          "3d66321c-a38f-46d3-a24a-18619389a9b7",
+					Name:        "database",
+					Description: "Azure CosmosDB (SQL API - Database only)",
+					Free:        false,
+					Stability:   service.StabilityExperimental,
+					Metadata: service.ServicePlanMetadata{
+						DisplayName: "Azure CosmosDB (SQL API - Database only)",
+					},
+					Schemas: service.PlanSchemas{
+						ServiceInstances: service.InstanceSchemas{
+							ProvisioningParametersSchema: generateAllInOneRegisteredProvisioningParamsSchema(), // nolint: lll
+						},
+					},
+				}),
+			),
+			service.NewService(
+				service.ServiceProperties{
+					ID:          "898c5053-8fa1-4ea9-89e3-301a4afc6bc2",
+					Name:        "azure-cosmosdb-mongo-account-registered",
+					Description: "Azure Cosmos DB Database Account From Registered (MongoDB API)",
+					Metadata: service.ServiceMetadata{
+						DisplayName: "Azure Cosmos DB From Registered (MongoDB API)",
+						ImageURL: "https://azure.microsoft.com/svghandler/cosmos-db/" +
+							"?width=200",
+						LongDescription: "Globally distributed, multi-model database service" +
+							" (Experimental)",
+						DocumentationURL: "https://docs.microsoft.com/en-us/azure/cosmos-db/",
+						SupportURL:       "https://azure.microsoft.com/en-us/support/",
+					},
+					Bindable: true,
+					Tags: []string{"Azure",
+						"CosmosDB",
+						"Database",
+						"MongoDB",
+						"Disaster Recovery",
+					},
+				},
+				m.commonRegisteredManager,
+				service.NewPlan(service.PlanProperties{
+					ID:          "468d259f-5fc3-4384-ab07-3e7efab4d587",
+					Name:        "account",
+					Description: "Database Account with the MongoDB API",
+					Free:        false,
+					Stability:   service.StabilityExperimental,
+					Metadata: service.ServicePlanMetadata{
+						DisplayName: "Azure Cosmos DB (MongoDB API)",
+					},
+					Schemas: service.PlanSchemas{
+						ServiceInstances: service.InstanceSchemas{
+							ProvisioningParametersSchema: generateCommonRegisteredProvisioningParamsSchema(), // nolint: lll
+						},
+					},
+				}),
+			),
+			service.NewService(
+				service.ServiceProperties{
+					ID:          "ab25a081-1a28-4132-96af-f60ef8201f75",
+					Name:        "azure-cosmosdb-graph-account-registered",
+					Description: "Azure Cosmos DB Database Account From Registered (Graph API)",
+					Metadata: service.ServiceMetadata{
+						DisplayName: "Azure Cosmos DB From Registered (Graph API)",
+						ImageURL: "https://azure.microsoft.com/svghandler/cosmos-db/" +
+							"?width=200",
+						LongDescription: "Globally distributed, multi-model database service" +
+							" (Experimental)",
+						DocumentationURL: "https://docs.microsoft.com/en-us/azure/cosmos-db/",
+						SupportURL:       "https://azure.microsoft.com/en-us/support/",
+					},
+					Bindable: true,
+					Tags: []string{"Azure",
+						"CosmosDB",
+						"Database",
+						"Graph",
+						"Gremlin",
+						"Disaster Recovery",
+					},
+				},
+				m.commonRegisteredManager,
+				service.NewPlan(service.PlanProperties{
+					ID:          "d0f037ee-0abc-4f22-9667-4d27d773daab",
+					Name:        "account",
+					Description: "Database Account with the Graph API",
+					Free:        false,
+					Stability:   service.StabilityExperimental,
+					Metadata: service.ServicePlanMetadata{
+						DisplayName: "Azure Cosmos DB (Graph API)",
+					},
+					Schemas: service.PlanSchemas{
+						ServiceInstances: service.InstanceSchemas{
+							ProvisioningParametersSchema: generateCommonRegisteredProvisioningParamsSchema(), // nolint: lll
+						},
+					},
+				}),
+			),
+			service.NewService(
+				service.ServiceProperties{
+					ID:          "5f1c332b-c878-4e18-ba49-ccbfd2e46353",
+					Name:        "azure-cosmosdb-table-account-registered",
+					Description: "Azure Cosmos DB Database Account From Registered (Table API)",
+					Metadata: service.ServiceMetadata{
+						DisplayName: "Azure Cosmos DB From Registered (Table API)",
+						ImageURL: "https://azure.microsoft.com/svghandler/cosmos-db/" +
+							"?width=200",
+						LongDescription: "Globally distributed, multi-model database service" +
+							" (Experimental)",
+						DocumentationURL: "https://docs.microsoft.com/en-us/azure/cosmos-db/",
+						SupportURL:       "https://azure.microsoft.com/en-us/support/",
+					},
+					Bindable: true,
+					Tags: []string{"Azure",
+						"CosmosDB",
+						"Database",
+						"Table",
+						"Disaster Recovery",
+					},
+				},
+				m.commonRegisteredManager,
+				service.NewPlan(service.PlanProperties{
+					ID:          "9c5a5bdd-a3d8-470b-9d98-957557a37a48",
+					Name:        "account",
+					Description: "Database Account with the Table API",
+					Free:        false,
+					Stability:   service.StabilityExperimental,
+					Metadata: service.ServicePlanMetadata{
+						DisplayName: "Azure Cosmos DB (Table API)",
+					},
+					Schemas: service.PlanSchemas{
+						ServiceInstances: service.InstanceSchemas{
+							ProvisioningParametersSchema: generateCommonRegisteredProvisioningParamsSchema(), // nolint: lll
+						},
+					},
+				}),
+			),
 		}),
 		nil
 }
