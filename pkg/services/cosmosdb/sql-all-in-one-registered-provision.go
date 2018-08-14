@@ -24,9 +24,10 @@ func (s *sqlAllInOneRegisteredManager) fillInInstanceDetails(
 	ctx, cancel := context.WithCancel(ctx)
 	defer cancel()
 
+	databaseAccountName := instance.ProvisioningParameters.GetString("accountName") // nolint: lll
 	pk, err := getPrimaryKey(
 		ctx,
-		instance.ProvisioningParameters,
+		databaseAccountName,
 		s.databaseAccountsClient,
 	)
 	if err != nil {
@@ -34,6 +35,7 @@ func (s *sqlAllInOneRegisteredManager) fillInInstanceDetails(
 	}
 
 	dt := &sqlAllInOneInstanceDetails{}
+	dt.DatabaseAccountName = databaseAccountName
 	dt.PrimaryKey = pk
 	dt.FullyQualifiedDomainName = fmt.Sprintf(
 		"https://%s.documents.azure.com:443/",

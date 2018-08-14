@@ -13,20 +13,22 @@ func (c *commonRegisteredManager) GetProvisioner(
 	service.Plan,
 ) (service.Provisioner, error) {
 	return service.NewProvisioner(
-		service.NewProvisioningStep("fillInInstanceDetails", c.fillInInstanceDetails), // nolint:lll
+		service.NewProvisioningStep("fillInPKAndFQDN", c.fillInPKAndFQDN),               // nolint:lll
+		service.NewProvisioningStep("fillInConnectionString", c.fillInConnectionString), // nolint: lll
 	)
 }
 
-func (c *commonRegisteredManager) fillInInstanceDetails(
+func (c *commonRegisteredManager) fillInPKAndFQDN(
 	ctx context.Context,
 	instance service.Instance,
 ) (service.InstanceDetails, error) {
 	ctx, cancel := context.WithCancel(ctx)
 	defer cancel()
 
+	databaseAccountName := instance.ProvisioningParameters.GetString("accountName") // nolint: lll
 	pk, err := getPrimaryKey(
 		ctx,
-		instance.ProvisioningParameters,
+		databaseAccountName,
 		c.databaseAccountsClient,
 	)
 	if err != nil {
@@ -34,7 +36,7 @@ func (c *commonRegisteredManager) fillInInstanceDetails(
 	}
 
 	dt := &cosmosdbInstanceDetails{}
-	dt.DatabaseAccountName = instance.ProvisioningParameters.GetString("accountName") // nolint:lll
+	dt.DatabaseAccountName = databaseAccountName
 	dt.PrimaryKey = pk
 	dt.FullyQualifiedDomainName = fmt.Sprintf(
 		"https://%s.documents.azure.com:443/",
@@ -49,15 +51,53 @@ func (c *commonRegisteredManager) fillInInstanceDetails(
 	return dt, nil
 }
 
+func (c *commonRegisteredManager) fillInConnectionString(
+	ctx context.Context,
+	instance service.Instance,
+) (service.InstanceDetails, error) {
+	serviceName := instance.Service.GetName()
+	dt := instance.Details.(*cosmosdbInstanceDetails)
+
+	switch serviceName {
+	case "azure-cosmosdb-mongo-account-registered":
+		dt.ConnectionString = service.SecureString(
+			fmt.Sprintf(
+				"mongodb://%s:%s@%s:10255/?ssl=true&replicaSet=globaldb",
+				dt.DatabaseAccountName,
+				dt.PrimaryKey,
+				dt.FullyQualifiedDomainName,
+			),
+		)
+	case "azure-cosmosdb-table-account-registered":
+		dt.ConnectionString = service.SecureString(
+			fmt.Sprintf(
+				"DefaultEndpointsProtocol=https;AccountName=%s;"+
+					"AccountKey=%s;TableEndpoint=%s",
+				dt.DatabaseAccountName,
+				dt.FullyQualifiedDomainName,
+				dt.PrimaryKey,
+			),
+		)
+	case "azure-cosmosdb-sql-account-registered":
+	case "azure-cosmosdb-graph-account-registered":
+		dt.ConnectionString = service.SecureString(
+			fmt.Sprintf("AccountEndpoint=%s;AccountKey=%s;",
+				dt.FullyQualifiedDomainName,
+				dt.PrimaryKey,
+			),
+		)
+	default:
+		return nil, fmt.Errorf("given service name %s is not vaild", serviceName)
+	}
+	return dt, nil
+}
 func getPrimaryKey(
 	ctx context.Context,
-	pp *service.ProvisioningParameters,
+	accountName string,
 	databaseAccountClient cosmosSDK.DatabaseAccountsClient,
 ) (service.SecureString, error) {
 	ctx, cancel := context.WithCancel(ctx)
 	defer cancel()
-
-	accountName := pp.GetString("accountName")
 
 	allAccounts, err := databaseAccountClient.List(ctx)
 	if err != nil {
