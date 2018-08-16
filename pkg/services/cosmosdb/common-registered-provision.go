@@ -34,6 +34,7 @@ func (c *commonRegisteredManager) fillInInstanceDetails(
 	}
 
 	dt := &cosmosdbInstanceDetails{}
+	dt.DatabaseAccountName = instance.ProvisioningParameters.GetString("accountName") // nolint:lll
 	dt.PrimaryKey = pk
 	dt.FullyQualifiedDomainName = fmt.Sprintf(
 		"https://%s.documents.azure.com:443/",
