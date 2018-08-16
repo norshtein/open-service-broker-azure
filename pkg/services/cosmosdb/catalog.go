@@ -398,7 +398,7 @@ func (m *module) GetCatalog() (service.Catalog, error) {
 						"Disaster Recovery",
 					},
 				},
-				m.commonRegisteredManager,
+				m.mongoAccountRegisteredManager,
 				service.NewPlan(service.PlanProperties{
 					ID:          "468d259f-5fc3-4384-ab07-3e7efab4d587",
 					Name:        "account",

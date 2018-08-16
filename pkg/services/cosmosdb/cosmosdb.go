@@ -7,14 +7,15 @@ import (
 )
 
 type module struct {
-	sqlAccountManager            *sqlAccountManager
-	sqlAllInOneManager           *sqlAllInOneManager
-	sqlDatabaseManager           *sqlDatabaseManager
-	mongoAccountManager          *mongoAccountManager
-	graphAccountManager          *graphAccountManager
-	tableAccountManager          *tableAccountManager
-	commonRegisteredManager      *commonRegisteredManager
-	sqlAllInOneRegisteredManager *sqlAllInOneRegisteredManager
+	sqlAccountManager             *sqlAccountManager
+	sqlAllInOneManager            *sqlAllInOneManager
+	sqlDatabaseManager            *sqlDatabaseManager
+	mongoAccountManager           *mongoAccountManager
+	graphAccountManager           *graphAccountManager
+	tableAccountManager           *tableAccountManager
+	commonRegisteredManager       *commonRegisteredManager
+	sqlAllInOneRegisteredManager  *sqlAllInOneRegisteredManager
+	mongoAccountRegisteredManager *mongoAccountRegisteredManager
 }
 
 type cosmosAccountManager struct {
@@ -71,6 +72,9 @@ func New(
 			sqlAllInOneManager: sqlAllInOneManager{
 				sqlAccountManager: sqlAccountManager{cosmos},
 			},
+		},
+		mongoAccountRegisteredManager: &mongoAccountRegisteredManager{
+			commonRegisteredManager: commonRegisteredManager{cosmos},
 		},
 	}
 }

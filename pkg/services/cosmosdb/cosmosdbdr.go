@@ -7,3 +7,7 @@ type commonRegisteredManager struct {
 type sqlAllInOneRegisteredManager struct {
 	sqlAllInOneManager
 }
+
+type mongoAccountRegisteredManager struct {
+	commonRegisteredManager
+}
