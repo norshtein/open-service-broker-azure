@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"regexp"
+	"strings"
 
 	cosmosSDK "github.com/Azure/azure-sdk-for-go/services/cosmos-db/mgmt/2015-04-08/documentdb"
 	"github.com/Azure/open-service-broker-azure/pkg/service"
@@ -13,12 +14,12 @@ func (c *commonRegisteredManager) GetProvisioner(
 	service.Plan,
 ) (service.Provisioner, error) {
 	return service.NewProvisioner(
-		service.NewProvisioningStep("fillInPKAndFQDN", c.fillInPKAndFQDN),               // nolint:lll
-		service.NewProvisioningStep("fillInConnectionString", c.fillInConnectionString), // nolint: lll
+		service.NewProvisioningStep("fillInCommonCredentials", c.fillInCommonCredentials),                 // nolint:lll
+		service.NewProvisioningStep("fillInDifferentiatedCredentials", c.fillInDifferentiatedCredentials), // nolint: lll
 	)
 }
 
-func (c *commonRegisteredManager) fillInPKAndFQDN(
+func (c *commonRegisteredManager) fillInCommonCredentials(
 	ctx context.Context,
 	instance service.Instance,
 ) (service.InstanceDetails, error) {
@@ -51,7 +52,7 @@ func (c *commonRegisteredManager) fillInPKAndFQDN(
 	return dt, nil
 }
 
-func (c *commonRegisteredManager) fillInConnectionString(
+func (c *commonRegisteredManager) fillInDifferentiatedCredentials(
 	ctx context.Context,
 	instance service.Instance,
 ) (service.InstanceDetails, error) {
@@ -67,6 +68,20 @@ func (c *commonRegisteredManager) fillInConnectionString(
 				dt.PrimaryKey,
 				dt.FullyQualifiedDomainName,
 			),
+		)
+		// Allow to remove the https:// and the port 443 on the FQDN
+		// This will allow to adapt the FQDN for Azure Public / Azure Gov ...
+		// Before :
+		// https://6bd965fd-a916-4c3c-9606-161ec4d726bf.documents.azure.com:443
+		// After :
+		// 6bd965fd-a916-4c3c-9606-161ec4d726bf.documents.azure.com
+		hostnameNoHTTPS := strings.Join(
+			strings.Split(dt.FullyQualifiedDomainName, "https://"),
+			"",
+		)
+		dt.FullyQualifiedDomainName = strings.Join(
+			strings.Split(hostnameNoHTTPS, ":443/"),
+			"",
 		)
 	case "azure-cosmosdb-table-account-registered":
 		dt.ConnectionString = service.SecureString(
