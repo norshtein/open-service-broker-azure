@@ -163,7 +163,7 @@ You may have noticed that if you enable auto failover and the source code doesn'
 
 ### Steps for recovering from an outage of Azure region
 
-Recovering from an outage of Azure region is only suitable for users who have two Cloud Foundry cluster and have finished [previous optional step](#(Optional) 2. Create service instance in another Cloud Foundry cluster). 
+Recovering from an outage of Azure region is only suitable for users who have two Cloud Foundry cluster and have finished [previous optional step](#optional-2-create-service-instance-in-another-cloud-foundry-cluster). 
 
 #### 1. Boot backup Cloud Foundry cluster
 
