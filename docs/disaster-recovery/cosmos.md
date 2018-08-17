@@ -158,7 +158,7 @@ If you haven't change your source code in step 2, skip this step.
 Since the source has been changed, use `cf push` to re-push your application, your application will be temporarily offline during pushing.
 
 
-
+<br>
 You may have noticed that if you enable auto failover and the source code doesn't need to ne changed, you even don't need to do anything when the write region is out of service!
 
 ### Steps for recovering from an outage of Azure region
@@ -188,6 +188,5 @@ Use `cf push` to push your application in the backup cluster.
 
 Use `cf bind-service <APP_NAME> *-registered` to bind service instance to your application.
 
-
-
+<br>
 It's also recommended executing Step 3 to Step 5 in advance so that you can quickly make your application available once the disaster happens.
