@@ -1,21 +1,21 @@
-# Disaster Recovery of Cosmos DB
+# Disaster Recovery of CosmosDB
 
 ## Prerequisite 
 
-- If you have two Cloud Foundry cluster and you want to recover from Azure region outage, enable `Disaster Recovery` tag for service broker in backup cluster.
+- If you have two Cloud Foundry clusters and you want to recover from Azure region outage, enable `Disaster Recovery` tag for service broker in the backup Cloud Foundry cluster.
 
 ## Steps for setting up disaster recovery
 
-### 1. Create or update a Cosmos instance
+### 1. Create or update a CosmosDB instance
 
-Create a Cosmos instance which has at least one read region, or update an existing Cosmos instance to have at least one read region. Your data will be synchronized across read regions. 
+Create a CosmosDB service instance which has at least one read region, or update an existing CosmosDB service instance to have at least one read region. Your data will be synchronized across read regions. 
 
 #### I. Create an instance with at least one read region
 
 Click [here](../modules/cosmosdb.md) for detailed information about provision parameters. Below is an example:
 
 ```bash
-cf create-service azure-cosmosdb-sql account myCosmos -c '{
+cf create-service azure-cosmosdb-sql account myCosmosDB -c '{
     "resourceGroup": "demo",
     "location": "eastus",
     "readRegions": ["westus", "southcentralus"],
@@ -23,34 +23,34 @@ cf create-service azure-cosmosdb-sql account myCosmos -c '{
 }'
 ```
 
-This example will create a SQL Cosmos account which has one write region and two read regions with auto failover enabled. Data will be synchronized across these three regions. 
+This example will create a SQL CosmosDB account which has one write region and two read regions with auto failover enabled. Data will be synchronized across these three regions. 
 
 #### II. Update an existing instance to have at least one read region
 
-Suppose you already have a Cosmos instance and you have written some data to it. In this case, you can update it to have at least one read region. The data in existing region will be copied to read regions automatically. Click [here](../modules/cosmosdb.md) for detailed information about update parameters. Below is an example:
+Suppose you already have a CosmosDB service instance and you have written some data to it. In this case, you can update it to have at least one read region. The data in existing region will be copied to read regions automatically. Click [here](../modules/cosmosdb.md) for detailed information about update parameters. Below is an example:
 
 ```bash
-cf update-service myCosmos -c '{
+cf update-service myCosmosDB -c '{
     "readRegions": ["eastasia"],
     "autoFailoverEnabled": "enabled"
 }'
 ```
 
-This example will update existing  `myCosmos` instance to have one read region with auto failover enabled.
+This example will update existing  `myCosmosDB` instance to have one read region with auto failover enabled.
 
 ### (Optional) 2. Create service instance in another Cloud Foundry cluster
 
-If you have two Cloud Foundry cluster and you want to recover from Azure region outage, follow this step. 
+Follow this step if you have two Cloud Foundry cluster and you want to recover from Azure region outage.
 
 Make sure the service broker in the primary cluster and the service broker in the backup cluster are **using the same Azure subscription**.
 
-You need to use `*-registered` services to create backup service instance in backup Cloud Foundry cluster. For each Cosmos instance in primary Cloud Foundry cluster, a corresponding instance should be created in backup Cloud Foundry cluster. This type of services is used to provide credentials and it won't create any resource. In provision step, it takes database account name and possible database name as parameters, finds the database account in service broker's subscription and gets the credential of the account. In bind step, it will return gotten credentials. In deprovision step, it does nothing. For detailed information of these services, see [here](./modules/cosmos.md).
+You need to use `*-registered` services to create backup service instance in the backup Cloud Foundry cluster. For each CosmosDB instance in primary Cloud Foundry cluster, a corresponding instance should be created in the backup Cloud Foundry cluster. This type of services is used to provide credentials and it won't create any resource. In provision step, it takes database account name and possible database name as parameters, finds the database account in service broker's subscription and gets the credential of the account. In bind step, it will return gotten credentials. In deprovision step, it does nothing. For detailed information of these services, see [here](./modules/cosmosdb.md).
 
 You can create `*-registered` service instance by script or manually.
 
 #### I. By script
 
-We have provided scripts for you, you can find them [here](../../scripts/cosmos-disaster-recovery). It's convenient to use scripts if you have many service instances in the primary Cloud Foundry cluster. Follow below steps:
+We have provided scripts for you, you can find them [here](../../scripts/cosmosdb-disaster-recovery). It's convenient to use scripts if you have many service instances in the primary Cloud Foundry cluster. Follow below steps:
 
 0. Make sure you have bind service instances which need to be exported to an app. Only binded service instances can be detected by the script. Use `cf bind-service <APP_NAME> <SERVICE_INSTANCE_NAME>` to bind service instances and run `cf services` to check bind status of services instances. 
 
@@ -80,7 +80,7 @@ We have provided scripts for you, you can find them [here](../../scripts/cosmos-
    >    }
    > ]
 
-2. Run following command in shell with backup Cloud Foundry cluster logged in:
+2. Run following command in shell with the backup Cloud Foundry cluster logged in:
 
    ```bash
    cd <PATH_TO_SCRIPTS>
@@ -96,7 +96,7 @@ We have provided scripts for you, you can find them [here](../../scripts/cosmos-
 
 #### II. Manually
 
-If you only have few service instances in primary Cloud Foundry cluster, it's ok to manually create corresponding service instance. Following below steps:
+If you only have few service instances in the primary Cloud Foundry cluster, it's ok to manually create corresponding service instance. Follow below steps:
 
 0. Use `cf bind-service <APP_NAME> <SERVICE_INSTANCE_NAME>`  to bind service instances which need to be exported. For example `cf bind-service demoapp myCosmosDB`.
 
@@ -121,7 +121,7 @@ If you only have few service instances in primary Cloud Foundry cluster, it's ok
 
    Record the `databaseName` and `accountName`. `accountName` is the string between "https://" and ".documents.azure.com:443/" in`uri` field. In the example, `accountName` is "7f5d760c-868b-4ae9-bf0d-9c413a4cccc1", and `databaseName` is "61354ee5-a5db-4afc-ac52-fc3e1057dbc6".
 
-2. Log in backup Cloud Foundry cluster, create corresponding `*-registered` service instance using following command:
+2. Log in the backup Cloud Foundry cluster, create corresponding `*-registered` service instance using following command:
 
    ```bash
    cf create-service *-registered <PLAN> <INSTANCE_NAME> -c '{"accountName": "<ACCOUNT_NAME>" [, "databaseName": "<DATABASE_NAME>"]}'
@@ -135,17 +135,17 @@ If you only have few service instances in primary Cloud Foundry cluster, it's ok
    cf create-service azure-cosmosdb-sql-database-registered database demo-registered-db -c '{"accountName": "7f5d760c-868b-4ae9-bf0d-9c413a4cccc1", "databaseName": "61354ee5-a5db-4afc-ac52-fc3e1057dbc6"}'
    ```
 
-   For detailed information of `*-registered` services, see [here](./modules/cosmos.md).
+   For detailed information of `*-registered` services, see [here](./modules/cosmosdb.md).
 
 ## Steps for recovering from an outage 
 
-### Steps for recovering from an outage of Cosmos write region
+### Steps for recovering from an outage of CosmosDB database account write region
 
 #### 1. Do manual Failover
 
 If you have set `autoFailoverEnabled` to `enabled` in provision or update, skip this step.
 
-Open Azure portal and find the cosmos account of your instance,  follow [this doc](https://docs.microsoft.com/en-us/azure/cosmos-db/regional-failover#ManualFailovers) to do manual failover.
+Open Azure portal and find the CosmosDB database account of your instance,  follow [this doc](https://docs.microsoft.com/en-us/azure/cosmos-db/regional-failover#ManualFailovers) to do manual failover.
 
 #### 2. Change the source code of your application
 
@@ -165,7 +165,7 @@ You may have noticed that if you enable auto failover and the source code doesn'
 
 Recovering from an outage of Azure region is only suitable for users who have two Cloud Foundry cluster and have finished [previous optional step](#optional-2-create-service-instance-in-another-cloud-foundry-cluster). 
 
-#### 1. Boot backup Cloud Foundry cluster
+#### 1. Boot your backup Cloud Foundry cluster
 
 Boot your backup Cloud Foundry cluster.
 
@@ -173,7 +173,7 @@ Boot your backup Cloud Foundry cluster.
 
 If you have set `autoFailoverEnabled` to `enabled` in provision or update, skip this step.
 
-Open Azure portal and find the cosmos account of your instance,  follow [this doc](https://docs.microsoft.com/en-us/azure/cosmos-db/regional-failover#ManualFailovers) to do manual failover.
+Open Azure portal and find the CosmosDB database account of your instance,  follow [this doc](https://docs.microsoft.com/en-us/azure/cosmos-db/regional-failover#ManualFailovers) to do manual failover.
 
 #### 3. Change the source code of your application
 
