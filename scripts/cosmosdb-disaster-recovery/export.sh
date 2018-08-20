@@ -63,8 +63,8 @@ for row in $(echo $service_bindings | jq '.resources' | jq -c '.[]'); do
 			instance_service_name=${cf_plan_id_to_service_name[${instance_plan_id}]}
 
 			accountname=""
-			username=$(echo $row | jq -r '.entity.credentials.username')
-			if [ username != "" ]; then
+			username=$(echo $row | jq -r '.entity.credentials.username // empty')
+			if [ ! -z $username ]; then
 				account_name=$username
 			else
 				uri=$(echo $row | jq -r '.entity.credentials.uri')
