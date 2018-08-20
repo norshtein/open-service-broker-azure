@@ -1,4 +1,4 @@
-# Disaster Recovery of CosmosDB
+# Disaster Recovery of Cosmos DB
 
 ## Prerequisite 
 
@@ -52,7 +52,7 @@ You can create `*-registered` service instance by script or manually.
 
 We have provided scripts for you, you can find them [here](../../scripts/cosmosdb-disaster-recovery). It's convenient to use scripts if you have many service instances in the primary Cloud Foundry cluster. Follow below steps:
 
-0. Make sure you have bind service instances which need to be exported to an app. Only binded service instances can be detected by the script. Use `cf bind-service <APP_NAME> <SERVICE_INSTANCE_NAME>` to bind service instances and run `cf services` to check bind status of services instances. 
+0. Make sure you have bound service instances which need to be exported to an app. Only bound service instances can be detected by the script. Use `cf bind-service <APP_NAME> <SERVICE_INSTANCE_NAME>` to bind service instances and run `cf services` to check bind status of services instances. 
 
 1. Run following command in shell with primary Cloud Foundry cluster logged in: 
 
