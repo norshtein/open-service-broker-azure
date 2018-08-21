@@ -1,9 +1,37 @@
 #!/bin/bash
 
-system_domain=$1
-export_file_name=$2
-redis_host=$3
-redis_password=$4
+while getopts :o:h:a:d: option
+do
+	case "$option"
+		in
+		o) output_file_name=${OPTARG};;
+		h) redis_host=${OPTARG};;
+		a) redis_password=${OPTARG};;
+		d) system_domain=${OPTARG};;
+		\?) unknown_flag=${OPTARG};;
+	esac
+done
+
+if [ ! -z $unknown_flag ]; then
+	echo "Unknown flag $unknown_flag"
+	exit 1
+fi
+if [ -z $redis_host ]; then
+	echo 'Redis host is missed, use "-h <REDIS_HOST>" to specify the redis host'
+	exit 1
+fi
+if [ -z $redis_password ]; then
+	echo 'Redis password is missed, use "-a <REDIS_PASSWORD>" to specify the redis password'
+	exit 1
+fi
+if [ -z $system_domain ]; then
+	echo 'System domain is missed, use "-d <SYSTEM_DOMAIN>" to specify the system domain"'
+	exit 1
+fi
+if [ -z $output_file_name ]; then
+	echo 'Output file name is missed, use "-o <OUTPUT_FILE_NAME>" to specify the output file name'
+	exit 1
+fi
 
 declare -A broker_plan_id_to_service_name=( ["58d7223d-934e-4fb5-a046-0c67781eb24e"]="azure-cosmosdb-sql" ["71168d1a-c704-49ff-8c79-214dd3d6f8eb"]="azure-cosmosdb-sql-account" ["c821c68c-c8e0-4176-8cf2-f0ca582a07a3"]="azure-cosmosdb-sql-database" ["86fdda05-78d7-4026-a443-1325928e7b02"]="azure-cosmosdb-mongo-account" ["126a2c47-11a3-49b1-833a-21b563de6c04"]="azure-cosmosdb-graph-account" ["c970b1e8-794f-4d7c-9458-d28423c08856"]="azure-cosmosdb-table-account" )
 declare -A broker_plan_id_to_plan_name=( ["58d7223d-934e-4fb5-a046-0c67781eb24e"]="sql-api" ["71168d1a-c704-49ff-8c79-214dd3d6f8eb"]="account" ["c821c68c-c8e0-4176-8cf2-f0ca582a07a3"]="database" ["86fdda05-78d7-4026-a443-1325928e7b02"]="account" ["126a2c47-11a3-49b1-833a-21b563de6c04"]="account" ["c970b1e8-794f-4d7c-9458-d28423c08856"]="account" )
@@ -92,5 +120,5 @@ for row in $(echo $service_bindings | jq '.resources' | jq -c '.[]'); do
 	done
 done
 result_json="${result_json}]"
-echo $result_json > ${export_file_name}
+echo $result_json > ${output_file_name}
 echo "Done."
