@@ -52,35 +52,39 @@ You can create `*-registered` service instance by script or manually.
 
 We have provided scripts for you, you can find them [here](../../scripts/cosmosdb-disaster-recovery). It's convenient to use scripts if you have many service instances in the primary Cloud Foundry cluster. Follow below steps:
 
-0. Make sure you have bound service instances which need to be exported to an app. Only bound service instances can be detected by the script. Use `cf bind-service <APP_NAME> <SERVICE_INSTANCE_NAME>` to bind service instances and run `cf services` to check bind status of services instances. 
+0. Make sure you have installed [redis-cli](https://redis.io/download) and [jq](https://stedolan.github.io/jq/download/) in the operating environment. 
 
-1. Run following command in shell with primary Cloud Foundry cluster logged in: 
+1. Make sure you have bound service instances which need to be exported to an app. Only bound service instances can be detected by the script. Use `cf bind-service <APP_NAME> <SERVICE_INSTANCE_NAME>` to bind service instances and run `cf services` to check bind status of services instances. 
+
+2. Run following command in shell with primary Cloud Foundry cluster logged in: 
 
    ```bash
    cd <PATH_TO_SCRIPTS>
-   ./export.sh <YOUR_SYSTEM_DOMAIN> <EXPORT_FILE_NAME>
+   ./export.sh -h <STORAGE_REDIS_HOST> -a <STORAGE_REDIS_PASSWORD> -d <YOUR_SYSTEM_DOMAIN> -o <OUTPUT_FILE_NAME>
    ```
 
-   For example: `./export.sh example.com export.json`. You will get `export.json` containing non-sensitive information like this:
+   For example: `./export.sh -h example.redis.cache.windows.net -a password -d example.com -o export.json`. You will get `export.json` containing non-sensitive information like this:
 
    > [
    >    {
-   >       "serviceName":"azure-cosmosdb-sql-database",
-   >       "planName":"database",
-   >       "instanceName":"cosmosdb",
-   >       "accountName":"7f5d760c-868b-4ae9-bf0d-9c413a4cccc1",
-   >       "databaseName":"61354ee5-a5db-4afc-ac52-fc3e1057dbc6"
+   >       "resourceGroup":"tosiCosmos",
+   >       "serviceName":"azure-cosmosdb-mongo-account",
+   >       "planName":"account",
+   >       "instanceName":"mymongo",
+   >       "accountName":"b4292796-995a-4f8a-8599-beba1f0bd295",
+   >       "databaseName":""
    >    },
    >    {
-   >       "serviceName":"azure-cosmosdb-graph-account",
-   >       "planName":"account",
-   >       "instanceName":"cosmosGraph2",
-   >       "accountName":"d7fd5a6d-32de-461b-b2e4-2688f6e1b421",
-   >       "databaseName":""
+   >       "resourceGroup":"tosiCosmosTest3",
+   >       "serviceName":"azure-cosmosdb-sql",
+   >       "planName":"sql-api",
+   >       "instanceName":"cosmossql",
+   >       "accountName":"b71e3845-2181-495c-a1c6-d002c028badc",
+   >       "databaseName":"3205b45b-604e-44b4-b504-086275cbfe85"
    >    }
    > ]
 
-2. Run following command in shell with the backup Cloud Foundry cluster logged in:
+3. Run following command in shell with the backup Cloud Foundry cluster logged in:
 
    ```bash
    cd <PATH_TO_SCRIPTS>
@@ -89,10 +93,10 @@ We have provided scripts for you, you can find them [here](../../scripts/cosmosd
 
    The import script will automatically create a corresponding `*-registered` service instance for each instance in the json file. The instance will be named as `<instanceName>-registered`. For example, if you run ` ./import.sh export.json` , two new services instances will be created: 
 
-   | Service instance name   | service                                 | plan     |
-   | ----------------------- | --------------------------------------- | -------- |
-   | cosmosdb-registered     | azure-cosmosdb-sql-database-registered  | database |
-   | cosmosGraph2-registered | azure-cosmosdb-graph-account-registered | account  |
+   | Service instance name | service                                 | plan    |
+   | --------------------- | --------------------------------------- | ------- |
+   | mymongo-registered    | azure-cosmosdb-mongo-account-registered | account |
+   | cosmossql-registered  | azure-cosmosdb-sql-registered           | sql-api |
 
 #### II. Manually
 
@@ -119,12 +123,14 @@ If you only have few service instances in the primary Cloud Foundry cluster, it'
    >     ...
    > }
 
-   Record the `databaseName` and `accountName`. `accountName` is the string between "https://" and ".documents.azure.com:443/" in`uri` field. In the example, `accountName` is "7f5d760c-868b-4ae9-bf0d-9c413a4cccc1", and `databaseName` is "61354ee5-a5db-4afc-ac52-fc3e1057dbc6".
+   Record the `databaseName` and `accountName`. `accountName` is the string between "https://" and ".documents.azure.com:443/" in`uri` field. In the example, `accountName` is `7f5d760c-868b-4ae9-bf0d-9c413a4cccc1`, and `databaseName` is `61354ee5-a5db-4afc-ac52-fc3e1057dbc6`.
+
+   Also, you should know the resource group of the service instance. It is the value you specified in provision step.
 
 2. Log in the backup Cloud Foundry cluster, create corresponding `*-registered` service instance using following command:
 
    ```bash
-   cf create-service *-registered <PLAN> <INSTANCE_NAME> -c '{"accountName": "<ACCOUNT_NAME>" [, "databaseName": "<DATABASE_NAME>"]}'
+   cf create-service *-registered <PLAN> <INSTANCE_NAME> -c '{"resourceGroup": "<RESOURCE_GROUP_NAME>", "accountName": "<ACCOUNT_NAME>" [, "databaseName": "<DATABASE_NAME>"]}'
    ```
 
    `databaseName` is only needed for `azure-cosmosdb-sql-database-registered` and `azure-cosmosdb-sql-registered`. 
@@ -132,7 +138,7 @@ If you only have few service instances in the primary Cloud Foundry cluster, it'
    In the example, `azure-cosmosdb-sql-database-registered` should be created, so we run:
 
    ```bash
-   cf create-service azure-cosmosdb-sql-database-registered database demo-registered-db -c '{"accountName": "7f5d760c-868b-4ae9-bf0d-9c413a4cccc1", "databaseName": "61354ee5-a5db-4afc-ac52-fc3e1057dbc6"}'
+   cf create-service azure-cosmosdb-sql-database-registered database demo-registered-db -c '{"resourceGroup": "exampleRG", "accountName": "7f5d760c-868b-4ae9-bf0d-9c413a4cccc1", "databaseName": "61354ee5-a5db-4afc-ac52-fc3e1057dbc6"}'
    ```
 
    For detailed information of `*-registered` services, see [here](./modules/cosmosdb.md).

@@ -2,6 +2,8 @@
 
 _Note: This module is EXPERIMENTAL and is not included in the General Availability release of Open Service Broker for Azure. It will be added in a future OSBA release._
 
+These services are used for disaster recovery, the only purpose of them is to get credentials in the backup cluster.
+
 ## Services & Plans
 
 ### Service: azure-cosmosdb-sql-registered
@@ -14,14 +16,15 @@ _Note: This module is EXPERIMENTAL and is not included in the General Availabili
 
 ##### Provision
 
-Finds the CosmosDB database account and CosmosDB database with given name in service broker's subscription, and get credentials of account and database. The provision doesn't create any resource.
+Finds the CosmosDB database account and CosmosDB database in given resource group, and get credentials of account and database. The provision step doesn't create any resource.
 
 ###### Provisioning Parameters
 
-| Parameter Name | Type     | Description                                                  | Required | Default Value |
-| -------------- | -------- | ------------------------------------------------------------ | -------- | ------------- |
-| `accountName`  | `string` | The Azure region in which to provision applicable resources. | Y        |               |
-| `databaseName` | `string` | The (new or existing) resource group with which to associate new resources. | Y        |               |
+| Parameter Name  | Type     | Description                                                  | Required | Default Value |
+| --------------- | -------- | ------------------------------------------------------------ | -------- | ------------- |
+| `resourceGroup` | `string` | The name of the resource group where the existing database account is located. | Y        |               |
+| `accountName`   | `string` | The name of the exiting database account.                    | Y        |               |
+| `databaseName`  | `string` | The name of the existing database.                           | Y        |               |
 
 ##### Bind
 
@@ -53,8 +56,6 @@ Does nothing.
 
 Does nothing.
 
-##### 
-
 ### Service: azure-cosmosdb-sql-account-registered
 
 | Plan Name | Description                                |
@@ -65,13 +66,14 @@ Does nothing.
 
 ##### Provision
 
-Finds the CosmosDB database account with given name in service broker's subscription, and get credentials of the account. The provision doesn't create any resource.
+Finds the CosmosDB database account with given name in given resource group, and get credentials of the account. The provision step doesn't create any resource.
 
 ###### Provisioning Parameters
 
-| Parameter Name | Type     | Description                                                  | Required | Default Value |
-| -------------- | -------- | ------------------------------------------------------------ | -------- | ------------- |
-| `accountName`  | `string` | The Azure region in which to provision applicable resources. | Y        |               |
+| Parameter Name  | Type     | Description                                                  | Required | Default Value |
+| --------------- | -------- | ------------------------------------------------------------ | -------- | ------------- |
+| `resourceGroup` | `string` | The name of the resource group where the existing database account is located. | Y        |               |
+| `accountName`   | `string` | The name of the exiting database account.                    | Y        |               |
 
 ##### Bind
 
@@ -111,14 +113,15 @@ Does nothing.
 
 ##### Provision
 
-Finds the CosmosDB database account and CosmosDB database with given name in service broker's subscription, and get credentials of account and database. The provision doesn't create any resource.
+Finds the CosmosDB database account and CosmosDB database in given resource group, and get credentials of account and database. The provision step doesn't create any resource.
 
 ###### Provisioning Parameters
 
-| Parameter Name | Type     | Description                                                  | Required | Default Value |
-| -------------- | -------- | ------------------------------------------------------------ | -------- | ------------- |
-| `accountName`  | `string` | The Azure region in which to provision applicable resources. | Y        |               |
-| `databaseName` | `string` | The (new or existing) resource group with which to associate new resources. | Y        |               |
+| Parameter Name  | Type     | Description                                                  | Required | Default Value |
+| --------------- | -------- | ------------------------------------------------------------ | -------- | ------------- |
+| `resourceGroup` | `string` | The name of the resource group where the existing database account is located. |          |               |
+| `accountName`   | `string` | The name of the exiting database account.                    | Y        |               |
+| `databaseName`  | `string` | The name of the existing database.                           | Y        |               |
 
 ##### Bind
 
@@ -160,13 +163,14 @@ Does nothing.
 
 ##### Provision
 
-Finds the CosmosDB database account with given name in service broker's subscription, and get credentials of the account. The provision doesn't create any resource.
+Finds the CosmosDB database account with given name in given resource group, and get credentials of the account. The provision step doesn't create any resource.
 
 ###### Provisioning Parameters
 
-| Parameter Name | Type     | Description                                                  | Required | Default Value |
-| -------------- | -------- | ------------------------------------------------------------ | -------- | ------------- |
-| `accountName`  | `string` | The Azure region in which to provision applicable resources. | Y        |               |
+| Parameter Name  | Type     | Description                                                  | Required | Default Value |
+| --------------- | -------- | ------------------------------------------------------------ | -------- | ------------- |
+| `resourceGroup` | `string` | The name of the resource group where the existing database account is located. | Y        |               |
+| `accountName`   | `string` | The name of the exiting database account.                    | Y        |               |
 
 ##### Bind
 
@@ -207,13 +211,14 @@ Does nothing.
 
 ##### Provision
 
-Finds the CosmosDB database account with given name in service broker's subscription, and get credentials of the account. The provision doesn't create any resource.
+Finds the CosmosDB database account with given name in given resource group, and get credentials of the account. The provision step doesn't create any resource.
 
 ###### Provisioning Parameters
 
-| Parameter Name | Type     | Description                                                  | Required | Default Value |
-| -------------- | -------- | ------------------------------------------------------------ | -------- | ------------- |
-| `accountName`  | `string` | The Azure region in which to provision applicable resources. | Y        |               |
+| Parameter Name  | Type     | Description                                                  | Required | Default Value |
+| --------------- | -------- | ------------------------------------------------------------ | -------- | ------------- |
+| `resourceGroup` | `string` | The name of the resource group where the existing database account is located. | Y        |               |
+| `accountName`   | `string` | The name of the exiting database account.                    | Y        |               |
 
 ##### Bind
 
@@ -251,13 +256,14 @@ Does nothing.
 
 ##### Provision
 
-Finds the CosmosDB database account with given name in service broker's subscription, and get credentials of the account. The provision doesn't create any resource.
+Finds the CosmosDB database account with given name in given resource group, and get credentials of the account. The provision step doesn't create any resource.
 
 ###### Provisioning Parameters
 
-| Parameter Name | Type     | Description                                                  | Required | Default Value |
-| -------------- | -------- | ------------------------------------------------------------ | -------- | ------------- |
-| `accountName`  | `string` | The Azure region in which to provision applicable resources. | Y        |               |
+| Parameter Name  | Type     | Description                                                  | Required | Default Value |
+| --------------- | -------- | ------------------------------------------------------------ | -------- | ------------- |
+| `resourceGroup` | `string` | The name of the resource group where the existing database account is located. | Y        |               |
+| `accountName`   | `string` | The name of the exiting database account.                    | Y        |               |
 
 ##### Bind
 
