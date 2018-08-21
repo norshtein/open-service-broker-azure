@@ -25,22 +25,32 @@ func (s *sqlAllInOneRegisteredManager) fillInInstanceDetails(
 	defer cancel()
 
 	databaseAccountName := instance.ProvisioningParameters.GetString("accountName") // nolint: lll
-	pk, err := getPrimaryKey(
+	resourceGroupName := instance.ProvisioningParameters.GetString("resourceGroup") // nolint: lll
+
+	databaseAccount, err := s.databaseAccountsClient.Get(
 		ctx,
+		resourceGroupName,
 		databaseAccountName,
-		s.databaseAccountsClient,
 	)
 	if err != nil {
 		return nil, err
 	}
+	fqdn := *(databaseAccount.DatabaseAccountProperties.DocumentEndpoint)
+
+	keys, err := s.databaseAccountsClient.ListKeys(
+		ctx,
+		resourceGroupName,
+		databaseAccountName,
+	)
+	if err != nil {
+		return nil, err
+	}
+	pk := *(keys.PrimaryMasterKey)
 
 	dt := &sqlAllInOneInstanceDetails{}
 	dt.DatabaseAccountName = databaseAccountName
-	dt.PrimaryKey = pk
-	dt.FullyQualifiedDomainName = fmt.Sprintf(
-		"https://%s.documents.azure.com:443/",
-		instance.ProvisioningParameters.GetString("accountName"),
-	)
+	dt.PrimaryKey = service.SecureString(pk)
+	dt.FullyQualifiedDomainName = fqdn
 	dt.ConnectionString = service.SecureString(
 		fmt.Sprintf("AccountEndpoint=%s;AccountKey=%s;",
 			dt.FullyQualifiedDomainName,

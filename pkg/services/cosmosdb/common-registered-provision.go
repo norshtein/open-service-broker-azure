@@ -3,10 +3,8 @@ package cosmosdb
 import (
 	"context"
 	"fmt"
-	"regexp"
 	"strings"
 
-	cosmosSDK "github.com/Azure/azure-sdk-for-go/services/cosmos-db/mgmt/2015-04-08/documentdb"
 	"github.com/Azure/open-service-broker-azure/pkg/service"
 )
 
@@ -27,22 +25,32 @@ func (c *commonRegisteredManager) fillInCommonCredentials(
 	defer cancel()
 
 	databaseAccountName := instance.ProvisioningParameters.GetString("accountName") // nolint: lll
-	pk, err := getPrimaryKey(
+	resourceGroupName := instance.ProvisioningParameters.GetString("resourceGroup") // nolint: lll
+
+	databaseAccount, err := c.databaseAccountsClient.Get(
 		ctx,
+		resourceGroupName,
 		databaseAccountName,
-		c.databaseAccountsClient,
 	)
 	if err != nil {
 		return nil, err
 	}
+	fqdn := *(databaseAccount.DatabaseAccountProperties.DocumentEndpoint)
+
+	keys, err := c.databaseAccountsClient.ListKeys(
+		ctx,
+		resourceGroupName,
+		databaseAccountName,
+	)
+	if err != nil {
+		return nil, err
+	}
+	pk := *(keys.PrimaryMasterKey)
 
 	dt := &cosmosdbInstanceDetails{}
 	dt.DatabaseAccountName = databaseAccountName
-	dt.PrimaryKey = pk
-	dt.FullyQualifiedDomainName = fmt.Sprintf(
-		"https://%s.documents.azure.com:443/",
-		instance.ProvisioningParameters.GetString("accountName"),
-	)
+	dt.PrimaryKey = service.SecureString(pk)
+	dt.FullyQualifiedDomainName = fqdn
 	dt.ConnectionString = service.SecureString(
 		fmt.Sprintf("AccountEndpoint=%s;AccountKey=%s;",
 			dt.FullyQualifiedDomainName,
@@ -60,7 +68,7 @@ func (c *commonRegisteredManager) fillInDifferentiatedCredentials(
 	dt := instance.Details.(*cosmosdbInstanceDetails)
 
 	switch serviceName {
-	case "azure-cosmosdb-mongo-account-registered":
+	case mongoAccountRegistered:
 		dt.ConnectionString = service.SecureString(
 			fmt.Sprintf(
 				"mongodb://%s:%s@%s:10255/?ssl=true&replicaSet=globaldb",
@@ -83,7 +91,7 @@ func (c *commonRegisteredManager) fillInDifferentiatedCredentials(
 			strings.Split(hostnameNoHTTPS, ":443/"),
 			"",
 		)
-	case "azure-cosmosdb-table-account-registered":
+	case tableAccountRegistered:
 		dt.ConnectionString = service.SecureString(
 			fmt.Sprintf(
 				"DefaultEndpointsProtocol=https;AccountName=%s;"+
@@ -93,8 +101,8 @@ func (c *commonRegisteredManager) fillInDifferentiatedCredentials(
 				dt.PrimaryKey,
 			),
 		)
-	case "azure-cosmosdb-sql-account-registered":
-	case "azure-cosmosdb-graph-account-registered":
+	case sqlAccountRegistered:
+	case graphAccountRegistered:
 		dt.ConnectionString = service.SecureString(
 			fmt.Sprintf("AccountEndpoint=%s;AccountKey=%s;",
 				dt.FullyQualifiedDomainName,
@@ -105,74 +113,4 @@ func (c *commonRegisteredManager) fillInDifferentiatedCredentials(
 		return nil, fmt.Errorf("given service name %s is not vaild", serviceName)
 	}
 	return dt, nil
-}
-func getPrimaryKey(
-	ctx context.Context,
-	accountName string,
-	databaseAccountClient cosmosSDK.DatabaseAccountsClient,
-) (service.SecureString, error) {
-	ctx, cancel := context.WithCancel(ctx)
-	defer cancel()
-
-	allAccounts, err := databaseAccountClient.List(ctx)
-	if err != nil {
-		return "", err
-	}
-	databaseAccount, err := findDatabaseAccountWithGivenName(
-		allAccounts,
-		accountName,
-	)
-	if err != nil {
-		return "", err
-	}
-
-	resourceGroupName, err := extractResourceGroupFromID(
-		*(databaseAccount.ID),
-	)
-	if err != nil {
-		return "", err
-	}
-
-	keys, err := databaseAccountClient.ListKeys(
-		ctx,
-		resourceGroupName,
-		accountName,
-	)
-	if err != nil {
-		return "", err
-	}
-
-	pk := *(keys.PrimaryMasterKey)
-	return service.SecureString(pk), nil
-}
-
-// Find database account with given name in the list, if none is found, return nil
-func findDatabaseAccountWithGivenName(
-	databaseAccountList cosmosSDK.DatabaseAccountsListResult,
-	name string,
-) (cosmosSDK.DatabaseAccount, error) {
-	databaseAccounts := *(databaseAccountList.Value)
-	for i := range databaseAccounts {
-		databaseAccount := databaseAccounts[i]
-		if *(databaseAccount.Name) == name {
-			return databaseAccount, nil
-		}
-	}
-	return cosmosSDK.DatabaseAccount{},
-		fmt.Errorf("Given database account is not found in current subscription")
-}
-
-func extractResourceGroupFromID(
-	id string,
-) (string, error) {
-	re, err := regexp.Compile(".*/resourceGroups/(.*?)/.*")
-	if err != nil {
-		return "", fmt.Errorf("Error compiling regular expression: %s", err)
-	}
-	res := re.FindStringSubmatch(id)
-
-	if len(res) != 2 {
-		return "", fmt.Errorf("Given id is not vaild")
-	}
-	return res[1], nil
 }

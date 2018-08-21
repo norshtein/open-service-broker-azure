@@ -10,9 +10,13 @@ func generateCommonRegisteredProvisioningParamsSchema() service.InputParametersS
 			Title:       "Account Name",
 			Description: "The database account name of existing instance",
 		},
+		"resourceGroup": &service.StringPropertySchema{
+			Title:       "Resource group",
+			Description: "The resource group of the database account.",
+		},
 	}
 	return service.InputParametersSchema{
-		RequiredProperties: []string{"accountName"},
+		RequiredProperties: []string{"accountName", "resourceGroup"},
 		PropertySchemas:    propertySchemas,
 	}
 }
@@ -27,9 +31,13 @@ func generateAllInOneRegisteredProvisioningParamsSchema() service.InputParameter
 			Title:       "Database Name",
 			Description: "The database name of existing instance",
 		},
+		"resourceGroup": &service.StringPropertySchema{
+			Title:       "Resource group",
+			Description: "The resource group of the database account.",
+		},
 	}
 	return service.InputParametersSchema{
-		RequiredProperties: []string{"accountName"},
+		RequiredProperties: []string{"accountName", "databaseName", "resourceGroup"},
 		PropertySchemas:    propertySchemas,
 	}
 }
