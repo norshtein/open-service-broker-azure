@@ -2,6 +2,8 @@
 
 system_domain=$1
 export_file_name=$2
+redis_host=$3
+redis_password=$4
 
 declare -A broker_plan_id_to_service_name=( ["58d7223d-934e-4fb5-a046-0c67781eb24e"]="azure-cosmosdb-sql" ["71168d1a-c704-49ff-8c79-214dd3d6f8eb"]="azure-cosmosdb-sql-account" ["c821c68c-c8e0-4176-8cf2-f0ca582a07a3"]="azure-cosmosdb-sql-database" ["86fdda05-78d7-4026-a443-1325928e7b02"]="azure-cosmosdb-mongo-account" ["126a2c47-11a3-49b1-833a-21b563de6c04"]="azure-cosmosdb-graph-account" ["c970b1e8-794f-4d7c-9458-d28423c08856"]="azure-cosmosdb-table-account" )
 declare -A broker_plan_id_to_plan_name=( ["58d7223d-934e-4fb5-a046-0c67781eb24e"]="sql-api" ["71168d1a-c704-49ff-8c79-214dd3d6f8eb"]="account" ["c821c68c-c8e0-4176-8cf2-f0ca582a07a3"]="database" ["86fdda05-78d7-4026-a443-1325928e7b02"]="account" ["126a2c47-11a3-49b1-833a-21b563de6c04"]="account" ["c970b1e8-794f-4d7c-9458-d28423c08856"]="account" )
@@ -76,8 +78,10 @@ for row in $(echo $service_bindings | jq '.resources' | jq -c '.[]'); do
 				database_name=$(echo $row | jq -r '.entity.credentials.databaseName')
 			fi
 			
+			resource_group_name=$(redis-cli -h ${redis_host} -a ${redis_password} get "instances:${instance_id}" | jq -r '.provisioningParameters.resourceGroup')
+			
 			# echo "sn: ${instance_service_name}, pn: ${instance_plan_name}, in: ${instance_name}, an: ${account_name}, dn: ${database_name}"
-			current_json=$(jq -n --arg sn "$instance_service_name" --arg pn "$instance_plan_name" --arg in "$instance_name" --arg an "$account_name" --arg dn "$database_name" '{serviceName: $sn, planName: $pn, instanceName: $in, accountName: $an, databaseName: $dn}')
+			current_json=$(jq -n --arg rn "$resource_group_name" --arg sn "$instance_service_name" --arg pn "$instance_plan_name" --arg in "$instance_name" --arg an "$account_name" --arg dn "$database_name" '{resourceGroup: $rn, serviceName: $sn, planName: $pn, instanceName: $in, accountName: $an, databaseName: $dn}')
 			if [ "$result_json" != '[' ]; then
 				result_json="${result_json},"		
 			fi

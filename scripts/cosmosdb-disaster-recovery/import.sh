@@ -2,6 +2,7 @@
 
 import_file_name=$1
 for row in $(cat ${import_file_name} | jq -c '.[]' ); do
+	resource_group=$(echo $row | jq -r '.resourceGroup')
 	service_name=$(echo $row | jq -r '.serviceName')
 	plan_name=$(echo $row | jq -r '.planName')
 	instance_name=$(echo $row | jq -r '.instanceName')
@@ -12,9 +13,9 @@ for row in $(cat ${import_file_name} | jq -c '.[]' ); do
 	instance_name="${instance_name}-registered"
 	# echo $service_name  $plan_name $instance_name $account_name $database_name
 	if [ $plan_name != "account" ]; then
-		cf create-service "${service_name}" "${plan_name}" "${instance_name}" -c "{\"accountName\": \"${account_name}\", \"databaseName\": \"${database_name}\"}"
+		cf create-service "${service_name}" "${plan_name}" "${instance_name}" -c "{\"resourceGroup\": \"${resource_group}\", \"accountName\": \"${account_name}\", \"databaseName\": \"${database_name}\"}"
 	else
-		cf create-service "${service_name}" "${plan_name}" "${instance_name}" -c "{\"accountName\": \"${account_name}\"}"
+		cf create-service "${service_name}" "${plan_name}" "${instance_name}" -c "{\"resourceGroup\": \"${resource_group}\", \"accountName\": \"${account_name}\"}"
 	fi
 
 done
