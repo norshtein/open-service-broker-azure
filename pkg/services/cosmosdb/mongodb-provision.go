@@ -13,6 +13,7 @@ func (m *mongoAccountManager) GetProvisioner(
 	service.Plan,
 ) (service.Provisioner, error) {
 	return service.NewProvisioner(
+		service.NewProvisioningStep("validateProvisioningParameters", m.validateProvisioningParameters), // nolint: lll
 		service.NewProvisioningStep("preProvision", m.preProvision),
 		service.NewProvisioningStep("deployARMTemplate", m.deployARMTemplate),
 		service.NewProvisioningStep("waitForReadLocationsReady", m.waitForReadLocationsReady), // nolint: lll

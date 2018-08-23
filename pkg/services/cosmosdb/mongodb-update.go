@@ -10,8 +10,9 @@ import (
 func (
 	m *mongoAccountManager,
 ) ValidateUpdatingParameters(instance service.Instance) error {
-	return validateReadLocations(
+	return validateLocations(
 		"mongo account update",
+		instance.ProvisioningParameters.GetString("location"),
 		instance.UpdatingParameters.GetStringArray("readRegions"),
 	)
 }

@@ -111,3 +111,14 @@ func (c *cosmosAccountManager) handleOutput(
 	}
 	return fqdn, primaryKey, nil
 }
+
+func (c *cosmosAccountManager) validateProvisioningParameters(
+	_ context.Context,
+	instance service.Instance,
+) (service.InstanceDetails, error) {
+	return nil, validateLocations(
+		"readRegions",
+		instance.ProvisioningParameters.GetString("location"),
+		instance.ProvisioningParameters.GetStringArray("readRegions"),
+	)
+}

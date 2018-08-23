@@ -10,8 +10,9 @@ import (
 func (
 	g *graphAccountManager,
 ) ValidateUpdatingParameters(instance service.Instance) error {
-	return validateReadLocations(
+	return validateLocations(
 		"graph account update",
+		instance.ProvisioningParameters.GetString("location"),
 		instance.UpdatingParameters.GetStringArray("readRegions"),
 	)
 }
