@@ -9,6 +9,7 @@ const mongoAccountRegistered = "azure-cosmosdb-mongo-account-registered"
 const graphAccountRegistered = "azure-cosmosdb-graph-account-registered"
 const tableAccountRegistered = "azure-cosmosdb-table-account-registered"
 
+// nolint: lll
 func (m *module) GetCatalog() (service.Catalog, error) {
 	return service.NewCatalog([]service.Service{
 			service.NewService(
@@ -48,8 +49,8 @@ func (m *module) GetCatalog() (service.Catalog, error) {
 					},
 					Schemas: service.PlanSchemas{
 						ServiceInstances: service.InstanceSchemas{
-							ProvisioningParametersSchema: generateProvisioningParamsSchema(), // nolint: lll
-							UpdatingParametersSchema:     generateUpdatingParamsSchema(),     // nolint: lll
+							ProvisioningParametersSchema: generateProvisioningParamsSchema(),
+							UpdatingParametersSchema:     generateUpdatingParamsSchema(),
 						},
 					},
 				}),
@@ -92,8 +93,8 @@ func (m *module) GetCatalog() (service.Catalog, error) {
 					},
 					Schemas: service.PlanSchemas{
 						ServiceInstances: service.InstanceSchemas{
-							ProvisioningParametersSchema: generateProvisioningParamsSchema(), // nolint: lll
-							UpdatingParametersSchema:     generateUpdatingParamsSchema(),     // nolint: lll
+							ProvisioningParametersSchema: generateProvisioningParamsSchema(),
+							UpdatingParametersSchema:     generateUpdatingParamsSchema(),
 						},
 					},
 				}),
@@ -173,8 +174,8 @@ func (m *module) GetCatalog() (service.Catalog, error) {
 					},
 					Schemas: service.PlanSchemas{
 						ServiceInstances: service.InstanceSchemas{
-							ProvisioningParametersSchema: generateProvisioningParamsSchema(), // nolint: lll
-							UpdatingParametersSchema:     generateUpdatingParamsSchema(),     // nolint: lll
+							ProvisioningParametersSchema: generateProvisioningParamsSchema(),
+							UpdatingParametersSchema:     generateUpdatingParamsSchema(),
 						},
 					},
 				}),
@@ -217,8 +218,8 @@ func (m *module) GetCatalog() (service.Catalog, error) {
 					},
 					Schemas: service.PlanSchemas{
 						ServiceInstances: service.InstanceSchemas{
-							ProvisioningParametersSchema: generateProvisioningParamsSchema(), // nolint: lll
-							UpdatingParametersSchema:     generateUpdatingParamsSchema(),     // nolint: lll
+							ProvisioningParametersSchema: generateProvisioningParamsSchema(),
+							UpdatingParametersSchema:     generateUpdatingParamsSchema(),
 						},
 					},
 				}),
@@ -260,8 +261,8 @@ func (m *module) GetCatalog() (service.Catalog, error) {
 					},
 					Schemas: service.PlanSchemas{
 						ServiceInstances: service.InstanceSchemas{
-							ProvisioningParametersSchema: generateProvisioningParamsSchema(), // nolint: lll
-							UpdatingParametersSchema:     generateUpdatingParamsSchema(),     // nolint: lll
+							ProvisioningParametersSchema: generateProvisioningParamsSchema(),
+							UpdatingParametersSchema:     generateUpdatingParamsSchema(),
 						},
 					},
 				}),
@@ -304,7 +305,7 @@ func (m *module) GetCatalog() (service.Catalog, error) {
 					},
 					Schemas: service.PlanSchemas{
 						ServiceInstances: service.InstanceSchemas{
-							ProvisioningParametersSchema: generateAllInOneRegisteredProvisioningParamsSchema(), // nolint: lll
+							ProvisioningParametersSchema: generateAllInOneRegisteredProvisioningParamsSchema(),
 						},
 					},
 				}),
@@ -347,7 +348,7 @@ func (m *module) GetCatalog() (service.Catalog, error) {
 					},
 					Schemas: service.PlanSchemas{
 						ServiceInstances: service.InstanceSchemas{
-							ProvisioningParametersSchema: generateCommonRegisteredProvisioningParamsSchema(), // nolint: lll
+							ProvisioningParametersSchema: generateCommonRegisteredProvisioningParamsSchema(),
 						},
 					},
 				}),
@@ -390,7 +391,7 @@ func (m *module) GetCatalog() (service.Catalog, error) {
 					},
 					Schemas: service.PlanSchemas{
 						ServiceInstances: service.InstanceSchemas{
-							ProvisioningParametersSchema: generateAllInOneRegisteredProvisioningParamsSchema(), // nolint: lll
+							ProvisioningParametersSchema: generateAllInOneRegisteredProvisioningParamsSchema(),
 						},
 					},
 				}),
@@ -433,7 +434,7 @@ func (m *module) GetCatalog() (service.Catalog, error) {
 					},
 					Schemas: service.PlanSchemas{
 						ServiceInstances: service.InstanceSchemas{
-							ProvisioningParametersSchema: generateCommonRegisteredProvisioningParamsSchema(), // nolint: lll
+							ProvisioningParametersSchema: generateCommonRegisteredProvisioningParamsSchema(),
 						},
 					},
 				}),
@@ -477,7 +478,7 @@ func (m *module) GetCatalog() (service.Catalog, error) {
 					},
 					Schemas: service.PlanSchemas{
 						ServiceInstances: service.InstanceSchemas{
-							ProvisioningParametersSchema: generateCommonRegisteredProvisioningParamsSchema(), // nolint: lll
+							ProvisioningParametersSchema: generateCommonRegisteredProvisioningParamsSchema(),
 						},
 					},
 				}),
@@ -520,7 +521,7 @@ func (m *module) GetCatalog() (service.Catalog, error) {
 					},
 					Schemas: service.PlanSchemas{
 						ServiceInstances: service.InstanceSchemas{
-							ProvisioningParametersSchema: generateCommonRegisteredProvisioningParamsSchema(), // nolint: lll
+							ProvisioningParametersSchema: generateCommonRegisteredProvisioningParamsSchema(),
 						},
 					},
 				}),

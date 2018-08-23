@@ -4,6 +4,7 @@ import (
 	"github.com/Azure/open-service-broker-azure/pkg/service"
 )
 
+// nolint: lll
 func generateCommonRegisteredProvisioningParamsSchema() service.InputParametersSchema {
 	propertySchemas := map[string]service.PropertySchema{
 		"accountName": &service.StringPropertySchema{
@@ -21,6 +22,7 @@ func generateCommonRegisteredProvisioningParamsSchema() service.InputParametersS
 	}
 }
 
+// nolint: lll
 func generateAllInOneRegisteredProvisioningParamsSchema() service.InputParametersSchema {
 	propertySchemas := map[string]service.PropertySchema{
 		"accountName": &service.StringPropertySchema{

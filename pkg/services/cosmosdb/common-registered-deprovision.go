@@ -10,7 +10,7 @@ func (c *commonRegisteredManager) GetDeprovisioner(
 	service.Plan,
 ) (service.Deprovisioner, error) {
 	return service.NewDeprovisioner(
-		service.NewDeprovisioningStep("unregisterDatabaseAccount", c.unregisterDatabaseAccount),
+		service.NewDeprovisioningStep("unregisterDatabaseAccount", c.unregisterDatabaseAccount), // nolint: lll
 	)
 }
 

@@ -61,7 +61,7 @@ func (c *commonRegisteredManager) fillInCommonCredentials(
 }
 
 func (c *commonRegisteredManager) fillInDifferentiatedCredentials(
-	ctx context.Context,
+	_ context.Context,
 	instance service.Instance,
 ) (service.InstanceDetails, error) {
 	serviceName := instance.Service.GetName()

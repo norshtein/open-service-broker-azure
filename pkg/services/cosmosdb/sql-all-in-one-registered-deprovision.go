@@ -10,7 +10,7 @@ func (s *sqlAllInOneRegisteredManager) GetDeprovisioner(
 	service.Plan,
 ) (service.Deprovisioner, error) {
 	return service.NewDeprovisioner(
-		service.NewDeprovisioningStep("unregisterDatabaseAccount", s.unregisterDatabaseAccount),
+		service.NewDeprovisioningStep("unregisterDatabaseAccount", s.unregisterDatabaseAccount), // nolint: lll
 	)
 }
 

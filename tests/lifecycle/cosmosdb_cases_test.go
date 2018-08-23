@@ -200,14 +200,11 @@ func testMongoDBCreds(credentials map[string]interface{}) error {
 }
 
 func getAccountName(
-	ctx context.Context,
+	_ context.Context,
 	resourceGroup string,
 	parent *service.Instance,
 	pp *map[string]interface{},
 ) error {
-	ctx, cancel := context.WithCancel(ctx)
-	defer cancel()
-
 	(*pp)["resourceGroup"] = resourceGroup
 	dt, err := service.GetMapFromStruct(parent.Details)
 	if err != nil {
@@ -236,12 +233,14 @@ func getAccountNameAndDatabaseName(
 	ctx, cancel := context.WithCancel(ctx)
 	defer cancel()
 
-	getAccountName(
+	if err := getAccountName(
 		ctx,
 		resourceGroup,
 		parent,
 		pp,
-	)
+	); err != nil {
+		return nil
+	}
 
 	dt, err := service.GetMapFromStruct(parent.Details)
 	if err != nil {
