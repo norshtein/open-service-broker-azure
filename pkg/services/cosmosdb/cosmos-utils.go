@@ -338,7 +338,7 @@ func validateReadLocations(
 	context string,
 	regions []string,
 ) error {
-	occured := make(map[string]bool)
+	occurred := make(map[string]bool)
 	for i := range regions {
 		region := regions[i]
 		if !allowedReadLocations[region] {
@@ -347,7 +347,7 @@ func validateReadLocations(
 				fmt.Sprintf("given read region %s is not allowed", region),
 			)
 		}
-		if occured[region] {
+		if occurred[region] {
 			return service.NewValidationError(
 				context,
 				fmt.Sprintf(
@@ -356,7 +356,7 @@ func validateReadLocations(
 				),
 			)
 		}
-		occured[region] = true
+		occurred[region] = true
 	}
 	return nil
 }
@@ -483,9 +483,9 @@ func buildReadLocationInformation(
 // Because the database account name is determined during provision step,
 // it is possible the database account name has length 36 (the length of UUID).
 // And in update step, a read location whose name is longer than 14 character
-// may be provided, in which case will cause bug in updating. To avoid this case,
-// we truncate the id of read locations to 50 characters. It is tested that
-// truncating the read region id won't affect user's usage.
+// may be provided, in which case will cause bug in updating.
+// To avoid this case, we truncate the id of read locations to 50 characters.
+// It is tested that truncating the read region id won't affect user's usage.
 func generateIDForReadLocation(
 	databaseAccountName string,
 	location string,
