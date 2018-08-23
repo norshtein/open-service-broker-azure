@@ -8,7 +8,6 @@ import (
 
 	"github.com/Azure/open-service-broker-azure/pkg/async"
 	"github.com/Azure/open-service-broker-azure/pkg/service"
-	"github.com/Azure/open-service-broker-azure/pkg/types"
 	log "github.com/Sirupsen/logrus"
 	"github.com/gorilla/mux"
 )
@@ -358,15 +357,13 @@ func mergeUpdateParameters(
 	// The OSB spec states that if the request doesn't include a
 	// previously specified parameter value, it should remain unchanged.
 	// This iterates through the updating params and replace the
-	// corresponding provision params if the value in updating
-	// params is not empty. This will result in a merged copy
+	// corresponding provision params if the user has provided any
+	// value in updating params. This will result in a merged copy
 	// of the two that reflects the actual requested instance state
 	// using both the previously specificed parameters and the new
 	// parameters.
 	for key, value := range up {
-		if !types.IsEmpty(value) {
-			ppCopy[key] = value
-		}
+		ppCopy[key] = value
 	}
 	return ppCopy
 }
