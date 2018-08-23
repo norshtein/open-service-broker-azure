@@ -85,7 +85,12 @@ echo "Processing service bindings..."
 result_json='['
 for row in $(echo $service_bindings | jq '.resources' | jq -c '.[]'); do
 	service_instance_guid=$(echo $row | jq -r '.entity.service_instance_guid')
+	loop_flag="true"
 	for instance_id in "${!service_instance_id_to_name[@]}"; do
+		if [ $loop_flag != "true" ]; then
+			break
+		fi
+
 		if [ $service_instance_guid = $instance_id ]; then
 			instance_name=${service_instance_id_to_name[${service_instance_guid}]}
 			instance_plan_id=${service_instance_id_to_cf_plan_id[${service_instance_guid}]}
@@ -107,6 +112,13 @@ for row in $(echo $service_bindings | jq '.resources' | jq -c '.[]'); do
 			fi
 			
 			resource_group_name=$(redis-cli -h ${redis_host} -a ${redis_password} get "instances:${instance_id}" | jq -r '.provisioningParameters.resourceGroup')
+			provisioning_read_region=$(redis-cli -h ${redis_host} -a ${redis_password} get "instances:${instance_id}" | jq -r '.provisioningParameters.readRegions[0]')
+			updating_read_region=$(redis-cli -h ${redis_host} -a ${redis_password} get "instances:${instance_id}" | jq -r '.updatingParameters.readRegions[0]')	
+			if [ ${provisioning_read_region} = "null" ] && [ ${updating_read_region} = "null" ]; then
+				loop_flag="false"
+				break
+			fi
+			echo "Export service instance ${instance_name}."
 			
 			# echo "sn: ${instance_service_name}, pn: ${instance_plan_name}, in: ${instance_name}, an: ${account_name}, dn: ${database_name}"
 			current_json=$(jq -n --arg rn "$resource_group_name" --arg sn "$instance_service_name" --arg pn "$instance_plan_name" --arg in "$instance_name" --arg an "$account_name" --arg dn "$database_name" '{resourceGroup: $rn, serviceName: $sn, planName: $pn, instanceName: $in, accountName: $an, databaseName: $dn}')
@@ -114,8 +126,7 @@ for row in $(echo $service_bindings | jq '.resources' | jq -c '.[]'); do
 				result_json="${result_json},"		
 			fi
 			result_json="${result_json}${current_json}"
-			
-			break
+			loop_flag="false"
 		fi
 	done
 done
