@@ -10,9 +10,8 @@ import (
 func (
 	s *sqlAllInOneManager,
 ) ValidateUpdatingParameters(instance service.Instance) error {
-	return validateLocations(
+	return validateReadLocations(
 		"sql all in one update",
-		instance.ProvisioningParameters.GetString("location"),
 		instance.UpdatingParameters.GetStringArray("readRegions"),
 	)
 }

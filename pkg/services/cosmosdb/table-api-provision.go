@@ -11,7 +11,6 @@ func (t *tableAccountManager) GetProvisioner(
 	service.Plan,
 ) (service.Provisioner, error) {
 	return service.NewProvisioner(
-		service.NewProvisioningStep("validateProvisioningParameters", t.validateProvisioningParameters), // nolint: lll
 		service.NewProvisioningStep("preProvision", t.preProvision),
 		service.NewProvisioningStep("deployARMTemplate", t.deployARMTemplate),
 		service.NewProvisioningStep("waitForReadLocationsReady", t.waitForReadLocationsReady), // nolint: lll

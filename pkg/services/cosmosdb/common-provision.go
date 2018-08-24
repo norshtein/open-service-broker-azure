@@ -37,7 +37,16 @@ func (c *cosmosAccountManager) preProvision(
 	_ context.Context,
 	instance service.Instance,
 ) (service.InstanceDetails, error) {
-	l := instance.ProvisioningParameters.GetString("location")
+	// Before we provision, remove `location` for `readRegions` first.
+	pp := instance.ProvisioningParameters
+	writeLocation := pp.GetString("location")
+	readLocations := pp.GetStringArray("readRegions")
+	pp.Data["readRegions"] = removeWriteLocationFromReadLocations(
+		writeLocation,
+		readLocations,
+	)
+
+	l := pp.GetString("location")
 	return &cosmosdbInstanceDetails{
 		ARMDeploymentName:   uuid.NewV4().String(),
 		DatabaseAccountName: generateAccountName(l),
@@ -49,8 +58,9 @@ func (c *cosmosAccountManager) buildGoTemplateParams(
 	dt *cosmosdbInstanceDetails,
 	kind string,
 ) (map[string]interface{}, error) {
+	writeLocation := pp.GetString("location")
 	readLocations := pp.GetStringArray("readRegions")
-	readLocations = append([]string{pp.GetString("location")}, readLocations...)
+	readLocations = append([]string{writeLocation}, readLocations...)
 	return c.buildGoTemplateParamsCore(
 		pp,
 		dt,
@@ -110,15 +120,4 @@ func (c *cosmosAccountManager) handleOutput(
 		return "", "", fmt.Errorf("error retrieving primary key from deployment")
 	}
 	return fqdn, primaryKey, nil
-}
-
-func (c *cosmosAccountManager) validateProvisioningParameters(
-	_ context.Context,
-	instance service.Instance,
-) (service.InstanceDetails, error) {
-	return nil, validateLocations(
-		"readRegions",
-		instance.ProvisioningParameters.GetString("location"),
-		instance.ProvisioningParameters.GetStringArray("readRegions"),
-	)
 }

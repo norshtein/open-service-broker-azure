@@ -11,7 +11,6 @@ func (g *graphAccountManager) GetProvisioner(
 	service.Plan,
 ) (service.Provisioner, error) {
 	return service.NewProvisioner(
-		service.NewProvisioningStep("validateProvisioningParameters", g.validateProvisioningParameters), // nolint: lll
 		service.NewProvisioningStep("preProvision", g.preProvision),
 		service.NewProvisioningStep("deployARMTemplate", g.deployARMTemplate),
 		service.NewProvisioningStep("waitForReadLocationsReady", g.waitForReadLocationsReady), // nolint: lll
