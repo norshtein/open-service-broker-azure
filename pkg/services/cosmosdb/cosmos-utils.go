@@ -474,18 +474,23 @@ func generateIDForReadLocation(
 
 // This function detects whether parameter `location` appears in
 // parameter `readRegions`. If appears, remove it from the slice.
+// This function returns a slice of interface{} to be put in
+// ProvisionParamter and UpdateParameter
 func removeWriteLocationFromReadLocations(
 	location string,
 	readLocations []string,
-) []string {
+) []interface{} {
+	result := []interface{}{}
+	for i := range readLocations {
+		result = append(result, interface{}(readLocations[i]))
+	}
 	length := len(readLocations)
 	for i := range readLocations {
 		if location == readLocations[i] {
-			readLocations[i] = readLocations[length-1]
-			readLocations[length-1] = ""
-			readLocations = readLocations[:length-1]
-			return readLocations
+			result[i] = result[length-1]
+			result = result[:length-1]
+			return result
 		}
 	}
-	return readLocations
+	return result
 }
