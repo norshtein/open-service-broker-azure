@@ -69,13 +69,6 @@ func (c *cosmosAccountManager) deleteARMDeployment(
 	_ context.Context,
 	instance service.Instance,
 ) (service.InstanceDetails, error) {
-	if instance.Details == nil {
-		// If we reached here, an error must occur during provisioning,
-		// and the database account is not created.
-		// So we simply return to make the service instance deleted.
-		return nil, nil
-	}
-
 	if err := deleteARMDeployment(
 		c.armDeployer,
 		instance.ProvisioningParameters,
@@ -90,13 +83,6 @@ func (c *cosmosAccountManager) deleteCosmosDBAccount(
 	ctx context.Context,
 	instance service.Instance,
 ) (service.InstanceDetails, error) {
-	if instance.Details == nil {
-		// If we reached here, an error must occur during provisioning,
-		// and the database account is not created.
-		// So we simply return to make the service instance deleted.
-		return nil, nil
-	}
-
 	if err := deleteCosmosDBAccount(
 		ctx,
 		c.databaseAccountsClient,
