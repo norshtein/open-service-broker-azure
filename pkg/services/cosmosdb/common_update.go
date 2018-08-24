@@ -46,6 +46,14 @@ func (c *cosmosAccountManager) updateReadLocations(
 	capability string,
 	additionalTags map[string]string,
 ) error {
+	// Before we update, remove `location` for `readRegions` first.
+	writeLocation := pp.GetString("location")
+	readLocations := up.GetStringArray("readRegions")
+	up.Data["readRegions"] = removeWriteLocationFromReadLocations(
+		writeLocation,
+		readLocations,
+	)
+
 	p, err := c.buildGoTemplateParamsOnlyRegionChanged(pp, up, dt, kind)
 	if err != nil {
 		return err
@@ -100,10 +108,6 @@ func (c *cosmosAccountManager) buildGoTemplateParamsOnlyRegionChanged(
 ) (map[string]interface{}, error) {
 	writeLocation := pp.GetString("location")
 	readLocations := up.GetStringArray("readRegions")
-	readLocations = removeWriteLocationFromReadLocations(
-		writeLocation,
-		readLocations,
-	)
 	readLocations = append([]string{writeLocation}, readLocations...)
 	return c.buildGoTemplateParamsCore(
 		pp,
