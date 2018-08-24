@@ -27,7 +27,6 @@ var cosmosdbTestCases = []serviceLifecycleTestCase{
 			"ipFilters": map[string]interface{}{
 				"allowedIPRanges": []interface{}{"0.0.0.0/0"},
 			},
-			"readRegions": []interface{}{"eastus2"},
 		},
 		updatingParameters: map[string]interface{}{
 			"ipFilters": map[string]interface{}{
@@ -64,7 +63,7 @@ var cosmosdbTestCases = []serviceLifecycleTestCase{
 			"consistencyPolicy": map[string]interface{}{
 				"defaultConsistencyLevel": "Session",
 			},
-			"readRegions":         []interface{}{"centralus", "eastus"},
+			"readRegions":         []interface{}{"eastus"},
 			"autoFailoverEnabled": "enabled",
 		},
 		childTestCases: []*serviceLifecycleTestCase{
@@ -88,6 +87,13 @@ var cosmosdbTestCases = []serviceLifecycleTestCase{
 			"ipFilters": map[string]interface{}{
 				"allowedIPRanges": []interface{}{"0.0.0.0/0"},
 			},
+			"consistencyPolicy": map[string]interface{}{
+				"defaultConsistencyLevel": "Session",
+			},
+			"readRegions": []interface{}{"eastus2"},
+		},
+		updatingParameters: map[string]interface{}{
+			"readRegions": []interface{}{"centralus"},
 		},
 	},
 	{ // MongoDB
@@ -102,6 +108,13 @@ var cosmosdbTestCases = []serviceLifecycleTestCase{
 			"ipFilters": map[string]interface{}{
 				"allowedIPRanges": []interface{}{"0.0.0.0/0"},
 			},
+			"consistencyPolicy": map[string]interface{}{
+				"defaultConsistencyLevel": "Session",
+			},
+			"readRegions": []interface{}{"eastus", "westus"},
+		},
+		updatingParameters: map[string]interface{}{
+			"readRegions": []interface{}{"eastus"},
 		},
 	},
 	{ // SQL API All In One
