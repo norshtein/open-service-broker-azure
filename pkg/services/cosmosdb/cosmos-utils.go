@@ -309,31 +309,6 @@ func pollingUntilReadLocationsReady(
 	}
 }
 
-func validateLocations(
-	context string,
-	// It is the parameter `location` in provision step
-	location string,
-	// It is the parameter `readRegions` in provision or update step
-	readRegions []string,
-) error {
-	// Make sure `location` is not in `readRegions` array
-	for i := range readRegions {
-		if location == readRegions[i] {
-			return service.NewValidationError(
-				context,
-				fmt.Sprintf(
-					"write location %s cannot appear in readRegions",
-					location,
-				),
-			)
-		}
-	}
-	return validateReadLocations(
-		context,
-		readRegions,
-	)
-}
-
 func validateReadLocations(
 	context string,
 	regions []string,
@@ -343,13 +318,13 @@ func validateReadLocations(
 		region := regions[i]
 		if !allowedReadLocations[region] {
 			return service.NewValidationError(
-				context,
+				fmt.Sprintf("%s.ReadRegions", context),
 				fmt.Sprintf("given read region %s is not allowed", region),
 			)
 		}
 		if occurred[region] {
 			return service.NewValidationError(
-				context,
+				fmt.Sprintf("%s.ReadRegions", context),
 				fmt.Sprintf(
 					"given read region %s can only occur once",
 					region,
@@ -495,4 +470,22 @@ func generateIDForReadLocation(
 		locationID = locationID[0:50]
 	}
 	return locationID
+}
+
+// This function detects whether parameter `location` appears in
+// parameter `readRegions`. If appears, remove it from the slice.
+func removeWriteLocationFromReadLocations(
+	location string,
+	readLocations []string,
+) []string {
+	length := len(readLocations)
+	for i := range readLocations {
+		if location == readLocations[i] {
+			readLocations[i] = readLocations[length-1]
+			readLocations[length-1] = ""
+			readLocations = readLocations[:length-1]
+			return readLocations
+		}
+	}
+	return readLocations
 }

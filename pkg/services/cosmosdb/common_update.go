@@ -98,8 +98,13 @@ func (c *cosmosAccountManager) buildGoTemplateParamsOnlyRegionChanged(
 	dt *cosmosdbInstanceDetails,
 	kind string,
 ) (map[string]interface{}, error) {
+	writeLocation := pp.GetString("location")
 	readLocations := up.GetStringArray("readRegions")
-	readLocations = append([]string{pp.GetString("location")}, readLocations...)
+	readLocations = removeWriteLocationFromReadLocations(
+		writeLocation,
+		readLocations,
+	)
+	readLocations = append([]string{writeLocation}, readLocations...)
 	return c.buildGoTemplateParamsCore(
 		pp,
 		dt,

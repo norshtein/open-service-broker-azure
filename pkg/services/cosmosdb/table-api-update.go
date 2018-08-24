@@ -10,9 +10,8 @@ import (
 func (
 	t *tableAccountManager,
 ) ValidateUpdatingParameters(instance service.Instance) error {
-	return validateLocations(
+	return validateReadLocations(
 		"table account update",
-		instance.ProvisioningParameters.GetString("location"),
 		instance.UpdatingParameters.GetStringArray("readRegions"),
 	)
 }

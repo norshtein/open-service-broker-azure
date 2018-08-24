@@ -10,9 +10,8 @@ import (
 func (
 	s *sqlAccountManager,
 ) ValidateUpdatingParameters(instance service.Instance) error {
-	return validateLocations(
+	return validateReadLocations(
 		"sql account update",
-		instance.ProvisioningParameters.GetString("location"),
 		instance.UpdatingParameters.GetStringArray("readRegions"),
 	)
 }

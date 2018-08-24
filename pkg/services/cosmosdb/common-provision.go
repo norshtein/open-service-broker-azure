@@ -49,8 +49,13 @@ func (c *cosmosAccountManager) buildGoTemplateParams(
 	dt *cosmosdbInstanceDetails,
 	kind string,
 ) (map[string]interface{}, error) {
+	writeLocation := pp.GetString("location")
 	readLocations := pp.GetStringArray("readRegions")
-	readLocations = append([]string{pp.GetString("location")}, readLocations...)
+	readLocations = removeWriteLocationFromReadLocations(
+		writeLocation,
+		readLocations,
+	)
+	readLocations = append([]string{writeLocation}, readLocations...)
 	return c.buildGoTemplateParamsCore(
 		pp,
 		dt,
@@ -110,15 +115,4 @@ func (c *cosmosAccountManager) handleOutput(
 		return "", "", fmt.Errorf("error retrieving primary key from deployment")
 	}
 	return fqdn, primaryKey, nil
-}
-
-func (c *cosmosAccountManager) validateProvisioningParameters(
-	_ context.Context,
-	instance service.Instance,
-) (service.InstanceDetails, error) {
-	return nil, validateLocations(
-		"readRegions",
-		instance.ProvisioningParameters.GetString("location"),
-		instance.ProvisioningParameters.GetStringArray("readRegions"),
-	)
 }
