@@ -42,7 +42,7 @@ This example will update existing  `myCosmosDB` instance to have one read region
 
 In this case, your primary Cloud Foundry cluster still works normally and only the database account instance is out of service. Follow below steps to recover from it.
 
-![p3](C:\Users\Administrator\Pictures\cosmos-dr\p3.PNG)
+![p3](./p3.PNG)
 
 As the picture, step "Change source code" and "Push your application" must be done serially, and "Failover" can be done in parallel with them.
 
