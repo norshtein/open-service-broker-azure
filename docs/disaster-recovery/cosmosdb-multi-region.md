@@ -41,9 +41,9 @@ cf update-service myCosmosDB -c '{
 
 This example will update existing  `myCosmosDB` instance to have one read region with auto failover enabled.
 
-### 2. Create *-registered service instance in another Cloud Foundry cluster
+### 2. Create *-registered service instance in backup Cloud Foundry cluster
 
-`-*registered` services are used to register existing Cosmos instances and provide credential of existing Cosmos instances. This kinds of service should be only used for DR. In provision step, it takes resource group name, database account name and possible database name as parameters, finds the database account and gets the credential of the account. In bind step, it will return gotten credentials. In deprovision step, it does nothing. For detailed information of these services, see [here](./modules/cosmosdb.md).
+`-*registered` services are used to register existing Cosmos instances and provide credential of existing Cosmos instances. This kind of service should be only used for disaster recovery. In provision step, it takes resource group name, database account name and possible database name as parameters, finds the database account and gets the credential of the account. In bind step, it will return gotten credentials. In deprovision step, it does nothing. For detailed information of these services, see [here](./modules/cosmosdb.md).
 
 For each service instance in primary Cloud Foundry cluster, you need to create a `*-registered` service instance in the backup Cloud Foundry cluster. So that when a disaster happens in the Azure region where your primary cluster is located, you can continue to use the Cosmos service instance in the backup cluster. 
 
@@ -55,7 +55,7 @@ We have provided scripts for you, you can find them [here](../../scripts/cosmosd
 
 1. Make sure you have installed [redis-cli](https://redis.io/download) and [jq](https://stedolan.github.io/jq/download/) in the operating environment. 
 
-2. Make sure you have bound service instances which need to be exported to an app. Only bound service instances can be detected by the script. Use `cf bind-service <APP_NAME> <SERVICE_INSTANCE_NAME>` to bind service instances and run `cf services` to check bind status of services instances. 
+2. Make sure you have bound service instances which need to be exported. Only bound service instances can be detected by the script. Use `cf bind-service <APP_NAME> <SERVICE_INSTANCE_NAME>` to bind service instances and run `cf services` to check bind status of services instances. You can bind the service instance to any app.
 
 3. Run following command in shell with primary Cloud Foundry cluster logged in: 
 
@@ -161,15 +161,15 @@ As the picture, step "Change source code" and "Push your application" must be do
 
 #### 2. Change source code
 
-Based on how your application is implemented, you may need to change the [connection policy](https://docs.microsoft.com/en-us/dotnet/api/microsoft.azure.documents.client.connectionpolicy?view=azure-dotnet) in your source code. But typically you don't need to change your source code. That's because you always use `["writeRegion", "readRegion1", "readRegion2" ...]` as the preferred locations list. When the disaster happens, `"writeRegion"` is not available and the Cosmos SDK will automatically try to connect to `"readRegion1"`. So we the failover finishes, your application will come online.
+Based on how your application is implemented, you may need to change the [connection policy](https://docs.microsoft.com/en-us/dotnet/api/microsoft.azure.documents.client.connectionpolicy?view=azure-dotnet) in your source code. But typically you don't need to change your source code. That's because you always use `["writeRegion", "readRegion1", "readRegion2" ...]` as the preferred locations list. When the disaster happens, `"writeRegion"` is not available and the Cosmos SDK will automatically try to connect to `"readRegion1"`. So when the failover finishes, the SDK can connect to it and your application will come online.
 
 #### 3. Push your application
 
 - If you haven't changed your source code in step 2, skip this step.
-- If you have changed the source code, use `cf push` to re-push your application, your application will be temporarily offline during pushing.
+- If you have changed the source code, use `cf push` to re-push your application.
 
 <br>
-You may have noticed that if you enable auto failover and the source code doesn't need to be changed, you even don't need to do anything when the write region is out of service!
+You may have noticed that if you enable auto failover and the source code doesn't need to be changed, the only thing you need to do is waiting for the failover finish. You can use Azure portal to monitor the progress of failover.
 
 ### II. Steps for recovering from an outage of Azure region
 
