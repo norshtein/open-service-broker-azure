@@ -14,8 +14,6 @@ import (
 	"strings"
 	"time"
 
-	"github.com/Azure/open-service-broker-azure/pkg/generate"
-
 	cosmosSDK "github.com/Azure/azure-sdk-for-go/services/cosmos-db/mgmt/2015-04-08/documentdb" //nolint: lll
 	"github.com/Azure/open-service-broker-azure/pkg/service"
 )
@@ -397,10 +395,30 @@ func buildReadLocationInformation(
 		information := readLocationInformation{}
 		information.Location = readLocations[i]
 		information.Priority = i
-		information.ID = generate.NewIdentifierOfLength(49)
+		information.ID = generateIDForReadLocation(
+			databaseAccountName,
+			readLocations[i],
+		)
 		informations = append(informations, information)
 	}
 	return informations
+}
+
+// Because the database account name is determined during provision step,
+// it is possible the database account name has length 36 (the length of UUID).
+// And in update step, a read location whose name is longer than 14 character
+// may be provided, in which case will cause bug in updating.
+// To avoid this case, we truncate the id of read locations to 50 characters.
+// It is tested that truncating the read region id won't affect user's usage.
+func generateIDForReadLocation(
+	databaseAccountName string,
+	location string,
+) string {
+	locationID := fmt.Sprintf("%s-%s", databaseAccountName, location)
+	if len(locationID) > 50 {
+		locationID = locationID[0:50]
+	}
+	return locationID
 }
 
 func getEffectiveReadLocationCount(
