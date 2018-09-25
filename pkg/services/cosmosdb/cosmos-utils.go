@@ -14,6 +14,8 @@ import (
 	"strings"
 	"time"
 
+	"github.com/Azure/open-service-broker-azure/pkg/generate"
+
 	cosmosSDK "github.com/Azure/azure-sdk-for-go/services/cosmos-db/mgmt/2015-04-08/documentdb" //nolint: lll
 	"github.com/Azure/open-service-broker-azure/pkg/service"
 )
@@ -181,60 +183,6 @@ func deleteDatabase(
 		)
 	}
 	return nil
-}
-
-// The deployment will return success once the write region is created,
-// ignoring the status of read regions , so we must implement detection logic
-// by ourselves.
-func (c *cosmosAccountManager) waitForReadLocationsReady(
-	ctx context.Context,
-	instance service.Instance,
-) (service.InstanceDetails, error) {
-	dt := instance.Details.(*cosmosdbInstanceDetails)
-	resourceGroupName := instance.ProvisioningParameters.GetString("resourceGroup")
-	accountName := dt.DatabaseAccountName
-	databaseAccountClient := c.databaseAccountsClient
-
-	err := pollingUntilReadLocationsReady(
-		ctx,
-		resourceGroupName,
-		accountName,
-		databaseAccountClient,
-		instance.ProvisioningParameters.GetString("location"),
-		instance.ProvisioningParameters.GetStringArray("readRegions"),
-		true,
-	)
-	if err != nil {
-		return nil, err
-	}
-	return dt, nil
-}
-
-// For sqlAllInOneManager, the real type of `instance.Details` is
-// `*sqlAllInOneInstanceDetails`, so type assertion must be changed.
-// Expect type assertion, this function is totally the same as previous one.
-func (s *sqlAllInOneManager) waitForReadLocationsReady(
-	ctx context.Context,
-	instance service.Instance,
-) (service.InstanceDetails, error) {
-	dt := instance.Details.(*sqlAllInOneInstanceDetails)
-	resourceGroupName := instance.ProvisioningParameters.GetString("resourceGroup")
-	accountName := dt.DatabaseAccountName
-	databaseAccountClient := s.databaseAccountsClient
-
-	err := pollingUntilReadLocationsReady(
-		ctx,
-		resourceGroupName,
-		accountName,
-		databaseAccountClient,
-		instance.ProvisioningParameters.GetString("location"),
-		instance.ProvisioningParameters.GetStringArray("readRegions"),
-		true,
-	)
-	if err != nil {
-		return nil, err
-	}
-	return dt, nil
 }
 
 const succeeded = "succeeded"
@@ -449,30 +397,10 @@ func buildReadLocationInformation(
 		information := readLocationInformation{}
 		information.Location = readLocations[i]
 		information.Priority = i
-		information.ID = generateIDForReadLocation(
-			databaseAccountName,
-			readLocations[i],
-		)
+		information.ID = generate.NewIdentifierOfLength(49)
 		informations = append(informations, information)
 	}
 	return informations
-}
-
-// Because the database account name is determined during provision step,
-// it is possible the database account name has length 36 (the length of UUID).
-// And in update step, a read location whose name is longer than 14 character
-// may be provided, in which case will cause bug in updating.
-// To avoid this case, we truncate the id of read locations to 50 characters.
-// It is tested that truncating the read region id won't affect user's usage.
-func generateIDForReadLocation(
-	databaseAccountName string,
-	location string,
-) string {
-	locationID := fmt.Sprintf("%s-%s", databaseAccountName, location)
-	if len(locationID) > 50 {
-		locationID = locationID[0:50]
-	}
-	return locationID
 }
 
 func getEffectiveReadLocationCount(
