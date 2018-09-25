@@ -68,7 +68,7 @@ func (c *cosmosAccountManager) updateDeployment(
 		tags,
 	)
 	if err != nil {
-		return fmt.Errorf("error deploying ARM template: %s", err)
+		return err
 	}
 	return nil
 }
@@ -89,7 +89,7 @@ func (c *cosmosAccountManager) deployUpdatedARMTemplate(
 		tags,
 	)
 	if err != nil {
-		return fmt.Errorf("error deploying ARM template: %s", err)
+		return err
 	}
 	return nil
 }
