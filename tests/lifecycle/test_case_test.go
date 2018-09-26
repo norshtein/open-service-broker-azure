@@ -11,7 +11,6 @@ import (
 
 	"github.com/Azure/open-service-broker-azure/pkg/service"
 	"github.com/Azure/open-service-broker-azure/pkg/slice"
-	"github.com/Azure/open-service-broker-azure/pkg/types"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -169,9 +168,7 @@ func (s serviceLifecycleTestCase) execute(
 				ppCopy[key] = value
 			}
 			for key, value := range s.updatingParameters {
-				if !types.IsEmpty(value) {
-					ppCopy[key] = value
-				}
+				ppCopy[key] = value
 			}
 			s.updatingParameters = ppCopy
 		}
