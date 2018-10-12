@@ -19,10 +19,12 @@ package documentdb
 
 import (
 	"context"
+	"fmt"
+	"net/http"
+
 	"github.com/Azure/go-autorest/autorest"
 	"github.com/Azure/go-autorest/autorest/azure"
 	"github.com/Azure/go-autorest/autorest/validation"
-	"net/http"
 )
 
 // DatabaseAccountsClient is the azure Cosmos DB Database Service Resource Provider REST API
@@ -212,6 +214,7 @@ func (client DatabaseAccountsClient) CreateOrUpdateResponder(resp *http.Response
 //
 // resourceGroupName is name of an Azure resource group. accountName is cosmos DB database account name.
 func (client DatabaseAccountsClient) Delete(ctx context.Context, resourceGroupName string, accountName string) (result DatabaseAccountsDeleteFuture, err error) {
+	fmt.Println("Deleting ", accountName)
 	if err := validation.Validate([]validation.Validation{
 		{TargetValue: resourceGroupName,
 			Constraints: []validation.Constraint{{Target: "resourceGroupName", Name: validation.MaxLength, Rule: 90, Chain: nil},
@@ -231,6 +234,7 @@ func (client DatabaseAccountsClient) Delete(ctx context.Context, resourceGroupNa
 
 	result, err = client.DeleteSender(req)
 	if err != nil {
+		fmt.Println("Catch the error")
 		err = autorest.NewErrorWithError(err, "documentdb.DatabaseAccountsClient", "Delete", result.Response(), "Failure sending request")
 		return
 	}
@@ -262,15 +266,20 @@ func (client DatabaseAccountsClient) DeletePreparer(ctx context.Context, resourc
 // DeleteSender sends the Delete request. The method will close the
 // http.Response Body if it receives an error.
 func (client DatabaseAccountsClient) DeleteSender(req *http.Request) (future DatabaseAccountsDeleteFuture, err error) {
+	fmt.Println("In function deletesender")
 	sender := autorest.DecorateSender(client, azure.DoRetryWithRegistration(client.Client))
 	future.Future = azure.NewFuture(req)
 	future.req = req
 	_, err = future.Done(sender)
 	if err != nil {
+		fmt.Println("future.Done error")
 		return
 	}
 	err = autorest.Respond(future.Response(),
 		azure.WithErrorUnlessStatusCode(http.StatusOK, http.StatusAccepted, http.StatusNoContent))
+	if err != nil {
+		fmt.Println("autorest.Respond error")
+	}
 	return
 }
 

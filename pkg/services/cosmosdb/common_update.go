@@ -61,6 +61,9 @@ func (c *cosmosAccountManager) updateDeployment(
 	for k, v := range additionalTags {
 		tags[k] = v
 	}
+	fmt.Println("In updating function")
+	fmt.Printf("Updating %s\n", dt.DatabaseAccountName)
+	fmt.Println("Updating tags is: ", tags)
 	err = c.deployUpdatedARMTemplate(
 		up,
 		dt,

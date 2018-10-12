@@ -229,6 +229,7 @@ func ExtractRequestID(resp *http.Response) string {
 // If this Responder returns an error, the response body will be replaced with
 // an in-memory reader, which needs no further closing.
 func WithErrorUnlessStatusCode(codes ...int) autorest.RespondDecorator {
+	fmt.Println("In WithErrorUnlessStatusCode ", codes)
 	return func(r autorest.Responder) autorest.Responder {
 		return autorest.ResponderFunc(func(resp *http.Response) error {
 			err := r.Respond(resp)
