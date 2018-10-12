@@ -76,6 +76,7 @@ func (f Future) PollingMethod() PollingMethodType {
 func (f *Future) Done(sender autorest.Sender) (bool, error) {
 	// exit early if this future has terminated
 	if f.ps.hasTerminated() {
+		fmt.Println("Early f.ps.hasTerminated")
 		return true, f.errorInfo()
 	}
 	resp, err := sender.Do(f.req)
@@ -96,12 +97,15 @@ func (f *Future) Done(sender autorest.Sender) (bool, error) {
 			defer resp.Body.Close()
 			b, err := ioutil.ReadAll(resp.Body)
 			if err != nil {
+				fmt.Println("ioutil.ReadAll error")
 				return false, err
 			}
 			err = json.Unmarshal(b, &re)
 			if err != nil {
+				fmt.Println("json.Unmarshal error")
 				return false, err
 			}
+			fmt.Println("re.ServiceError")
 			return false, re.ServiceError
 		}
 		fmt.Println("!autorest.ResponseHasStatusCode")
