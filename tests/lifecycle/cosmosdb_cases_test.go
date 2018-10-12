@@ -68,58 +68,6 @@ var cosmosdbTestCases = []serviceLifecycleTestCase{
 			},
 		},
 	},
-	{ // Table API
-		group:     "cosmosdb",
-		name:      "table-api-account-only",
-		serviceID: "37915cad-5259-470d-a7aa-207ba89ada8c",
-		planID:    "c970b1e8-794f-4d7c-9458-d28423c08856",
-		provisioningParameters: map[string]interface{}{
-			"location": "southcentralus",
-			"ipFilters": map[string]interface{}{
-				"allowedIPRanges": []interface{}{"0.0.0.0/0"},
-			},
-			"consistencyPolicy": map[string]interface{}{
-				"defaultConsistencyLevel": "Session",
-			},
-			"readRegions": []interface{}{"eastus2"},
-		},
-		updatingParameters: map[string]interface{}{
-			"readRegions": []interface{}{"centralus"},
-		},
-	},
-	{ // MongoDB
-		group:     "cosmosdb",
-		name:      "mongo-api-account-only",
-		serviceID: "8797a079-5346-4e84-8018-b7d5ea5c0e3a",
-		planID:    "86fdda05-78d7-4026-a443-1325928e7b02",
-
-		testCredentials: testMongoDBCreds,
-		provisioningParameters: map[string]interface{}{
-			"location": "eastus",
-			"ipFilters": map[string]interface{}{
-				"allowedIPRanges": []interface{}{"0.0.0.0/0"},
-			},
-			"consistencyPolicy": map[string]interface{}{
-				"defaultConsistencyLevel": "Session",
-			},
-			"readRegions": []interface{}{"westus"},
-		},
-		updatingParameters: map[string]interface{}{
-			"readRegions": []interface{}{},
-		},
-	},
-	{ // SQL API All In One
-		group:     "cosmosdb",
-		name:      "sql-api-all-in-one",
-		serviceID: "58d9fbbd-7041-4dbe-aabe-6268cd31de84",
-		planID:    "58d7223d-934e-4fb5-a046-0c67781eb24e",
-		provisioningParameters: map[string]interface{}{
-			"location": "eastus",
-			"ipFilters": map[string]interface{}{
-				"allowedIPRanges": []interface{}{"0.0.0.0/0"},
-			},
-		},
-	},
 }
 
 func testMongoDBCreds(credentials map[string]interface{}) error {

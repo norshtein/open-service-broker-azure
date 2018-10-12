@@ -162,6 +162,11 @@ func (s serviceLifecycleTestCase) execute(
 
 	// Update...
 	if len(s.updatingParameters) != 0 {
+		fmt.Println("Updating parameters is not zero length")
+		for key, value := range instance.ProvisioningParameters.Data {
+			fmt.Printf("%s: %s", key, value)
+		}
+
 		// equivalent to func mergeUpdateParameters in api/update
 		if len(s.provisioningParameters) != 0 {
 			ppCopy := map[string]interface{}{}
@@ -176,6 +181,10 @@ func (s serviceLifecycleTestCase) execute(
 			s.updatingParameters = ppCopy
 		}
 
+		fmt.Println("Merged updating parameters:")
+		for key, value := range s.updatingParameters {
+			fmt.Printf("%s: %s", key, value)
+		}
 		// Wrap the updating parameters with a "params" object that guides access
 		// to the parameters using schema
 		pps := plan.GetSchemas().ServiceInstances.ProvisioningParametersSchema // nolint: lll
