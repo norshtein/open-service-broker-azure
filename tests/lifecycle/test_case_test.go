@@ -163,8 +163,8 @@ func (s serviceLifecycleTestCase) execute(
 	// Update...
 	if len(s.updatingParameters) != 0 {
 		fmt.Println("Updating parameters is not zero length")
-		for key, value := range instance.UpdatingParameters.Data {
-			fmt.Printf("%s: %s", key, value)
+		for key, value := range s.updatingParameters {
+			fmt.Printf("%s: %s\n", key, value)
 		}
 
 		// equivalent to func mergeUpdateParameters in api/update
@@ -183,7 +183,7 @@ func (s serviceLifecycleTestCase) execute(
 
 		fmt.Println("Merged updating parameters:")
 		for key, value := range s.updatingParameters {
-			fmt.Printf("%s: %s", key, value)
+			fmt.Printf("%s: %s\n", key, value)
 		}
 		// Wrap the updating parameters with a "params" object that guides access
 		// to the parameters using schema
