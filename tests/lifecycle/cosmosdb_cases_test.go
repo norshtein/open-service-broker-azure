@@ -46,28 +46,6 @@ var cosmosdbTestCases = []serviceLifecycleTestCase{
 			},
 		},
 	},
-	{ // Graph API
-		group:     "cosmosdb",
-		name:      "graph-api-account-only",
-		serviceID: "5f5252a0-6922-4a0c-a755-f9be70d7c79b",
-		planID:    "126a2c47-11a3-49b1-833a-21b563de6c04",
-		provisioningParameters: map[string]interface{}{
-			"location": "westus",
-			"ipFilters": map[string]interface{}{
-				"allowedIPRanges": []interface{}{"0.0.0.0/0"},
-			},
-			"consistencyPolicy": map[string]interface{}{
-				"defaultConsistencyLevel": "Session",
-			},
-			"readRegions":         []interface{}{"eastus"},
-			"autoFailoverEnabled": "enabled",
-		},
-		updatingParameters: map[string]interface{}{
-			"tags": map[string]interface{}{
-				"latest-operation": "update",
-			},
-		},
-	},
 }
 
 func testMongoDBCreds(credentials map[string]interface{}) error {
