@@ -81,6 +81,7 @@ func (f *Future) Done(sender autorest.Sender) (bool, error) {
 	resp, err := sender.Do(f.req)
 	f.resp = resp
 	if err != nil {
+		fmt.Println("sender.Do error")
 		return false, err
 	}
 
@@ -103,7 +104,7 @@ func (f *Future) Done(sender autorest.Sender) (bool, error) {
 			}
 			return false, re.ServiceError
 		}
-
+		fmt.Println("!autorest.ResponseHasStatusCode")
 		// try to return something meaningful
 		return false, ServiceError{
 			Code:    fmt.Sprintf("%v", resp.StatusCode),
@@ -113,14 +114,19 @@ func (f *Future) Done(sender autorest.Sender) (bool, error) {
 
 	err = updatePollingState(resp, &f.ps)
 	if err != nil {
+		fmt.Println("updatePollingState error")
 		return false, err
 	}
 
 	if f.ps.hasTerminated() {
+		fmt.Println("f.ps.hasTerminated")
 		return true, f.errorInfo()
 	}
 
 	f.req, err = newPollingRequest(f.ps)
+	if err != nil {
+		fmt.Println("newPollingRequest error")
+	}
 	return false, err
 }
 
