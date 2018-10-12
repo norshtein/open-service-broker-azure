@@ -163,7 +163,7 @@ func (s serviceLifecycleTestCase) execute(
 	// Update...
 	if len(s.updatingParameters) != 0 {
 		fmt.Println("Updating parameters is not zero length")
-		for key, value := range instance.ProvisioningParameters.Data {
+		for key, value := range instance.UpdatingParameters.Data {
 			fmt.Printf("%s: %s", key, value)
 		}
 
