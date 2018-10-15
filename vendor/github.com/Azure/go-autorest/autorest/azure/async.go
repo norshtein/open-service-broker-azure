@@ -24,6 +24,8 @@ import (
 	"strings"
 	"time"
 
+	"runtime/debug"
+
 	"github.com/Azure/go-autorest/autorest"
 	"github.com/Azure/go-autorest/autorest/date"
 )
@@ -113,6 +115,9 @@ func (f *Future) Done(sender autorest.Sender) (bool, error) {
 			fmt.Println("Status code: ", resp.StatusCode)
 			fmt.Println("Message: ", re.ServiceError.Message)
 			fmt.Println("Details: ", re.ServiceError.Details)
+			if resp.StatusCode == http.StatusPreconditionFailed {
+				fmt.Println(string(debug.Stack()))
+			}
 			return false, re.ServiceError
 		}
 		fmt.Println("!autorest.ResponseHasStatusCode")
