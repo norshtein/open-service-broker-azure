@@ -238,6 +238,14 @@ func pollingUntilReadLocationsReady(
 				readLocations,
 				currentLocations,
 			) {
+				fmt.Println("Creating succeeded")
+				for i := range currentLocations {
+					state := *(currentLocations[i].ProvisioningState)
+					locationName := *(currentLocations[i].LocationName)
+					locationName = strings.Replace(locationName, " ", "", -1)
+					locationName = strings.ToLower(locationName)
+					fmt.Println("Location: ", locationName, " ,status: ", state)
+				}
 				return nil
 			}
 		}
