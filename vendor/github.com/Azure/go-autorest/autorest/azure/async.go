@@ -125,7 +125,7 @@ func (f *Future) Done(sender autorest.Sender) (bool, error) {
 	}
 
 	if f.ps.hasTerminated() {
-		if f.errorInfo != nil {
+		if f.errorInfo() != nil {
 			fmt.Println("Late f.ps.hasTerminated error")
 		}
 		return true, f.errorInfo()
