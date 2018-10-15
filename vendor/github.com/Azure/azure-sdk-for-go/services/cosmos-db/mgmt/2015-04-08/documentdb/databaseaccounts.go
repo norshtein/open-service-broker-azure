@@ -275,6 +275,7 @@ func (client DatabaseAccountsClient) DeleteSender(req *http.Request) (future Dat
 	sender := autorest.DecorateSender(client, azure.DoRetryWithRegistration(client.Client))
 	future.Future = azure.NewFuture(req)
 	future.req = req
+	fmt.Println("Invoking future.Done")
 	_, err = future.Done(sender)
 	if err != nil {
 		fmt.Println("future.Done error")

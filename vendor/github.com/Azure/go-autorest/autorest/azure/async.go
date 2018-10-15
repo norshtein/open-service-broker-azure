@@ -74,6 +74,7 @@ func (f Future) PollingMethod() PollingMethodType {
 
 // Done queries the service to see if the operation has completed.
 func (f *Future) Done(sender autorest.Sender) (bool, error) {
+	fmt.Println("In future.Done")
 	// exit early if this future has terminated
 	if f.ps.hasTerminated() {
 		if f.errorInfo() != nil {
@@ -109,6 +110,7 @@ func (f *Future) Done(sender autorest.Sender) (bool, error) {
 				return false, err
 			}
 			fmt.Println("re.ServiceError")
+			fmt.Println("Status code: ", resp.StatusCode)
 			fmt.Println("Message: ", re.ServiceError.Message)
 			fmt.Println("Details: ", re.ServiceError.Details)
 			return false, re.ServiceError
