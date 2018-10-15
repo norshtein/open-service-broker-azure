@@ -108,6 +108,8 @@ func (f *Future) Done(sender autorest.Sender) (bool, error) {
 				return false, err
 			}
 			fmt.Println("re.ServiceError")
+			fmt.Println("Message: ", re.ServiceError.Message)
+			fmt.Println("Details: ", re.ServiceError.Details)
 			return false, re.ServiceError
 		}
 		fmt.Println("!autorest.ResponseHasStatusCode")
