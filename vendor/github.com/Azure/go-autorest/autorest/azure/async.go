@@ -103,6 +103,7 @@ func (f *Future) Done(sender autorest.Sender) (bool, error) {
 				return false, err
 			}
 			err = json.Unmarshal(b, &re)
+			fmt.Println("Json string: ", string(b))
 			if err != nil {
 				fmt.Println("json.Unmarshal error")
 				return false, err
