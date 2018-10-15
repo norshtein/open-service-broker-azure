@@ -34,7 +34,6 @@ func deleteCosmosDBAccount(
 	defer cancel()
 
 	fmt.Println("In deprovisioning function...")
-	fmt.Printf("Deleting %s\n", dt.DatabaseAccountName)
 	result, err := databaseAccountsClient.Delete(
 		ctx,
 		pp.GetString("resourceGroup"),

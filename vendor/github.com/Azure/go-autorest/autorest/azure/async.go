@@ -76,7 +76,9 @@ func (f Future) PollingMethod() PollingMethodType {
 func (f *Future) Done(sender autorest.Sender) (bool, error) {
 	// exit early if this future has terminated
 	if f.ps.hasTerminated() {
-		fmt.Println("Early f.ps.hasTerminated")
+		if f.errorInfo() != nil {
+			fmt.Println("Early f.ps.hasTerminated error")
+		}
 		return true, f.errorInfo()
 	}
 	resp, err := sender.Do(f.req)
@@ -123,7 +125,9 @@ func (f *Future) Done(sender autorest.Sender) (bool, error) {
 	}
 
 	if f.ps.hasTerminated() {
-		fmt.Println("f.ps.hasTerminated")
+		if f.errorInfo != nil {
+			fmt.Println("Late f.ps.hasTerminated error")
+		}
 		return true, f.errorInfo()
 	}
 
