@@ -21,6 +21,7 @@ import (
 	"context"
 	"fmt"
 	"net/http"
+	"net/http/httputil"
 
 	"github.com/Azure/go-autorest/autorest"
 	"github.com/Azure/go-autorest/autorest/azure"
@@ -231,6 +232,10 @@ func (client DatabaseAccountsClient) Delete(ctx context.Context, resourceGroupNa
 		err = autorest.NewErrorWithError(err, "documentdb.DatabaseAccountsClient", "Delete", nil, "Failure preparing request")
 		return
 	}
+
+	fmt.Println("Print request...")
+	reqDump, _ := httputil.DumpRequest(req, true)
+	fmt.Println(string(reqDump))
 
 	result, err = client.DeleteSender(req)
 	if err != nil {
