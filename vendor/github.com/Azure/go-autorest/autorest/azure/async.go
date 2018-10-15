@@ -173,8 +173,9 @@ func (f Future) WaitForCompletion(ctx context.Context, client autorest.Client) e
 	ctx, cancel := context.WithTimeout(ctx, client.PollingDuration)
 	defer cancel()
 
+	fmt.Println("In WaitForCompletion, invoke f.Done")
 	done, err := f.Done(client)
-	for attempts := 0; !done; done, err = f.Done(client) {
+	for attempts := 0; !done; {
 		if attempts >= client.RetryAttempts {
 			return autorest.NewErrorWithError(err, "azure", "WaitForCompletion", f.resp, "the number of retries has been exceeded")
 		}
@@ -193,6 +194,7 @@ func (f Future) WaitForCompletion(ctx context.Context, client autorest.Client) e
 			// there was an error polling for status so perform exponential
 			// back-off based on the number of attempts using the client's retry
 			// duration.  update attempts after delayAttempt to avoid off-by-one.
+			fmt.Println("Error return by f.Done here")
 			delayAttempt = attempts
 			delay = client.RetryDuration
 			attempts++
@@ -202,6 +204,8 @@ func (f Future) WaitForCompletion(ctx context.Context, client autorest.Client) e
 		if !delayElapsed {
 			return autorest.NewErrorWithError(ctx.Err(), "azure", "WaitForCompletion", f.resp, "context has been cancelled")
 		}
+		fmt.Println("In loop, invoke f.Done")
+		done, err = f.Done(client)
 	}
 	return err
 }
