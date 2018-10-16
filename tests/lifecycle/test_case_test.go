@@ -293,6 +293,8 @@ func (s serviceLifecycleTestCase) execute(
 			s.serviceID,
 		)
 	}
+	// Temporary fix for #617, shoule be removed after #617 is resolved
+	time.Sleep(time.Second * 5)
 	// Execute deprovisioning steps until there are none left
 	for {
 		step, ok := deprovisioner.GetStep(stepName)
