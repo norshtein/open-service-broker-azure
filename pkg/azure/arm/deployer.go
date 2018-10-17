@@ -77,6 +77,7 @@ func (d *deployer) Deploy(
 	armParams map[string]interface{},
 	tags map[string]string,
 ) (map[string]interface{}, error) {
+	fmt.Println("In func (d *deployer) Deploy")
 	logFields := log.Fields{
 		"resourceGroup": resourceGroupName,
 		"deployment":    deploymentName,
@@ -359,6 +360,7 @@ func (d *deployer) doDeployment(
 	armParams map[string]interface{},
 	tags map[string]string,
 ) (*resourcesSDK.DeploymentExtended, error) {
+	fmt.Println("In func (d *deployer) doDeployment")
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 	res, err := d.groupsClient.CheckExistence(ctx, resourceGroupName)
@@ -428,6 +430,7 @@ func (d *deployer) doDeployment(
 	}
 
 	// Deploy the template
+	fmt.Println("Entering d.deploymentsClient.CreateOrUpdate")
 	result, err := d.deploymentsClient.CreateOrUpdate(
 		ctx,
 		resourceGroupName,
@@ -444,6 +447,7 @@ func (d *deployer) doDeployment(
 		return nil, fmt.Errorf("error submitting ARM template: %s", err)
 	}
 
+	fmt.Println("Entering WaitForCompletion")
 	if err = result.WaitForCompletion(
 		ctx,
 		d.deploymentsClient.Client,

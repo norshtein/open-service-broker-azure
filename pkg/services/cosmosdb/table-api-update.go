@@ -20,6 +20,7 @@ func (t *tableAccountManager) updateARMTemplate(
 	_ context.Context,
 	instance service.Instance,
 ) (service.InstanceDetails, error) {
+	fmt.Println("In table updateARMTemplate")
 	if err := t.cosmosAccountManager.updateDeployment(
 		instance.ProvisioningParameters,
 		instance.UpdatingParameters,

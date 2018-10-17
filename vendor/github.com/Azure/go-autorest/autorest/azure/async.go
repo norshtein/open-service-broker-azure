@@ -21,6 +21,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"net/http/httputil"
 	"strings"
 	"time"
 
@@ -90,6 +91,13 @@ func (f *Future) Done(sender autorest.Sender) (bool, error) {
 		fmt.Println("sender.Do error")
 		return false, err
 	}
+	respBytes, err := httputil.DumpResponse(resp, true)
+	if err != nil {
+		fmt.Println("Error dumping response ", err)
+		return false, err
+	}
+	fmt.Println("Response: ")
+	fmt.Println(string(respBytes))
 
 	if !autorest.ResponseHasStatusCode(resp, pollingCodes[:]...) {
 		// check response body for error content
@@ -175,6 +183,7 @@ func (f Future) GetPollingDelay() (time.Duration, bool) {
 // polling duration has been exceeded.  It will retry failed polling attempts based on
 // the retry value defined in the client up to the maximum retry attempts.
 func (f Future) WaitForCompletion(ctx context.Context, client autorest.Client) error {
+	fmt.Println("In (f Future) WaitForCompletion")
 	ctx, cancel := context.WithTimeout(ctx, client.PollingDuration)
 	defer cancel()
 

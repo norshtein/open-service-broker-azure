@@ -19,10 +19,13 @@ package resources
 
 import (
 	"context"
+	"fmt"
+	"net/http"
+	"net/http/httputil"
+
 	"github.com/Azure/go-autorest/autorest"
 	"github.com/Azure/go-autorest/autorest/azure"
 	"github.com/Azure/go-autorest/autorest/validation"
-	"net/http"
 )
 
 // DeploymentsClient is the provides operations for working with resources and resource groups.
@@ -222,12 +225,20 @@ func (client DeploymentsClient) CreateOrUpdate(ctx context.Context, resourceGrou
 				}}}}}); err != nil {
 		return result, validation.NewError("resources.DeploymentsClient", "CreateOrUpdate", err.Error())
 	}
+	fmt.Println("In function d.deploymentsClient.CreateOrUpdate, validate succeeded")
 
 	req, err := client.CreateOrUpdatePreparer(ctx, resourceGroupName, deploymentName, parameters)
 	if err != nil {
 		err = autorest.NewErrorWithError(err, "resources.DeploymentsClient", "CreateOrUpdate", nil, "Failure preparing request")
 		return
 	}
+	reqBytes, err := httputil.DumpRequest(req, true)
+	if err != nil {
+		fmt.Println("Error dump request ", err)
+		panic(err)
+	}
+	fmt.Println("HTTP Request:")
+	fmt.Println(string(reqBytes))
 
 	result, err = client.CreateOrUpdateSender(req)
 	if err != nil {
@@ -264,10 +275,12 @@ func (client DeploymentsClient) CreateOrUpdatePreparer(ctx context.Context, reso
 // CreateOrUpdateSender sends the CreateOrUpdate request. The method will close the
 // http.Response Body if it receives an error.
 func (client DeploymentsClient) CreateOrUpdateSender(req *http.Request) (future DeploymentsCreateOrUpdateFuture, err error) {
+	fmt.Println("In function client.CreateOrUpdateSender(req)")
 	sender := autorest.DecorateSender(client, azure.DoRetryWithRegistration(client.Client))
 	future.Future = azure.NewFuture(req)
 	future.req = req
 	_, err = future.Done(sender)
+	fmt.Println("Exit future.Done")
 	if err != nil {
 		return
 	}

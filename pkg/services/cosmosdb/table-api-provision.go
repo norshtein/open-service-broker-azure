@@ -21,7 +21,7 @@ func (t *tableAccountManager) deployARMTemplate(
 	_ context.Context,
 	instance service.Instance,
 ) (service.InstanceDetails, error) {
-
+	fmt.Println("In table provisioning deployARMTemplate")
 	pp := instance.ProvisioningParameters
 	dt := instance.Details.(*cosmosdbInstanceDetails)
 	p, err := t.buildGoTemplateParams(pp, dt, "GlobalDocumentDB")

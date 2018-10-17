@@ -50,6 +50,7 @@ func (c *cosmosAccountManager) updateDeployment(
 	capability string,
 	additionalTags map[string]string,
 ) error {
+	fmt.Println("In func (c *cosmosAccountManager) updateDeployment")
 	p, err := c.buildGoTemplateParams(up, dt, kind)
 	if err != nil {
 		return err
