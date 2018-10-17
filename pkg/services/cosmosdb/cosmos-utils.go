@@ -420,6 +420,14 @@ func isCreationSucceeded(
 	currentLocations []cosmosSDK.Location,
 ) bool {
 	succeededLocations := make(map[string]bool)
+	fmt.Println("The state of regions:")
+	for i := range currentLocations {
+		state := *(currentLocations[i].ProvisioningState)
+		locationName := *(currentLocations[i].LocationName)
+		locationName = strings.Replace(locationName, " ", "", -1)
+		locationName = strings.ToLower(locationName)
+		fmt.Printf("Location: %s, state: %s", locationName, state)
+	}
 	for i := range currentLocations {
 		state := *(currentLocations[i].ProvisioningState)
 		// If the status of any region is not succeeded, we haven't finished
