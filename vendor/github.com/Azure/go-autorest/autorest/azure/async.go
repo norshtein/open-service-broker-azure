@@ -86,6 +86,10 @@ func (f *Future) Done(sender autorest.Sender) (bool, error) {
 		return true, f.errorInfo()
 	}
 	resp, err := sender.Do(f.req)
+	reqBytes, _ := httputil.DumpRequest(f.req, true)
+	fmt.Println("In future.Done, sending request:")
+	fmt.Println(string(reqBytes))
+
 	f.resp = resp
 	if err != nil {
 		fmt.Println("sender.Do error")
