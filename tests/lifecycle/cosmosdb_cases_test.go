@@ -13,39 +13,6 @@ import (
 )
 
 var cosmosdbTestCases = []serviceLifecycleTestCase{
-	{ // SQL API
-		group:     "cosmosdb",
-		name:      "sql-api-account-only",
-		serviceID: "6330de6f-a561-43ea-a15e-b99f44d183e6",
-		planID:    "71168d1a-c704-49ff-8c79-214dd3d6f8eb",
-		provisioningParameters: map[string]interface{}{
-			"alias":    "cosmos-account",
-			"location": "eastus",
-			"ipFilters": map[string]interface{}{
-				"allowedIPRanges": []interface{}{"0.0.0.0/0"},
-			},
-			"consistencyPolicy": map[string]interface{}{
-				"defaultConsistencyLevel": "Session",
-			},
-			"tags": map[string]interface{}{
-				"latest-operation": "provision",
-			},
-		},
-		updatingParameters: map[string]interface{}{
-			"readRegions": []interface{}{"centralus"},
-		},
-		childTestCases: []*serviceLifecycleTestCase{
-			{ // database only scenario
-				group:     "cosmosdb",
-				name:      "database-only",
-				serviceID: "87c5132a-6d76-40c6-9621-0c7b7542571b",
-				planID:    "c821c68c-c8e0-4176-8cf2-f0ca582a07a3",
-				provisioningParameters: map[string]interface{}{
-					"parentAlias": "cosmos-account",
-				},
-			},
-		},
-	},
 	{ // Table API
 		group:     "cosmosdb",
 		name:      "table-api-account-only",
