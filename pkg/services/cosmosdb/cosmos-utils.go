@@ -426,7 +426,7 @@ func isCreationSucceeded(
 		locationName := *(currentLocations[i].LocationName)
 		locationName = strings.Replace(locationName, " ", "", -1)
 		locationName = strings.ToLower(locationName)
-		fmt.Printf("Location: %s, state: %s", locationName, state)
+		fmt.Printf("Location: %s, state: %s\n", locationName, state)
 	}
 	for i := range currentLocations {
 		state := *(currentLocations[i].ProvisioningState)
