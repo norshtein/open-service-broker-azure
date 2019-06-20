@@ -13,7 +13,7 @@ func getMSSQLTestCases() []e2eTestCase {
 			serviceID: "fb9bc99e-0aa9-11e6-8a8a-000d3a002ed5",
 			planID:    "3819fdfa-0aaa-11e6-86f4-000d3a002ed5",
 			provisioningParameters: map[string]interface{}{
-				"location":      "southcentralus",
+				"location":      "chinaeast",
 				"resourceGroup": "placeholder",
 				"firewallRules": []map[string]string{
 					{
@@ -37,7 +37,7 @@ func getMSSQLTestCases() []e2eTestCase {
 			planID:    "24f0f42e-1ab3-474e-a5ca-b943b2c48eee",
 			provisioningParameters: map[string]interface{}{
 				"alias":         alias,
-				"location":      "southcentralus",
+				"location":      "chinanorth",
 				"resourceGroup": "placeholder",
 				"firewallRules": []map[string]string{
 					{
@@ -77,7 +77,7 @@ func getMSSQLTestCases() []e2eTestCase {
 			serviceID: "fb9bc99e-0aa9-11e6-8a8a-000d3a002ed5",
 			planID:    "c77e86af-f050-4457-a2ff-2b48451888f3",
 			provisioningParameters: map[string]interface{}{
-				"location":      "southcentralus",
+				"location":      "chinanorth2",
 				"resourceGroup": "placeholder",
 				"cores":         4,
 				"storage":       25,

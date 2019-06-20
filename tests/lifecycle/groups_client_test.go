@@ -14,7 +14,7 @@ func ensureResourceGroup(resourceGroup string) error {
 	if err != nil {
 		return err
 	}
-	location := "eastus"
+	location := "chinaeast"
 	_, err = groupsClient.CreateOrUpdate(
 		context.Background(),
 		resourceGroup,

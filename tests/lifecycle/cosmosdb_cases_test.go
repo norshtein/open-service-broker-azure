@@ -20,7 +20,7 @@ var cosmosdbTestCases = []serviceLifecycleTestCase{
 		planID:    "71168d1a-c704-49ff-8c79-214dd3d6f8eb",
 		provisioningParameters: map[string]interface{}{
 			"alias":    "cosmos-account",
-			"location": "eastus",
+			"location": "chinanorth2",
 			"ipFilters": map[string]interface{}{
 				"allowedIPRanges": []interface{}{"0.0.0.0/0"},
 			},
@@ -32,7 +32,7 @@ var cosmosdbTestCases = []serviceLifecycleTestCase{
 			},
 		},
 		updatingParameters: map[string]interface{}{
-			"readRegions": []interface{}{"centralus"},
+			"readRegions": []interface{}{"chinaeast2"},
 		},
 		childTestCases: []*serviceLifecycleTestCase{
 			{ // database only scenario
@@ -52,14 +52,14 @@ var cosmosdbTestCases = []serviceLifecycleTestCase{
 		serviceID: "5f5252a0-6922-4a0c-a755-f9be70d7c79b",
 		planID:    "126a2c47-11a3-49b1-833a-21b563de6c04",
 		provisioningParameters: map[string]interface{}{
-			"location": "westus",
+			"location": "chinanorth2",
 			"ipFilters": map[string]interface{}{
 				"allowedIPRanges": []interface{}{"0.0.0.0/0"},
 			},
 			"consistencyPolicy": map[string]interface{}{
 				"defaultConsistencyLevel": "Session",
 			},
-			"readRegions":                 []interface{}{"eastus"},
+			"readRegions":                 []interface{}{"chinaeast2"},
 			"multipleWriteRegionsEnabled": "enabled",
 		},
 		updatingParameters: map[string]interface{}{
@@ -74,18 +74,18 @@ var cosmosdbTestCases = []serviceLifecycleTestCase{
 		serviceID: "37915cad-5259-470d-a7aa-207ba89ada8c",
 		planID:    "c970b1e8-794f-4d7c-9458-d28423c08856",
 		provisioningParameters: map[string]interface{}{
-			"location": "southcentralus",
+			"location": "chinanorth2",
 			"ipFilters": map[string]interface{}{
 				"allowedIPRanges": []interface{}{"0.0.0.0/0"},
 			},
 			"consistencyPolicy": map[string]interface{}{
 				"defaultConsistencyLevel": "Session",
 			},
-			"readRegions":                 []interface{}{"eastus2"},
+			"readRegions":                 []interface{}{"chinaeast2"},
 			"multipleWriteRegionsEnabled": "enabled",
 		},
 		updatingParameters: map[string]interface{}{
-			"readRegions": []interface{}{"centralus"},
+			"readRegions": []interface{}{"chinaeast"},
 		},
 	},
 	{ // MongoDB
@@ -96,14 +96,14 @@ var cosmosdbTestCases = []serviceLifecycleTestCase{
 
 		testCredentials: testMongoDBCreds,
 		provisioningParameters: map[string]interface{}{
-			"location": "eastus",
+			"location": "chinanorth2",
 			"ipFilters": map[string]interface{}{
 				"allowedIPRanges": []interface{}{"0.0.0.0/0"},
 			},
 			"consistencyPolicy": map[string]interface{}{
 				"defaultConsistencyLevel": "Session",
 			},
-			"readRegions": []interface{}{"westus"},
+			"readRegions": []interface{}{"chinaeast2"},
 		},
 		updatingParameters: map[string]interface{}{
 			"readRegions": []interface{}{},
@@ -115,7 +115,7 @@ var cosmosdbTestCases = []serviceLifecycleTestCase{
 		serviceID: "58d9fbbd-7041-4dbe-aabe-6268cd31de84",
 		planID:    "58d7223d-934e-4fb5-a046-0c67781eb24e",
 		provisioningParameters: map[string]interface{}{
-			"location": "eastus",
+			"location": "chinanorth2",
 			"ipFilters": map[string]interface{}{
 				"allowedIPRanges": []interface{}{"0.0.0.0/0"},
 			},

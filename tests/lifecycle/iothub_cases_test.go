@@ -9,7 +9,7 @@ var iotHubTestCases = []serviceLifecycleTestCase{
 		serviceID: "afd72c3b-6c2d-40f2-ad0d-d90467989be5",
 		planID:    "4d6c40dd-7525-4260-8e4d-f65818197c2b",
 		provisioningParameters: map[string]interface{}{
-			"location": "eastus",
+			"location": "chinanorth",
 			"tags": map[string]interface{}{
 				"latest-operation": "provision",
 			},
@@ -21,7 +21,7 @@ var iotHubTestCases = []serviceLifecycleTestCase{
 		serviceID: "afd72c3b-6c2d-40f2-ad0d-d90467989be5",
 		planID:    "bdff693c-39cb-4590-b4ce-d1a17fab5848",
 		provisioningParameters: map[string]interface{}{
-			"location":       "eastus",
+			"location": "chinanorth",
 			"units":          2,
 			"partitionCount": 8,
 		},
@@ -32,7 +32,7 @@ var iotHubTestCases = []serviceLifecycleTestCase{
 		serviceID: "afd72c3b-6c2d-40f2-ad0d-d90467989be5",
 		planID:    "0dde7e80-1f32-470d-ba0b-9db4fe1826be",
 		provisioningParameters: map[string]interface{}{
-			"location":       "eastus",
+			"location": "chinanorth",
 			"units":          1,
 			"partitionCount": 2,
 		},

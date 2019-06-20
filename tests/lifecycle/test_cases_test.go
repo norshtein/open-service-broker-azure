@@ -18,12 +18,10 @@ func getTestCases() ([]serviceLifecycleTestCase, error) {
 	testCases = append(testCases, mysqlTestCases...)
 
 	// Modules expect to cost shorter time
-	testCases = append(testCases, appinsightsTestCases...)
 	testCases = append(testCases, eventhubsTestCases...)
 	testCases = append(testCases, keyvaultTestCases...)
 	testCases = append(testCases, servicebusTestCases...)
 	testCases = append(testCases, storageTestCases...)
-	testCases = append(testCases, textanalyticsTestCases...)
 	testCases = append(testCases, iotHubTestCases...)
 
 	testCases = filter(testCases, getTestFilters())

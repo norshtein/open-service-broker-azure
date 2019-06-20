@@ -19,7 +19,7 @@ var mysqlTestCases = []serviceLifecycleTestCase{
 		serviceID: "997b8372-8dac-40ac-ae65-758b4a5075a5",
 		planID:    "eae202c3-521c-46d1-a047-872dacf781fd",
 		provisioningParameters: map[string]interface{}{
-			"location":       "southcentralus",
+			"location": "chinanorth",
 			"sslEnforcement": "disabled",
 			"firewallRules": []interface{}{
 				map[string]interface{}{
@@ -48,7 +48,7 @@ var mysqlTestCases = []serviceLifecycleTestCase{
 		serviceID: "30e7b836-199d-4335-b83d-adc7d23a95c2",
 		planID:    "b242a78f-9946-406a-af67-813c56341960",
 		provisioningParameters: map[string]interface{}{
-			"location": "southcentralus",
+			"location": "chinanorth",
 			"alias":    mysqlDBMSAlias,
 			"firewallRules": []interface{}{
 				map[string]interface{}{

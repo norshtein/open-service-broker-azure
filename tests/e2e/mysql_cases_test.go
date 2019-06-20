@@ -13,7 +13,7 @@ func getMySQLTestCases() []e2eTestCase {
 			serviceID: "997b8372-8dac-40ac-ae65-758b4a5075a5",
 			planID:    "eae202c3-521c-46d1-a047-872dacf781fd",
 			provisioningParameters: map[string]interface{}{
-				"location":       "southcentralus",
+				"location":       "chinanorth",
 				"resourceGroup":  "placeholder",
 				"sslEnforcement": "disabled",
 				"firewallRules": []map[string]string{
@@ -38,7 +38,7 @@ func getMySQLTestCases() []e2eTestCase {
 			planID:    "b242a78f-9946-406a-af67-813c56341960",
 			provisioningParameters: map[string]interface{}{
 				"alias":         alias,
-				"location":      "eastus",
+				"location":      "chinaeast",
 				"resourceGroup": "placeholder",
 				"firewallRules": []map[string]string{
 					{

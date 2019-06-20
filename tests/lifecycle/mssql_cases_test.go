@@ -25,7 +25,7 @@ var mssqlTestCases = []serviceLifecycleTestCase{
 		serviceID: "fb9bc99e-0aa9-11e6-8a8a-000d3a002ed5",
 		planID:    "2497b7f3-341b-4ac6-82fb-d4a48c005e19",
 		provisioningParameters: map[string]interface{}{
-			"location": "southcentralus",
+			"location": "chinanorth",
 			"dtus":     200,
 			"firewallRules": []interface{}{
 				map[string]interface{}{
@@ -65,7 +65,7 @@ var mssqlTestCases = []serviceLifecycleTestCase{
 		serviceID: "fb9bc99e-0aa9-11e6-8a8a-000d3a002ed5",
 		planID:    "c77e86af-f050-4457-a2ff-2b48451888f3",
 		provisioningParameters: map[string]interface{}{
-			"location": "southcentralus",
+			"location": "chinanorth",
 			"cores":    4,
 			"storage":  25,
 			"firewallRules": []interface{}{
@@ -100,7 +100,7 @@ var mssqlTestCases = []serviceLifecycleTestCase{
 		serviceID: "a7454e0e-be2c-46ac-b55f-8c4278117525",
 		planID:    "24f0f42e-1ab3-474e-a5ca-b943b2c48eee",
 		provisioningParameters: map[string]interface{}{
-			"location": "southcentralus",
+			"location": "chinanorth",
 			"alias":    mssqlDBMSAlias,
 			"firewallRules": []interface{}{
 				map[string]interface{}{
@@ -164,7 +164,7 @@ var mssqlTestCases = []serviceLifecycleTestCase{
 		serviceID: "c9bd94e7-5b7d-4b20-96e6-c5678f99d997",
 		planID:    "4e95e962-0142-4117-b212-bcc7aec7f6c2",
 		provisioningParameters: map[string]interface{}{
-			"location": "southcentralus",
+			"location": "chinanorth",
 			"alias":    mssqlDBMSRegisteredAlias,
 		},
 		preProvisionFns: []preProvisionFn{

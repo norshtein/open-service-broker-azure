@@ -13,7 +13,7 @@ func getPostgreSQLTestCases() []e2eTestCase {
 			serviceID: "b43b4bba-5741-4d98-a10b-17dc5cee0175",
 			planID:    "90f27532-0286-42e5-8e23-c3bb37191368",
 			provisioningParameters: map[string]interface{}{
-				"location":      "southcentralus",
+				"location":      "chinaeast2",
 				"resourceGroup": "placeholder",
 				"firewallRules": []map[string]string{
 					{
@@ -42,7 +42,7 @@ func getPostgreSQLTestCases() []e2eTestCase {
 			planID:    "73191861-04b3-4d0b-a29b-429eb15a83d4",
 			provisioningParameters: map[string]interface{}{
 				"alias":         alias,
-				"location":      "eastus",
+				"location":      "chinaeast",
 				"resourceGroup": "placeholder",
 				"firewallRules": []map[string]string{
 					{

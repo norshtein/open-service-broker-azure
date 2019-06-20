@@ -25,7 +25,7 @@ var postgresqlTestCases = []serviceLifecycleTestCase{
 		planID:          "90f27532-0286-42e5-8e23-c3bb37191368",
 		testCredentials: testPostgreSQLCreds,
 		provisioningParameters: map[string]interface{}{
-			"location": "southcentralus",
+			"location": "chinanorth",
 			"firewallRules": []interface{}{
 				map[string]interface{}{
 					"name":           "AllowSome",
@@ -57,7 +57,7 @@ var postgresqlTestCases = []serviceLifecycleTestCase{
 		serviceID: "d3f74b44-79bc-4d1e-bf7d-c247c2b851f9",
 		planID:    "73191861-04b3-4d0b-a29b-429eb15a83d4",
 		provisioningParameters: map[string]interface{}{
-			"location": "southcentralus",
+			"location": "chinanorth",
 			"alias":    postgresqlDBMSAlias,
 			"firewallRules": []interface{}{
 				map[string]interface{}{
@@ -91,7 +91,7 @@ var postgresqlTestCases = []serviceLifecycleTestCase{
 		planID:          "6caf83ec-5cc1-42a0-9b34-0d163d73064c",
 		testCredentials: testPostgreSQLCreds,
 		provisioningParameters: map[string]interface{}{
-			"location": "southcentralus",
+			"location": "chinanorth",
 			"firewallRules": []interface{}{
 				map[string]interface{}{
 					"name":           "AllowSome",
@@ -126,7 +126,7 @@ var postgresqlTestCases = []serviceLifecycleTestCase{
 		serviceID: "cabd3125-5a13-46ea-afad-a69582af9578",
 		planID:    "f5218659-72ba-4fd3-9567-afd52d871fee",
 		provisioningParameters: map[string]interface{}{
-			"location": "southcentralus",
+			"location": "chinanorth",
 			"alias":    postgresqlV10DBMSAlias,
 			"firewallRules": []interface{}{
 				map[string]interface{}{
@@ -230,7 +230,7 @@ func createVirtualNetworkForPostgres(
 		resourceGroup,
 		virtualNetworkName,
 		networkSDK.VirtualNetwork{
-			Location: to.StringPtr("southcentralus"),
+			Location: to.StringPtr("chinanorth"),
 			VirtualNetworkPropertiesFormat: &networkSDK.VirtualNetworkPropertiesFormat{
 				AddressSpace: &networkSDK.AddressSpace{
 					AddressPrefixes: &[]string{"172.19.0.0/16"},
